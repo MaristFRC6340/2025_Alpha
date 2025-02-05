@@ -4,7 +4,13 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import swervelib.math.Matter;
 
@@ -31,9 +37,29 @@ public final class Constants {
     public static final double LOOP_TIME  = 0.13; //s, 20ms + 110ms sprk max velocity lag DEFAULT FROM YAGSL
 
   }
+  public static final class VisionConstants{
+    public static final  double maximumAmbiguity                = 0.25;
+    public static final double debouncetimeMilli = 15;
+
+    public static final class CameraTemplate{
+      public static final String name = "tempalte";
+      public static  Rotation3d robotToCamTransform = new Rotation3d(0, Units.degreesToRadians(18), 0);
+      public static  Translation3d robotToCamTranslation=new Translation3d(Units.inchesToMeters(-4.628),
+      Units.inchesToMeters(-10.687),
+      Units.inchesToMeters(16.129));
+      public static  Matrix<N3, N1> singleTagStdDevs= VecBuilder.fill(4, 4, 8);
+      public static  Matrix<N3, N1> multiTagStdDevsMatrix= VecBuilder.fill(0.5, 0.5, 1); 
+    }
+
+
+    
+
+
+  }
 
   public static class DriveConstants{
 
     
   }
 }
+

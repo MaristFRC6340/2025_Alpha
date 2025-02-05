@@ -72,7 +72,7 @@ public class SwerveSubsystem extends SubsystemBase
    * AprilTag field layout.
    */
   private final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
-  
+  public VisionSubsystem vision;
  
 
   StructPublisher<Pose2d> finalPoseEstimate = NetworkTableInstance.getDefault().getStructTopic("SmartDashboard/Subsystem/Swerve/finalPoseEstimate", Pose2d.struct).publish();
@@ -105,10 +105,10 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * Setup the photon vision class.
    */
-//   public void setupPhotonVision()
-//   {
-//     vision = new Vision(swerveDrive::getPose, swerveDrive.field);
-//   }
+  public void setupPhotonVision()
+  {
+    vision = new VisionSubsystem(swerveDrive::getPose, swerveDrive.field);
+  }
 
   @Override
   public void periodic()
