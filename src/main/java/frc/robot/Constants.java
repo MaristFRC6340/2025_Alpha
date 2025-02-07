@@ -4,9 +4,14 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -64,20 +69,73 @@ public final class Constants {
      * Rear Left Elevator: 32
      * Rear Right Elevator: 33
     */
-    public static final int kLeftID = ;
-    public static final int kRightID = ;
-    public static final TalonFXConfiguration kLeftConfig = new TalonFXConfiguration();
-    public static final TalonFXConfiguration kRightConfig = new TalonFXConfiguration();
+    public static final int kLeftID = 30;
+    public static final int kRightID = 31;
+
+    public static final double kGearRatio = 9;
+
+
+    public static final MotionMagicConfigs kMagicConfigs = new MotionMagicConfigs()
+    .withMotionMagicAcceleration(10)
+    .withMotionMagicCruiseVelocity(5)
+    .withMotionMagicExpo_kA(0)
+    .withMotionMagicExpo_kV(0);
+
+    public static final FeedbackConfigs kFeedbackConfigs = new FeedbackConfigs()
+    .withSensorToMechanismRatio(kGearRatio);
+
+    public static final CurrentLimitsConfigs kCurrentLimitConfigs = new CurrentLimitsConfigs()
+    .withSupplyCurrentLimit(40);
+
+    public static final Slot0Configs kSlot0Configs = new Slot0Configs()
+    .withKA(0)
+    .withKG(0)
+    .withKS(0)
+    .withKV(0)
+    .withKP(1)
+    .withKI(0)
+    .withKD(0);
+
+    public static final TalonFXConfiguration kLeftConfig = new TalonFXConfiguration()
+    .withSlot0(kSlot0Configs)
+    .withCurrentLimits(kCurrentLimitConfigs)
+    .withFeedback(kFeedbackConfigs)
+    .withMotionMagic(kMagicConfigs);
+
+    public static final TalonFXConfiguration kRightConfig = new TalonFXConfiguration()
+    .withSlot0(kSlot0Configs)
+    .withCurrentLimits(kCurrentLimitConfigs)
+    .withFeedback(kFeedbackConfigs)
+    .withMotionMagic(kMagicConfigs);
   }
 
   public static class CoralConstants {
     public static final int kTopID = 40;
-    public static final SparkBaseConfig kTopConfig = ; // :/
+    public static final SparkMaxConfig kTopConfig = new SparkMaxConfig(); // :/
     public static final int kBottomID = 41;
-    public static final SparkBaseConfig kBottomConfig = ;
+    public static final SparkMaxConfig kBottomConfig = new SparkMaxConfig();
 
     // using same speed for top and bottom
-    public static double outtakeMotorSpeed = 0.5; // speed values between -1.0 and 1.0
+    public static double kOuttakeMotorSpeed = 0.8; // speed values between -1.0 and 1.0
+  }
+
+  public static class ClimberConstants{
+    public static final int kClimberId = 60;
+  }
+
+  public static class HuggerConstants {
+    public static final int kLeftID = 50;
+    public static final int kRightID = 51;
+    
+
+
+    public static final int kPivotID = 60;
+    public static final double kGPivot = 0.1;
+    public static final double kSPivot = 0;
+    public static final double kVPivot = 0;
+    public static final double kPPivot = 1;
+    public static final double kIPivot = 0;
+    public static final double kDPivot = 0;
   }
 
 

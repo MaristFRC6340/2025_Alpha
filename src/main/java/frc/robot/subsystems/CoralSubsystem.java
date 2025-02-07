@@ -24,18 +24,33 @@ public class CoralSubsystem extends SubsystemBase{
 // when putting the coral on top, set a different speed for the motors
 
     public Command getOuttakeCommand() {
+        return getSetSpeedCommand(CoralConstants.kOuttakeMotorSpeed);
+    }
+
+    public Command getSetSpeedCommand(double speed) {
         return this.startEnd(() -> {
-            onOuttake(CoralConstants.outtakeMotorSpeed);
-        },
-        
-        () -> {
+            setSpeed(speed);
+        }, () -> {
             stop();
         });
     }
 
-    public void onOuttake(double speed) {
+    public Command getShadowTechniqueCommand(double speed) {
+        return this.startEnd(() -> {
+            shadowTechnique(speed);
+        }, () -> {
+            stop();
+        });
+    }
+
+    public void setSpeed(double speed) {
         topMotor.set(speed);
         bottomMotor.set(speed);
+    }
+
+    public void shadowTechnique(double speed) {
+        topMotor.set(speed);
+        bottomMotor.set(-speed);
     }
 
     public void stop() {
