@@ -61,5 +61,8 @@ public final class Constants {
 
     
   }
+
+public static final String ElevatorConstants = null;
+public static final String CoralConstants = null;
 }
 
