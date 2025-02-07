@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.revrobotics.spark.SparkBase;
+import com.revrobotics.spark.config.SparkBaseConfig;
+
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -42,7 +46,7 @@ public final class Constants {
     public static final double debouncetimeMilli = 15;
 
     public static final class CameraTemplate{
-      public static final String name = "tempalte";
+      public static final String name = "tempalte"; // tempalte?
       public static  Rotation3d robotToCamTransform = new Rotation3d(0, Units.degreesToRadians(18), 0);
       public static  Translation3d robotToCamTranslation=new Translation3d(Units.inchesToMeters(-4.628),
       Units.inchesToMeters(-10.687),
@@ -50,19 +54,32 @@ public final class Constants {
       public static  Matrix<N3, N1> singleTagStdDevs= VecBuilder.fill(4, 4, 8);
       public static  Matrix<N3, N1> multiTagStdDevsMatrix= VecBuilder.fill(0.5, 0.5, 1); 
     }
-
-
-    
-
-
   }
 
-  public static class DriveConstants{
-
-    
+  // goal: find a good config (maybe online?) and stick with it
+  public static class ElevatorConstants {
+    /* 
+     * Front Left Elevator: 30
+     * Front Right Elevator: 31
+     * Rear Left Elevator: 32
+     * Rear Right Elevator: 33
+    */
+    public static final int kLeftID = ;
+    public static final int kRightID = ;
+    public static final TalonFXConfiguration kLeftConfig = new TalonFXConfiguration();
+    public static final TalonFXConfiguration kRightConfig = new TalonFXConfiguration();
   }
 
-public static final String ElevatorConstants = null;
-public static final String CoralConstants = null;
+  public static class CoralConstants {
+    public static final int kTopID = 40;
+    public static final SparkBaseConfig kTopConfig = ; // :/
+    public static final int kBottomID = 41;
+    public static final SparkBaseConfig kBottomConfig = ;
+
+    // using same speed for top and bottom
+    public static double outtakeMotorSpeed = 0.5; // speed values between -1.0 and 1.0
+  }
+
+
 }
 
