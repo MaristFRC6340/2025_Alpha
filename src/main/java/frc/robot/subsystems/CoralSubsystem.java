@@ -4,9 +4,11 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import frc.robot.Constants;
 import frc.robot.Constants.CoralConstants;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+@Logged
 
 public class CoralSubsystem extends SubsystemBase{
     
@@ -44,12 +46,12 @@ public class CoralSubsystem extends SubsystemBase{
     }
 
     public void setSpeed(double speed) {
-        topMotor.set(speed);
+        topMotor.set(-speed);
         bottomMotor.set(speed);
     }
 
     public void shadowTechnique(double speed) {
-        topMotor.set(speed);
+        topMotor.set(-speed);
         bottomMotor.set(-speed);
     }
 

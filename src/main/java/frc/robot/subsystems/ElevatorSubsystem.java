@@ -5,9 +5,11 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+@Logged
 
 public class ElevatorSubsystem extends SubsystemBase{
 
@@ -27,15 +29,20 @@ public class ElevatorSubsystem extends SubsystemBase{
         leftMotor.setControl(m_MMEV);
         rightMotor.setControl(m_Follower);
     }
+
+    //Clamps the position value
+    public void setPosition(double position) {
+        leftMotor.setControl(m_MMEV.withPosition(Math.max(Constants.ElevatorConstants.kMin, Math.min(Constants.ElevatorConstants.kMax, position)) ));
+    }
     
 
-    public Command setPosition(double position) {
+    public Command getSetPositionCommand(double position) {
         return this.runOnce(() -> {
-            leftMotor.setControl(m_MMEV.withPosition(position));
+            setPosition(position);
         });
     }
 
     public Command goHome() {
-        return setPosition(0);
+        return getSetPositionCommand(0);
     }
 }

@@ -1,8 +1,10 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -10,10 +12,14 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+@Logged
 
 public class HuggerSubsystem extends SubsystemBase{
 
@@ -30,18 +36,30 @@ public class HuggerSubsystem extends SubsystemBase{
         Slot0Configs kPivotConfig = new Slot0Configs();
         kPivotConfig.kP=Constants.HuggerConstants.kPPivot;
         kPivotConfig.kG=Constants.HuggerConstants.kGPivot;
+        pivotMotor.setNeutralMode(NeutralModeValue.Coast);
+        FeedbackConfigs kFeedbackConfigs = new FeedbackConfigs().withRotorToSensorRatio(36);
         pivotMotor.getConfigurator().apply(kPivotConfig);
-        pivotMotor.setControl(m_PositionVoltage);
+        pivotMotor.getConfigurator().apply(kFeedbackConfigs);
+        //pivotMotor.setControl(m_PositionVoltage);
+
         //Left Motor
         leftMotor = new SparkMax(Constants.HuggerConstants.kLeftID, MotorType.kBrushless);
         SparkMaxConfig kLeftConfig= new SparkMaxConfig();
         kLeftConfig.idleMode(IdleMode.kBrake).smartCurrentLimit(20);
         leftMotor.configure(kLeftConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
-        leftMotor = new SparkMax(Constants.HuggerConstants.kLeftID, MotorType.kBrushless);
+        //Right Motor
+        rightMotor = new SparkMax(Constants.HuggerConstants.kRightID, MotorType.kBrushless);
         SparkMaxConfig kRightConfig= new SparkMaxConfig();
         kRightConfig.idleMode(IdleMode.kBrake).smartCurrentLimit(20);
         rightMotor.configure(kRightConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+    }
+
+    @Override 
+    public void periodic(){
+        SmartDashboard.putNumber("/Subsystems/Hugger/Encoder",pivotMotor.getPosition().getValueAsDouble());
+        //SmartDashboard.putNumber("/Subsystems/Hugger/Encoder",pivotMotor.getPosition().getValue());
+
     }
 
     /**
@@ -50,6 +68,7 @@ public class HuggerSubsystem extends SubsystemBase{
      * @return command to set position
      */
     public Command setPosition(double position) {
+        //position = MathUtil.clamp(position, 0, 0)
         return this.runOnce(() -> {
             pivotMotor.setControl(m_PositionVoltage.withPosition(position));
         });
@@ -70,5 +89,8 @@ public class HuggerSubsystem extends SubsystemBase{
     
     public void stop() {
         setSpeed(0);
+    }
+    public double getPosition(){
+        return pivotMotor.getPosition().getValueAsDouble();
     }
 }

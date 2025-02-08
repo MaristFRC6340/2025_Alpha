@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -21,6 +24,8 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import swervelib.math.Matter;
 
 /**
@@ -36,6 +41,8 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
 
     public static final double DEADBAND = .1;
+
+    public static int kActuatorControllerPort = 1;
   }
 
   public static class RobotConstants{
@@ -74,20 +81,23 @@ public final class Constants {
 
     public static final double kGearRatio = 9;
 
+    public static final double kMin = 0;
+    public static final double kMax = 3;
 
-    public static final MotionMagicConfigs kMagicConfigs = new MotionMagicConfigs()
+
+    private static final MotionMagicConfigs kMagicConfigs = new MotionMagicConfigs()
     .withMotionMagicAcceleration(10)
     .withMotionMagicCruiseVelocity(5)
     .withMotionMagicExpo_kA(0)
     .withMotionMagicExpo_kV(0);
 
-    public static final FeedbackConfigs kFeedbackConfigs = new FeedbackConfigs()
+    private static final FeedbackConfigs kFeedbackConfigs = new FeedbackConfigs()
     .withSensorToMechanismRatio(kGearRatio);
 
-    public static final CurrentLimitsConfigs kCurrentLimitConfigs = new CurrentLimitsConfigs()
+    private static final CurrentLimitsConfigs kCurrentLimitConfigs = new CurrentLimitsConfigs()
     .withSupplyCurrentLimit(40);
 
-    public static final Slot0Configs kSlot0Configs = new Slot0Configs()
+    private static final Slot0Configs kSlot0Configs = new Slot0Configs()
     .withKA(0)
     .withKG(0)
     .withKS(0)
@@ -121,21 +131,76 @@ public final class Constants {
 
   public static class ClimberConstants{
     public static final int kClimberId = 60;
+    public static final int kServoID = 1;
+    public static final double kRatchetOff = 0;
+    public static final double kRatchetOn = 1;
+
+    private static final Slot0Configs kSlot0Configs = new Slot0Configs()
+    .withKP(1);
+
+    public static final TalonFXConfiguration kClimberConfig= new TalonFXConfiguration()
+    .withSlot0(kSlot0Configs);
   }
 
   public static class HuggerConstants {
     public static final int kLeftID = 50;
     public static final int kRightID = 51;
     
+    
 
 
-    public static final int kPivotID = 60;
+    public static final int kPivotID = 52;
     public static final double kGPivot = 0.1;
     public static final double kSPivot = 0;
     public static final double kVPivot = 0;
     public static final double kPPivot = 1;
     public static final double kIPivot = 0;
     public static final double kDPivot = 0;
+  }
+
+  public static class SwerveConstants {
+    public static final double kPX = 1;
+    public static final double kPY = 1;
+    public static final double kPTheta = 1;
+    public static final double kXTolerance = 0; //Meters
+    public static final double kYTolerance = 0; //Meters
+    public static final double kThetaTolerance = Math.toRadians(15);
+  }
+
+  public static class FieldPositions {
+    //Blue
+    public static final Pose2d L17 = new Pose2d(3.82, 2.96, new Rotation2d(Math.toRadians(150)));
+    public static final Pose2d L18 = new Pose2d(3.22, 4.08, new Rotation2d(Math.toRadians(90)));
+    public static final Pose2d L19 = new Pose2d(3.89, 5.16, new Rotation2d(Math.toRadians(30)));
+    public static final Pose2d L20 = new Pose2d(5.16, 5.12, new Rotation2d(Math.toRadians(-30)));
+    public static final Pose2d L21 = new Pose2d(5.76, 4.00, new Rotation2d(Math.toRadians(-90)));
+    public static final Pose2d L22 = new Pose2d(5.09, 2.92, new Rotation2d(Math.toRadians(210)));
+
+    public static final Pose2d R17 = new Pose2d(4.32, 2.67, new Rotation2d(Math.toRadians(150)));
+    public static final Pose2d R18 = new Pose2d(3.22, 3.51, new Rotation2d(Math.toRadians(90)));
+    public static final Pose2d R19 = new Pose2d(3.40, 4.87, new Rotation2d(Math.toRadians(30)));
+    public static final Pose2d R20 = new Pose2d(4.67, 5.40, new Rotation2d(Math.toRadians(-30)));
+    public static final Pose2d R21 = new Pose2d(5.76, 4.57, new Rotation2d(Math.toRadians(-90)));
+    public static final Pose2d R22 = new Pose2d(5.59, 3.20, new Rotation2d(Math.toRadians(210)));
+
+    //Red
+    public static final Pose2d L6 = new Pose2d(13.65, 2.92, new Rotation2d(Math.toRadians(210)));
+    public static final Pose2d L7 = new Pose2d(14.32, 4.00, new Rotation2d(Math.toRadians(-90)));
+    public static final Pose2d L8 = new Pose2d(13.72, 5.12, new Rotation2d(Math.toRadians(-30)));
+    public static final Pose2d L9 = new Pose2d(12.45, 5.16, new Rotation2d(Math.toRadians(30)));
+    public static final Pose2d L10 = new Pose2d(11.78, 4.08, new Rotation2d(Math.toRadians(90)));
+    public static final Pose2d L11 = new Pose2d(12.38, 2.96, new Rotation2d(Math.toRadians(150)));
+
+    public static final Pose2d R6 = new Pose2d(14.14, 3.20, new Rotation2d(Math.toRadians(210)));
+    public static final Pose2d R7 = new Pose2d(14.32, 4.57, new Rotation2d(Math.toRadians(-90)));
+    public static final Pose2d R8 = new Pose2d(13.22, 5.40, new Rotation2d(Math.toRadians(-30)));
+    public static final Pose2d R9 = new Pose2d(11.95, 4.87, new Rotation2d(Math.toRadians(30)));
+    public static final Pose2d R10 = new Pose2d(11.78, 3.51, new Rotation2d(Math.toRadians(90)));
+    public static final Pose2d R11 = new Pose2d(12.87, 2.67, new Rotation2d(Math.toRadians(150)));
+
+    public static final List<Pose2d> kReefPoses=Arrays.asList(
+    L17, L18, L19, L20, L21, L22, R17, R18, R19, R20, R21, R22, L6, L7, L8, L9, L10, L11, R6, R7, R8, R9, R10, R11
+    );
   }
 
 

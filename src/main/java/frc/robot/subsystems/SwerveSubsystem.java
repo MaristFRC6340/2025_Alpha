@@ -20,6 +20,8 @@ import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -39,13 +41,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
 import java.io.File;
 import java.io.IOException;
+import java.util.AbstractSet;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -60,6 +68,7 @@ import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
+@Logged
 
 public class SwerveSubsystem extends SubsystemBase
 {
@@ -73,6 +82,11 @@ public class SwerveSubsystem extends SubsystemBase
    */
   private final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
   public VisionSubsystem vision;
+  
+  private PIDController xController = new PIDController(Constants.SwerveConstants.kPX, 0, 0);
+  private PIDController yController = new PIDController(Constants.SwerveConstants.kPY, 0, 0);
+  private PIDController thetaController = new PIDController(Constants.SwerveConstants.kPTheta, 0, 0);
+
  
 
   StructPublisher<Pose2d> finalPoseEstimate = NetworkTableInstance.getDefault().getStructTopic("SmartDashboard/Subsystem/Swerve/finalPoseEstimate", Pose2d.struct).publish();
@@ -100,6 +114,10 @@ public class SwerveSubsystem extends SubsystemBase
     swerveDrive.setModuleEncoderAutoSynchronize(false,1); // Enable if you want to resynchronize your absolute encoders and motor encoders periodically when they are not moving.
     //setUpPhotonVision()
     setupPathPlanner();
+
+    xController.setTolerance(Constants.SwerveConstants.kXTolerance);
+    yController.setTolerance(Constants.SwerveConstants.kYTolerance);
+    thetaController.setTolerance(Constants.SwerveConstants.kThetaTolerance);
   }
 
   /**
@@ -495,5 +513,38 @@ public class SwerveSubsystem extends SubsystemBase
   public SwerveDrive getSwerveDrive(){
     return swerveDrive;
   }
+
+
+
+
+  /**
+   * Drives to a given pose using pid controllers
+   * @param pose Target pose to go to
+   * @return driving Command
+   */
+  public Command driveToPose(Pose2d pose) {
+    return run(() -> {
+      double xPower = -xController.calculate(pose.getX(), swerveDrive.getPose().getX());
+      double yPower = -yController.calculate(pose.getY(), swerveDrive.getPose().getY());
+      double thetaPower = -thetaController.calculate(pose.getRotation().getRadians(), swerveDrive.getPose().getRotation().getRadians());
+      this.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
+      new ChassisSpeeds(xPower, yPower, thetaPower), getHeading()
+      ));
+    }
+    ).until(() -> {
+        return Math.abs(pose.getX()-swerveDrive.getPose().getX())<=Constants.SwerveConstants.kXTolerance &&
+        Math.abs(pose.getY()-swerveDrive.getPose().getY())<=Constants.SwerveConstants.kYTolerance &&
+        Math.abs(pose.getRotation().getDegrees()-swerveDrive.getPose().getRotation().getDegrees())<Constants.SwerveConstants.kThetaTolerance;
+    });
+
+}
+
+public Command getDriveToClosestReefPoseCommand() {
+  Set<Subsystem> requirements = new HashSet<Subsystem>();
+  requirements.add(this);
+  return new DeferredCommand(() -> driveToPose(swerveDrive.getPose().nearest(Constants.FieldPositions.kReefPoses)), requirements);
+}
+
+
 
 }
