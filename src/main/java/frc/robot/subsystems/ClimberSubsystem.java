@@ -9,6 +9,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -21,6 +22,7 @@ public class ClimberSubsystem extends SubsystemBase{
     Slot0Configs slot0config;
 
     Servo ratchetServo;
+    PositionVoltage p = new PositionVoltage(0).withSlot(0);
 
     public ClimberSubsystem() {
 
@@ -43,12 +45,28 @@ public class ClimberSubsystem extends SubsystemBase{
         return this.runEnd(()->{
             climberMotor.set(pow.getAsDouble());
         },()->{
-           //climberMotor.setControl(new PositionVoltage(0).withSlot(0).withPosition(climberMotor.getPosition().getValueAsDouble))
+           climberMotor.setControl(p.withPosition(climberMotor.getPosition().getValueAsDouble()));
            //some hold position code here
+        });
+    }
+    public Command setPosition(double position){
+        return this.runOnce(()->{
+            climberMotor.setControl(p.withPosition(position));
         });
     }
 
     public void periodic() {
+        SmartDashboard.putNumber("Subsystem/Climber/Motor/position", climberMotor.getPosition().getValueAsDouble());
+        SmartDashboard.putNumber("Subsystem/Climber/Motor/angle", climberMotor.getPosition().getValue().magnitude());
+        SmartDashboard.putNumber("Subsystem/Climber/Motor/voltage", climberMotor.getMotorVoltage().getValueAsDouble());
+        SmartDashboard.putNumber("Subsystem/Climber/Servo/position", ratchetServo.getPosition());
+        SmartDashboard.putNumber("Subsystem/Climber/Servo/angle", ratchetServo.getAngle());
+        SmartDashboard.putNumber("Subsystem/Climber/Servo/speed", ratchetServo.getSpeed());
+        SmartDashboard.putData("Subsystem/Climber/currentCommand", this.getCurrentCommand());
+        SmartDashboard.putData("Subsystem/Climber/defaultCommand", this.getDefaultCommand());
+
+
+
         
     }
 }

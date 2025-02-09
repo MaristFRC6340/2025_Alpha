@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.CoralSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.HuggerSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import swervelib.SwerveInputStream;
@@ -23,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -37,6 +39,7 @@ public class RobotContainer {
   //private final SwerveSubsystem m_SwerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),"swerve"));
   private final CoralSubsystem m_CoralSubsystem = new CoralSubsystem();
   private final   HuggerSubsystem m_HuggerSubsystem = new HuggerSubsystem();
+  //private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -101,6 +104,13 @@ public class RobotContainer {
     actuatorRTrigger.whileTrue(m_CoralSubsystem.getShadowTechniqueCommand(.5));
     actuatorB.onTrue(m_HuggerSubsystem.setPosition(-3));
     actuatorX.onTrue(m_HuggerSubsystem.setPosition(0));
+
+    
+      // m_driverController.y().whileTrue(m_elevator.getRoutine().quasistatic(Direction.kForward));
+      // m_driverController.a().whileTrue(m_elevator.getRoutine().quasistatic(Direction.kReverse));
+      // m_driverController.b().whileTrue(m_elevator.getRoutine().dynamic(Direction.kForward));
+      // m_driverController.x().whileTrue(m_elevator.getRoutine().dynamic(Direction.kReverse));
+     
   }
   /**
    * For cleanliness, register all named commands here

@@ -57,8 +57,18 @@ public class HuggerSubsystem extends SubsystemBase{
 
     @Override 
     public void periodic(){
-        SmartDashboard.putNumber("/Subsystems/Hugger/Encoder",pivotMotor.getPosition().getValueAsDouble());
-        //SmartDashboard.putNumber("/Subsystems/Hugger/Encoder",pivotMotor.getPosition().getValue());
+        SmartDashboard.putNumber("/Subsystem/Hugger/Pivot/position",pivotMotor.getPosition().getValueAsDouble());
+        SmartDashboard.putNumber("/Subsystem/Hugger/Pivot/velocity", pivotMotor.getVelocity().getValueAsDouble());
+        SmartDashboard.putNumber("/Subsystem/Hugger/Pivot/angle", pivotMotor.getPosition().getValue().magnitude());
+
+        SmartDashboard.putNumber("/Subsystem/Hugger/LeftMotor/position",leftMotor.getAlternateEncoder().getPosition());
+        SmartDashboard.putNumber("/Subsystem/Hugger/LeftMotor/velocity",leftMotor.getAlternateEncoder().getVelocity());
+        
+        SmartDashboard.putNumber("/Subsystem/Hugger/RightMotor/position",rightMotor.getAlternateEncoder().getPosition());
+        SmartDashboard.putNumber("/Subsystem/Hugger/RightMotor/velocity",rightMotor.getAlternateEncoder().getVelocity());
+        SmartDashboard.putData("Subsystem/Coral/currentCommand", this.getCurrentCommand());
+        SmartDashboard.putData("Subsystem/Coral/defaultCommand", this.getDefaultCommand());      
+        //SmartDashboard.putNumber("/Subsystem/Hugger/Encoder",pivotMotor.getPosition().getValue());
 
     }
 
