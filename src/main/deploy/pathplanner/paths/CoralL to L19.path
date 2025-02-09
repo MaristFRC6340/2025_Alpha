@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.6022435897435892,
+        "y": 7.358525641025641
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.716858974358974,
+        "y": 6.553525641025641
+      },
+      "isLocked": false,
+      "linkedName": "CoralL"
+    },
+    {
+      "anchor": {
+        "x": 3.895,
+        "y": 5.159
+      },
+      "prevControl": {
+        "x": 3.2328846153846147,
+        "y": 5.985897435897435
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "L19"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 360.0,
+    "maxAngularAcceleration": 540.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 29.999999999999996
+  },
+  "reversed": false,
+  "folder": "CoralL to Deposit",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 126.0
+  },
+  "useDefaultConstraints": true
+}
