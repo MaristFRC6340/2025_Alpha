@@ -29,6 +29,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
@@ -257,6 +258,7 @@ public class SwerveSubsystem extends SubsystemBase
             new Config(),
             this, swerveDrive, 12, true),
         3.0, 5.0, 3.0);
+
   }
 
   public SysIdRoutine getRoutine(){
@@ -526,7 +528,22 @@ public class SwerveSubsystem extends SubsystemBase
   }
 
 
+  /**
+   * Spins the robot in place to find wheel radius
+   * @param input
+   */
+  public void runWheelRadiusCharacterization(double input) {
+    swerveDrive.drive(new ChassisSpeeds(0, 0, input));
+  }
 
+  public double [] getWheelRadiusCharacterizationPosition() {
+    double [] out = new double [4];
+    SwerveModulePosition [] positions = swerveDrive.getModulePositions();
+    for(int i = 0; i<4; i++) {
+      out[i]=positions[i].distanceMeters/(0.319185814)*(6.28318530718);
+    }
+    return out;
+  }
 
   /**
    * Drives to a given pose using pid controllers
