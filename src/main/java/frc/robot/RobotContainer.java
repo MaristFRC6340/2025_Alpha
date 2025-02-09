@@ -36,7 +36,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  //private final SwerveSubsystem m_SwerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),"swerve"));
+  private final SwerveSubsystem m_SwerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),"swerve"));
   private final CoralSubsystem m_CoralSubsystem = new CoralSubsystem();
   private final   HuggerSubsystem m_HuggerSubsystem = new HuggerSubsystem();
   //private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
@@ -110,6 +110,10 @@ public class RobotContainer {
       // m_driverController.a().whileTrue(m_elevator.getRoutine().quasistatic(Direction.kReverse));
       // m_driverController.b().whileTrue(m_elevator.getRoutine().dynamic(Direction.kForward));
       // m_driverController.x().whileTrue(m_elevator.getRoutine().dynamic(Direction.kReverse));
+      //  m_driverController.y().whileTrue(m_SwerveSubsystem.getRoutine().quasistatic(Direction.kForward));
+      // m_driverController.a().whileTrue(m_SwerveSubsystem.getRoutine().quasistatic(Direction.kReverse));
+      // m_driverController.b().whileTrue(m_SwerveSubsystem.getRoutine().dynamic(Direction.kForward));
+      // m_driverController.x().whileTrue(m_SwerveSubsystem.getRoutine().dynamic(Direction.kReverse));
      
   }
   /**

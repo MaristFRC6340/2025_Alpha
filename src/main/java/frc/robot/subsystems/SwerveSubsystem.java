@@ -44,6 +44,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
 import java.io.File;
@@ -256,6 +257,13 @@ public class SwerveSubsystem extends SubsystemBase
             new Config(),
             this, swerveDrive, 12, true),
         3.0, 5.0, 3.0);
+  }
+
+  public SysIdRoutine getRoutine(){
+    return SwerveDriveTest.setDriveSysIdRoutine(
+      new Config(),
+      this, swerveDrive, 12, true);
+
   }
 
   /**
