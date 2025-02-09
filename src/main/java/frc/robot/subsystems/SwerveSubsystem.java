@@ -141,6 +141,9 @@ public class SwerveSubsystem extends SubsystemBase
       curChassisSpeed.set(swerveDrive.getRobotVelocity());
       swerveModuleState.set(swerveDrive.getStates());
 
+      SmartDashboard.putData("Subsystem/Swerve/currentCommand", this.getCurrentCommand());
+      SmartDashboard.putData("Subsystem/Swerve/defaultCommand", this.getDefaultCommand());
+
 
     
   }
