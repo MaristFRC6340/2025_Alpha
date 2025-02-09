@@ -3,37 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.6022435897435892,
-        "y": 7.358525641025641
+        "x": 1.5984819734345352,
+        "y": 0.7031546489563562
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.252435897435897,
-        "y": 6.574166666666667
+        "x": 2.180192307692307,
+        "y": 1.6616025641025647
       },
       "isLocked": false,
-      "linkedName": "CoralL"
+      "linkedName": "CoralR"
     },
     {
       "anchor": {
-        "x": 3.552820512820513,
-        "y": 4.984807692307692
+        "x": 3.1812820512820514,
+        "y": 3.95275641025641
       },
       "prevControl": {
-        "x": 2.9851923076923073,
-        "y": 5.923974358974358
+        "x": 2.7891025641025635,
+        "y": 2.9929487179487175
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "R19"
+      "linkedName": "L18"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 1,
-      "rotationDegrees": 0.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -47,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 29.999999999999996
+    "rotation": 90.0
   },
   "reversed": false,
-  "folder": "CoralL to Deposit",
+  "folder": "CoralR to Deposit",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 126.0
+    "rotation": -126.0
   },
   "useDefaultConstraints": true
 }

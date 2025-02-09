@@ -201,6 +201,15 @@ public final class Constants {
     public static final List<Pose2d> kReefPoses=Arrays.asList(
     L17, L18, L19, L20, L21, L22, R17, R18, R19, R20, R21, R22, L6, L7, L8, L9, L10, L11, R6, R7, R8, R9, R10, R11
     );
+
+
+    public static final int [] kReefIDs = {6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22};
+    public static boolean isReefID(int id) {
+      for(int i: kReefIDs) {
+        if(id==i) return true;
+      }
+      return false;
+    }
   }
 
 

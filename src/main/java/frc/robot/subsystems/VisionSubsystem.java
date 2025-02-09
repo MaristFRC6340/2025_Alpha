@@ -331,6 +331,7 @@ public class VisionSubsystem
         int    numTags    = 0;
         double avgDist    = 0;
 
+        boolean reef = false;
         // Precalculation - see how many tags we found, and calculate an average-distance metric
         for (var tgt : targets)
         {
@@ -339,13 +340,17 @@ public class VisionSubsystem
           {
             continue;
           }
+          double distance = tagPose
+            .get()
+            .toPose2d()
+            .getTranslation()
+            .getDistance(estimatedPose.get().estimatedPose.toPose2d().getTranslation());
+          if(Constants.FieldPositions.isReefID(tgt.getFiducialId()) && Math.abs(distance)<1) {
+            reef=true;
+          }
           numTags++;
-          avgDist +=
-              tagPose
-                  .get()
-                  .toPose2d()
-                  .getTranslation()
-                  .getDistance(estimatedPose.get().estimatedPose.toPose2d().getTranslation());
+          avgDist += distance;
+              
         }
 
         if (numTags == 0)
@@ -357,12 +362,15 @@ public class VisionSubsystem
           // One or more tags visible, run the full heuristic.
           avgDist /= numTags;
           // Decrease std devs if multiple targets are visible
-          if (numTags > 1)
+          if(reef) {
+            estStdDevs = VecBuilder.fill(0.05, 0.05, 0.05);
+          }
+          else if (numTags > 1)
           {
             estStdDevs = multiTagStdDevs;
           }
           // Increase std devs based on (average) distance
-          if (numTags == 1 && avgDist > 4)
+          else if (numTags == 1 && avgDist > 4)
           {
             estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
           } else
