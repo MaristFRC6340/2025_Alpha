@@ -542,9 +542,12 @@ public class SwerveSubsystem extends SubsystemBase
 
   public double [] getWheelRadiusCharacterizationPosition() {
     double [] out = new double [4];
+    swervelib.SwerveModule[] modules = swerveDrive.getModules();
+
     SwerveModulePosition [] positions = swerveDrive.getModulePositions();
     for(int i = 0; i<4; i++) {
-      out[i]=positions[i].distanceMeters/(0.319185814)*(6.28318530718); //CHANGE TO WHATEVER STORED RADIUS IS
+      
+      out[i]=positions[i].distanceMeters/(Constants.SwerveConstants.kStoredRadius); //CHANGE TO WHATEVER STORED RADIUS IS
     }
     return out;
   }

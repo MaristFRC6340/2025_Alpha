@@ -165,6 +165,7 @@ public final class Constants {
     public static final double kXTolerance = 0; //Meters
     public static final double kYTolerance = 0; //Meters
     public static final double kThetaTolerance = Math.toRadians(15);
+    public static double kStoredRadius = 4; // to be configured later
   }
 
   public static class FieldPositions {
