@@ -17,7 +17,8 @@ import frc.robot.Constants.ClimberConstants;
 @Logged
 
 public class ClimberSubsystem extends SubsystemBase{
-
+    
+    //Fields
     TalonFX climberMotor;
     Slot0Configs slot0config;
 
@@ -46,13 +47,16 @@ public class ClimberSubsystem extends SubsystemBase{
             climberMotor.set(pow.getAsDouble());
         },()->{
            climberMotor.setControl(p.withPosition(climberMotor.getPosition().getValueAsDouble()));
-           //some hold position code here
         });
     }
     public Command setPosition(double position){
         return this.runOnce(()->{
             climberMotor.setControl(p.withPosition(position));
         });
+    }
+    public void resetEncoder(){
+        //this.getCurrentCommand().cancel();
+        climberMotor.setPosition(0);
     }
 
     public void periodic() {
@@ -64,9 +68,5 @@ public class ClimberSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("Subsystem/Climber/Servo/speed", ratchetServo.getSpeed());
         SmartDashboard.putData("Subsystem/Climber/currentCommand", this.getCurrentCommand());
         SmartDashboard.putData("Subsystem/Climber/defaultCommand", this.getDefaultCommand());
-
-
-
-        
     }
 }

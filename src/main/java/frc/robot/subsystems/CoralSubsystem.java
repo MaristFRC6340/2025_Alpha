@@ -69,7 +69,6 @@ public class CoralSubsystem extends SubsystemBase{
             SmartDashboard.putNumber("Subsystem/Coral/Bottom/velocity", bottomMotor.getAlternateEncoder().getVelocity());
             SmartDashboard.putData("Subsystem/Coral/currentCommand", this.getCurrentCommand());
             SmartDashboard.putData("Subsystem/Coral/defaultCommand", this.getDefaultCommand());
-
     }         
 
 
