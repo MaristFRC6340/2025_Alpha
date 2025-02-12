@@ -15,30 +15,30 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.SwerveSubsystem;
 
+import java.io.File;
+import java.nio.file.FileSystem;
+import edu.wpi.first.wpilibj.Filesystem;
 import java.util.function.DoubleSupplier;
 
 public class LittletonWheelRadiusCommand extends Command {
   private static final double characterizationSpeed = 0.1;
-  private static final double driveRadius = Constants.SwerveConstants.kDriveRadius;
+  private static final double driveRadius = Constants.SwerveConstants.kStoredRadius;
+
+  private SwerveSubsystem drive = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),"swerve"));
+    private final DoubleSupplier gyroYawRadsSupplier =
+        () -> drive.getHeading().getRadians();
+    private final int omegaDirection;
+    private final SlewRateLimiter omegaLimiter = new SlewRateLimiter(1.0);
   
-
-
-
-  private final SwerveSubsystem drive;
-  private final DoubleSupplier gyroYawRadsSupplier =
-      () -> drive.getHeading().getRadians();
-  private final int omegaDirection;
-  private final SlewRateLimiter omegaLimiter = new SlewRateLimiter(1.0);
-
-  private double lastGyroYawRads = 0.0;
-  private double accumGyroYawRads = 0.0;
-
-  private double[] startWheelPositions;
-
-  private double currentEffectiveWheelRadius = 0.0;
-
-  public LittletonWheelRadiusCommand(SwerveSubsystem drive, int omegaDirection) {
-    this.drive = drive;
+    private double lastGyroYawRads = 0.0;
+    private double accumGyroYawRads = 0.0;
+  
+    private double[] startWheelPositions;
+  
+    private double currentEffectiveWheelRadius = 0.0;
+  
+    public LittletonWheelRadiusCommand(SwerveSubsystem drive, int omegaDirection) {
+      this.drive = drive;
     this.omegaDirection = omegaDirection;
     addRequirements(drive);
   }
