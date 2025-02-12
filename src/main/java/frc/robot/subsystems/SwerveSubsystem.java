@@ -43,6 +43,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -199,13 +200,7 @@ public class SwerveSubsystem extends SubsystemBase
             // Boolean supplier that controls when the path will be mirrored for the red alliance
             // This will flip the path being followed to the red side of the field.
             // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-            var alliance = DriverStation.getAlliance();
-            if (alliance.isPresent())
-            {
-              return alliance.get() == DriverStation.Alliance.Red;
-            }
-            return false;
+            return shouldFlip();
           },
           this
           // Reference to this subsystem to set requirements
@@ -243,6 +238,15 @@ public class SwerveSubsystem extends SubsystemBase
         constraints,
         edu.wpi.first.units.Units.MetersPerSecond.of(0) // Goal end velocity in meters/sec
                                      );
+  }
+
+  public boolean shouldFlip() {
+    var alliance = DriverStation.getAlliance();
+    if (alliance.isPresent())
+    {
+      return alliance.get() == DriverStation.Alliance.Red;
+    }
+    return false;
   }
 
   /**
@@ -540,7 +544,7 @@ public class SwerveSubsystem extends SubsystemBase
     double [] out = new double [4];
     SwerveModulePosition [] positions = swerveDrive.getModulePositions();
     for(int i = 0; i<4; i++) {
-      out[i]=positions[i].distanceMeters/(0.319185814)*(6.28318530718);
+      out[i]=positions[i].distanceMeters/(0.319185814)*(6.28318530718); //CHANGE TO WHATEVER STORED RADIUS IS
     }
     return out;
   }
@@ -552,9 +556,10 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public Command driveToPose(Pose2d pose) {
     return run(() -> {
-      double xPower = -xController.calculate(pose.getX(), swerveDrive.getPose().getX());
-      double yPower = -yController.calculate(pose.getY(), swerveDrive.getPose().getY());
-      double thetaPower = -thetaController.calculate(pose.getRotation().getRadians(), swerveDrive.getPose().getRotation().getRadians());
+      int flip = shouldFlip() ? 1 : -1;
+      double xPower = -xController.calculate(pose.getX(), swerveDrive.getPose().getX()) * flip;
+      double yPower = -yController.calculate(pose.getY(), swerveDrive.getPose().getY()) * flip;
+      double thetaPower = -thetaController.calculate(pose.getRotation().getRadians(), swerveDrive.getPose().getRotation().getRadians()) * flip;
       this.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
       new ChassisSpeeds(xPower, yPower, thetaPower), getHeading()
       ));
@@ -564,8 +569,66 @@ public class SwerveSubsystem extends SubsystemBase
         Math.abs(pose.getY()-swerveDrive.getPose().getY())<=Constants.SwerveConstants.kYTolerance &&
         Math.abs(pose.getRotation().getDegrees()-swerveDrive.getPose().getRotation().getDegrees())<Constants.SwerveConstants.kThetaTolerance;
     });
-
 }
+
+public Command getDriveToReefCommand(int id, boolean left) {
+  if (left) {
+    switch (id) {
+        case 7:
+            return driveToPose(Constants.FieldPositions.L7);
+        case 8:
+            return driveToPose(Constants.FieldPositions.L8);
+        case 9:
+            return driveToPose(Constants.FieldPositions.L9);
+        case 10:
+            return driveToPose(Constants.FieldPositions.L10);
+        case 11:
+            return driveToPose(Constants.FieldPositions.L11);
+        case 17:
+            return driveToPose(Constants.FieldPositions.L17);
+        case 18:
+            return driveToPose(Constants.FieldPositions.L18);
+        case 19:
+            return driveToPose(Constants.FieldPositions.L19);
+        case 20:
+            return driveToPose(Constants.FieldPositions.L20);
+        case 21:
+            return driveToPose(Constants.FieldPositions.L21);
+        case 22:
+            return driveToPose(Constants.FieldPositions.L22);
+      }
+    }
+    else {
+      switch (id) {
+        case 7:
+            return driveToPose(Constants.FieldPositions.R7);
+        case 8:
+            return driveToPose(Constants.FieldPositions.R8);
+        case 9:
+            return driveToPose(Constants.FieldPositions.R9);
+        case 10:
+            return driveToPose(Constants.FieldPositions.R10);
+        case 11:
+            return driveToPose(Constants.FieldPositions.R11);
+        case 17:
+            return driveToPose(Constants.FieldPositions.R17);
+        case 18:
+            return driveToPose(Constants.FieldPositions.R18);
+        case 19:
+            return driveToPose(Constants.FieldPositions.R19);
+        case 20:
+            return driveToPose(Constants.FieldPositions.R20);
+        case 21:
+            return driveToPose(Constants.FieldPositions.R21);
+        case 22:
+            return driveToPose(Constants.FieldPositions.R22);
+      }
+      
+    }
+    return new InstantCommand();
+}
+  
+
 
 public Command getDriveToClosestReefPoseCommand() {
   Set<Subsystem> requirements = new HashSet<Subsystem>();
