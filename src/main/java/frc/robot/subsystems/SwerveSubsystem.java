@@ -574,6 +574,12 @@ public class SwerveSubsystem extends SubsystemBase
     });
 }
 
+/**
+ * drives to a given deposit location on the field
+ * @param id the april tag id of the reef side
+ * @param left the pole of the reef to score on
+ * @return
+ */
 public Command getDriveToReefCommand(int id, boolean left) {
   if (left) {
     switch (id) {
@@ -632,7 +638,10 @@ public Command getDriveToReefCommand(int id, boolean left) {
 }
   
 
-
+/**
+ * Drives to the closest deposit position on the reef
+ * @return
+ */
 public Command getDriveToClosestReefPoseCommand() {
   Set<Subsystem> requirements = new HashSet<Subsystem>();
   requirements.add(this);

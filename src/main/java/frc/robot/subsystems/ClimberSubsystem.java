@@ -21,10 +21,10 @@ public class ClimberSubsystem extends SubsystemBase{
     //Fields
     TalonFX climberMotor;
     Slot0Configs slot0config;
-
     Servo ratchetServo;
     PositionVoltage p = new PositionVoltage(0).withSlot(0);
 
+    //Constructor
     public ClimberSubsystem() {
 
         climberMotor = new TalonFX(Constants.ClimberConstants.kClimberId);
@@ -34,6 +34,9 @@ public class ClimberSubsystem extends SubsystemBase{
 
     }
 
+    /**
+     * 
+     */
     public void ratchetOn() {
         ratchetServo.set(Constants.ClimberConstants.kRatchetOn);
     }
@@ -41,7 +44,11 @@ public class ClimberSubsystem extends SubsystemBase{
     public void ratchetOff() {
         ratchetServo.set(Constants.ClimberConstants.kRatchetOff);
     }
-
+    /**
+     * 
+     * @param pow - the power supply on the robot
+     * @return
+     */
     public Command setPower(DoubleSupplier pow){
         return this.runEnd(()->{
             climberMotor.set(pow.getAsDouble());
@@ -49,6 +56,12 @@ public class ClimberSubsystem extends SubsystemBase{
            climberMotor.setControl(p.withPosition(climberMotor.getPosition().getValueAsDouble()));
         });
     }
+
+    /**
+     * 
+     * @param position - position on the field
+     * @return
+     */
     public Command setPosition(double position){
         return this.runOnce(()->{
             climberMotor.setControl(p.withPosition(position));

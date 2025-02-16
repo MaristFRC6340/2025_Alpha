@@ -143,12 +143,22 @@ public final class Constants {
   }
 
   public static class HuggerConstants {
+   
+    
+    //Hugger Left Right Constants
     public static final int kLeftID = 50;
     public static final int kRightID = 51;
+    private static final Slot0Configs leftMotorSlot0 = new Slot0Configs()
+    .withKP(1);
+    public static final TalonFXConfiguration leftMotorConfig= new TalonFXConfiguration().withSlot0(leftMotorSlot0);
     
-    
+    private static final Slot0Configs rightMotorSlot0 = new Slot0Configs()
+    .withKP(1);
+
+    public static final TalonFXConfiguration rightMotorConfig= new TalonFXConfiguration().withSlot0(rightMotorSlot0);
 
 
+    //Pivot stuff
     public static final int kPivotID = 52;
     public static final double kGPivot = 0.1;
     public static final double kSPivot = 0;
@@ -156,6 +166,9 @@ public final class Constants {
     public static final double kPPivot = 1;
     public static final double kIPivot = 0;
     public static final double kDPivot = 0;
+
+
+
   }
 
   public static class SwerveConstants {
