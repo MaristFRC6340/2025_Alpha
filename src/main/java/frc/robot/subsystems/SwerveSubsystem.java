@@ -71,7 +71,6 @@ import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
-@Logged
 
 public class SwerveSubsystem extends SubsystemBase
 {
@@ -83,7 +82,6 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * AprilTag field layout.
    */
-  private final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
   public VisionSubsystem vision;
   
   private PIDController xController = new PIDController(Constants.SwerveConstants.kPX, 0, 0);
@@ -134,6 +132,8 @@ public class SwerveSubsystem extends SubsystemBase
   @Override
   public void periodic()
   {
+
+    
     // When vision is enabled we must manually update odometry in SwerveDrive
       swerveDrive.updateOdometry();
       //vision.updatePoseEstimation(swerveDrive);
@@ -143,8 +143,8 @@ public class SwerveSubsystem extends SubsystemBase
       curChassisSpeed.set(swerveDrive.getRobotVelocity());
       swerveModuleState.set(swerveDrive.getStates());
 
-      SmartDashboard.putData("Subsystem/Swerve/currentCommand", this.getCurrentCommand());
-      SmartDashboard.putData("Subsystem/Swerve/defaultCommand", this.getDefaultCommand());
+     // SmartDashboard.putData("Subsystem/Swerve/currentCommand", this.getCurrentCommand());
+      //SmartDashboard.putData("Subsystem/Swerve/defaultCommand", this.getDefaultCommand());
 
 
     

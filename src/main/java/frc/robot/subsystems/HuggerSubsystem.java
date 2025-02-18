@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-@Logged
 
 public class HuggerSubsystem extends SubsystemBase{
 
@@ -38,7 +37,7 @@ public class HuggerSubsystem extends SubsystemBase{
         Slot0Configs kPivotConfig = new Slot0Configs();
         kPivotConfig.kP=Constants.HuggerConstants.kPPivot;
         kPivotConfig.kG=Constants.HuggerConstants.kGPivot;
-        pivotMotor.setNeutralMode(NeutralModeValue.Coast);
+        pivotMotor.setNeutralMode(NeutralModeValue.Coast); // From Mr Michaud: Should this be "brake"?
         FeedbackConfigs kFeedbackConfigs = new FeedbackConfigs().withRotorToSensorRatio(36);
         pivotMotor.getConfigurator().apply(kPivotConfig);
         pivotMotor.getConfigurator().apply(kFeedbackConfigs);

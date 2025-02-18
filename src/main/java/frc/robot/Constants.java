@@ -139,7 +139,7 @@ public final class Constants {
     .withKP(1);
 
     public static final TalonFXConfiguration kClimberConfig= new TalonFXConfiguration()
-    .withSlot0(kSlot0Configs);
+    .withSlot0(kSlot0Configs).
   }
 
   public static class HuggerConstants {

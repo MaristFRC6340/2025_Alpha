@@ -28,7 +28,6 @@ import static edu.wpi.first.units.Units.Volts;
 
 import java.util.function.DoubleSupplier;
 
-@Logged
 
 public class ElevatorSubsystem extends SubsystemBase{
 
@@ -95,8 +94,8 @@ public class ElevatorSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("Subsystem/Elevator/RightMotor/voltage", rightMotor.getMotorVoltage().getValueAsDouble());
         SmartDashboard.putNumber("Subsystem/Elevator/RightMotor/velocity", rightMotor.getVelocity().getValueAsDouble());
         
-        SmartDashboard.putData("Subsystem/Elevator/currentCommand", this.getCurrentCommand());
-        SmartDashboard.putData("Subsystem/Elevator/defaultCommand", this.getDefaultCommand());
+        //SmartDashboard.putData("Subsystem/Elevator/currentCommand", this.getCurrentCommand());
+        //SmartDashboard.putData("Subsystem/Elevator/defaultCommand", this.getDefaultCommand());
     }
 
     public void setVoltage(Voltage v){

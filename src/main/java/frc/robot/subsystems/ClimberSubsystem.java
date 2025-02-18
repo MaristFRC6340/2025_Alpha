@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.Servo;
@@ -14,14 +15,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ClimberConstants;
-@Logged
 
 public class ClimberSubsystem extends SubsystemBase{
     
     //Fields
     TalonFX climberMotor;
     Slot0Configs slot0config;
-    Servo ratchetServo;
     PositionVoltage p = new PositionVoltage(0).withSlot(0);
 
     //Constructor
@@ -29,21 +28,11 @@ public class ClimberSubsystem extends SubsystemBase{
 
         climberMotor = new TalonFX(Constants.ClimberConstants.kClimberId);
         climberMotor.getConfigurator().apply(Constants.ClimberConstants.kClimberConfig);
+        climberMotor.setNeutralMode(NeutralModeValue.Brake);
 
-        ratchetServo = new Servo(ClimberConstants.kServoID);
 
     }
 
-    /**
-     * 
-     */
-    public void ratchetOn() {
-        ratchetServo.set(Constants.ClimberConstants.kRatchetOn);
-    }
-
-    public void ratchetOff() {
-        ratchetServo.set(Constants.ClimberConstants.kRatchetOff);
-    }
     /**
      * 
      * @param pow - the power supply on the robot
@@ -54,6 +43,14 @@ public class ClimberSubsystem extends SubsystemBase{
             climberMotor.set(pow.getAsDouble());
         },()->{
            climberMotor.setControl(p.withPosition(climberMotor.getPosition().getValueAsDouble()));
+        });
+    }
+
+    public Command setPower(double power) {
+        return this.startEnd(() -> {
+            climberMotor.set(power);
+        }, () -> {
+            climberMotor.set(0);
         });
     }
 
@@ -76,10 +73,7 @@ public class ClimberSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("Subsystem/Climber/Motor/position", climberMotor.getPosition().getValueAsDouble());
         SmartDashboard.putNumber("Subsystem/Climber/Motor/angle", climberMotor.getPosition().getValue().magnitude());
         SmartDashboard.putNumber("Subsystem/Climber/Motor/voltage", climberMotor.getMotorVoltage().getValueAsDouble());
-        SmartDashboard.putNumber("Subsystem/Climber/Servo/position", ratchetServo.getPosition());
-        SmartDashboard.putNumber("Subsystem/Climber/Servo/angle", ratchetServo.getAngle());
-        SmartDashboard.putNumber("Subsystem/Climber/Servo/speed", ratchetServo.getSpeed());
-        SmartDashboard.putData("Subsystem/Climber/currentCommand", this.getCurrentCommand());
-        SmartDashboard.putData("Subsystem/Climber/defaultCommand", this.getDefaultCommand());
+        // SmartDashboard.putData("Subsystem/Climber/currentCommand", this.getCurrentCommand());
+        // SmartDashboard.putData("Subsystem/Climber/defaultCommand", this.getDefaultCommand());
     }
 }
