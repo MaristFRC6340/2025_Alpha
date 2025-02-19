@@ -101,7 +101,7 @@ public class SwerveSubsystem extends SubsystemBase
   public SwerveSubsystem(File directory)
   {
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
-    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.LOW;
     try
     {
       swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.RobotConstants.MAX_SPEED,new Pose2d(new Translation2d(Meter.of(1),Meter.of(4)),Rotation2d.fromDegrees(0)));
@@ -219,26 +219,26 @@ public class SwerveSubsystem extends SubsystemBase
 
 
 
-  /**
-   * Use PathPlanner Path finding to go to a point on the field.
-   *
-   * @param pose Target {@link Pose2d} to go to.
-   * @return PathFinding command
-   */
-  public Command pathFindToPose(Pose2d pose)
-  {
-// Create the constraints to use while pathfinding
-    PathConstraints constraints = new PathConstraints(
-        swerveDrive.getMaximumChassisVelocity(), 4.0,
-        swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720));
+//   /**
+//    * Use PathPlanner Path finding to go to a point on the field.
+//    *
+//    * @param pose Target {@link Pose2d} to go to.
+//    * @return PathFinding command
+//    */
+//   public Command pathFindToPose(Pose2d pose)
+//   {
+// // Create the constraints to use while pathfinding
+//     PathConstraints constraints = new PathConstraints(
+//         swerveDrive.getMaximumChassisVelocity(), 4.0,
+//         swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720));
 
-// Since AutoBuilder is configured, we can use it to build pathfinding commands
-    return AutoBuilder.pathfindToPose(
-        pose,
-        constraints,
-        edu.wpi.first.units.Units.MetersPerSecond.of(0) // Goal end velocity in meters/sec
-                                     );
-  }
+// // Since AutoBuilder is configured, we can use it to build pathfinding commands
+//     return AutoBuilder.pathfindToPose(
+//         pose,
+//         constraints,
+//         edu.wpi.first.units.Units.MetersPerSecond.of(0) // Goal end velocity in meters/sec
+//                                      );
+//   }
 
   public boolean shouldFlip() {
     var alliance = DriverStation.getAlliance();

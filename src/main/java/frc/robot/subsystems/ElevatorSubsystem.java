@@ -8,8 +8,10 @@ import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVelocityDutyCycle;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
@@ -24,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
+import frc.robot.Constants.ElevatorConstants;
 
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -63,16 +66,21 @@ public class ElevatorSubsystem extends SubsystemBase{
 
         leftMotor.setControl(m_MMEV);
         rightMotor.setControl(m_Follower);
+        //SignalLogger.start();
         
     }
 
-    public void elevate() { // idk what i'm doing :sob:
-    // we're basically setting velocity using motion magic
-        final MotionMagicVoltage m_vrequest = new MotionMagicVoltage(0); // create a req
-        // insert code here that lets us control the pos via Triggers(?)
-        leftMotor.setControl(m_vrequest.withPosition(80)); // not sure what is a good value for pos
-        rightMotor.setControl(m_Follower); // follows left motor
-    }
+    // public Command requestElevation() {
+    //     return this.runOnce(() -> elevate());
+    // }
+
+    // public void elevate() { // idk what i'm doing :sob:
+    // // we're basically setting velocity using motion magic
+    //     final MotionMagicVoltage m_vrequest = new MotionMagicVoltage(0); // create a req
+    //     // insert code here that lets us control the pos via Triggers(?)
+    //     leftMotor.setControl(m_vrequest.withPosition(80)); // not sure what is a good value for pos
+    //     rightMotor.setControl(m_Follower); // follows left motor
+    // }
     
     public SysIdRoutine getRoutine(){
       return 
@@ -92,12 +100,12 @@ public class ElevatorSubsystem extends SubsystemBase{
         );
     }
 
-    public 
-
     @Override
     public void periodic(){
         SmartDashboard.putNumber("Subsystem/Elevator/LeftMotor/position", leftMotor.getPosition().getValueAsDouble());
         SmartDashboard.putNumber("Subsystem/Elevator/LeftMotor/angle", leftMotor.getPosition().getValue().magnitude());
+        SmartDashboard.putNumber("Subsystem/Elevator/LeftMotor/voltage2", leftMotor.getSupplyVoltage().getValueAsDouble());
+
         SmartDashboard.putNumber("Subsystem/Elevator/LeftMotor/voltage", leftMotor.getMotorVoltage().getValueAsDouble());
         SmartDashboard.putNumber("Subsystem/Elevator/LeftMotor/velocity", leftMotor.getVelocity().getValueAsDouble());
 
@@ -125,6 +133,7 @@ public class ElevatorSubsystem extends SubsystemBase{
     public void setPosition(double position) {
         position = MathUtil.clamp(position,Constants.ElevatorConstants.kMin,Constants.ElevatorConstants.kMax);
         leftMotor.setControl(m_MMEV.withPosition(position));
+        rightMotor.setControl(m_Follower); // could be needed (or not)
     }
     
 
@@ -136,7 +145,12 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     public Command setPower(DoubleSupplier dubSupp){
         return this.runEnd(()->{
-            leftMotor.setControl(speedRequest.withOutput(dubSupp.getAsDouble()));
+            if(!((getPosition()>=ElevatorConstants.kMax&&dubSupp.getAsDouble()>0) ||(getPosition()<=ElevatorConstants.kMin && dubSupp.getAsDouble()<0))){
+                leftMotor.setControl(speedRequest.withOutput(dubSupp.getAsDouble()));
+            }
+            else{
+                setPosition(getPosition());
+            }
         },()->{
             setPosition(getPosition());
         });

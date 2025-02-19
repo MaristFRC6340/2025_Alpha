@@ -37,20 +37,19 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
-@Logged
 
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem m_SwerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),"swerve"));
   private final CoralSubsystem m_CoralSubsystem = new CoralSubsystem();
   private final ClimberSubsystem m_ClimberSubsystem = new ClimberSubsystem();
-  //private final   HuggerSubsystem m_HuggerSubsystem = new HuggerSubsystem();
-  //private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
+  private final   HuggerSubsystem m_HuggerSubsystem = new HuggerSubsystem();
+  private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
   //private final SingleTalonTesterSubsystem motor = new SingleTalonTesterSubsystem();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
-  private final CommandXboxController m_actuatorController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  private final CommandXboxController m_actuatorController = new CommandXboxController(OperatorConstants.kActuatorControllerPort);
 
   //Buttons!
   private Trigger actuatorA = m_actuatorController.a();
@@ -111,20 +110,27 @@ public class RobotContainer {
    * 
    */
   private void configureBindings() {
+    // m_elevator.setDefaultCommand(m_elevator.setPower(()->m_driverController.getLeftTriggerAxis()*.125));
+    driverLTrigger.whileTrue(m_elevator.setPower(()->m_driverController.getLeftTriggerAxis()*.2));
+    driverRTrigger.whileTrue(m_elevator.setPower(()->m_driverController.getRightTriggerAxis()*-.2));
+
+    driverY.onTrue(m_elevator.getSetPositionCommand(3));
+    driverX.onTrue(m_elevator.getSetPositionCommand(1.5));
+    driverA.onTrue(m_elevator.getSetPositionCommand(.1));
     m_SwerveSubsystem.setDefaultCommand(m_SwerveSubsystem.driveFieldOriented(driveAngularVelocity));
     driverStart.onTrue(new InstantCommand(() -> m_SwerveSubsystem.zeroGyro()));
-    actuatorLTrigger.whileTrue(m_CoralSubsystem.getSetSpeedCommand(.7));
-    actuatorRTrigger.whileTrue(m_CoralSubsystem.getShadowTechniqueCommand(.5));
-    actuatorL.whileTrue(m_ClimberSubsystem.setPower(.2));
-    actuatorR.whileTrue(m_ClimberSubsystem.setPower(-.6));
+    actuatorL.whileTrue(m_CoralSubsystem.getSetSpeedCommand(.9));
+    actuatorR.whileTrue(m_CoralSubsystem.getShadowTechniqueCommand(.5));
+    actuatorA.whileTrue(m_HuggerSubsystem.getSetSpeedCommand(() -> .5));
+    actuatorY.whileTrue(m_HuggerSubsystem.getSetSpeedCommand(() -> -.5));
     // actuatorB.onTrue(m_HuggerSubsystem.setPosition(-3));
     // actuatorX.onTrue(m_HuggerSubsystem.setPosition(0));
     //motor.setDefaultCommand(motor.setPower(()->m_driverController.getRightTriggerAxis()));
     
-      // m_driverController.y().whileTrue(m_elevator.getRoutine().quasistatic(Direction.kForward));
-      // m_driverController.a().whileTrue(m_elevator.getRoutine().quasistatic(Direction.kReverse));
-      // m_driverController.b().whileTrue(m_elevator.getRoutine().dynamic(Direction.kForward));
-      // m_driverController.x().whileTrue(m_elevator.getRoutine().dynamic(Direction.kReverse));
+      // m_driverController.y().whileTrue(m_elevator.getRoutine().quasistatic(Direction.kForward).finallyDo(()->m_elevator.setPosition(m_elevator.getPosition())));
+      // m_driverController.a().whileTrue(m_elevator.getRoutine().quasistatic(Direction.kReverse).finallyDo(()->m_elevator.setPosition(m_elevator.getPosition())));
+      // m_driverController.b().whileTrue(m_elevator.getRoutine().dynamic(Direction.kForward).finallyDo(()->m_elevator.setPosition(m_elevator.getPosition())));
+      // m_driverController.x().whileTrue(m_elevator.getRoutine().dynamic(Direction.kReverse).finallyDo(()->m_elevator.setPosition(m_elevator.getPosition())));
       //  m_driverController.y().whileTrue(m_SwerveSubsystem.getRoutine().quasistatic(Direction.kForward));
       // m_driverController.a().whileTrue(m_SwerveSubsystem.getRoutine().quasistatic(Direction.kReverse));
       // m_driverController.b().whileTrue(m_SwerveSubsystem.getRoutine().dynamic(Direction.kForward));

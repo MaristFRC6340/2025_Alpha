@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -27,7 +29,7 @@ public class HuggerSubsystem extends SubsystemBase{
     private TalonFX pivotMotor;
 
     private TalonFX leftMotor;
-    private TalonFX rightMotor;
+    //private TalonFX rightMotor;
 
     private PositionVoltage m_PositionVoltage = new PositionVoltage(0).withSlot(0); //Position in rotations
     public HuggerSubsystem() {
@@ -37,7 +39,7 @@ public class HuggerSubsystem extends SubsystemBase{
         Slot0Configs kPivotConfig = new Slot0Configs();
         kPivotConfig.kP=Constants.HuggerConstants.kPPivot;
         kPivotConfig.kG=Constants.HuggerConstants.kGPivot;
-        pivotMotor.setNeutralMode(NeutralModeValue.Coast); // From Mr Michaud: Should this be "brake"?
+        pivotMotor.setNeutralMode(NeutralModeValue.Brake); // From Mr Michaud: Should this be "brake"?
         FeedbackConfigs kFeedbackConfigs = new FeedbackConfigs().withRotorToSensorRatio(36);
         pivotMotor.getConfigurator().apply(kPivotConfig);
         pivotMotor.getConfigurator().apply(kFeedbackConfigs);
@@ -49,9 +51,9 @@ public class HuggerSubsystem extends SubsystemBase{
         leftMotor.getConfigurator().apply(Constants.HuggerConstants.leftMotorConfig);
         leftMotor.setNeutralMode(NeutralModeValue.Brake);
 
-        rightMotor = new TalonFX(Constants.HuggerConstants.kRightID);
-        rightMotor.getConfigurator().apply(Constants.HuggerConstants.rightMotorConfig);
-        rightMotor.setNeutralMode(NeutralModeValue.Brake);
+        // rightMotor = new TalonFX(Constants.HuggerConstants.kRightID);
+        // rightMotor.getConfigurator().apply(Constants.HuggerConstants.rightMotorConfig);
+        // rightMotor.setNeutralMode(NeutralModeValue.Brake);
 
     }
 
@@ -64,10 +66,10 @@ public class HuggerSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("/Subsystem/Hugger/LeftMotor/position",leftMotor.getPosition().getValueAsDouble());
         SmartDashboard.putNumber("/Subsystem/Hugger/LeftMotor/velocity",leftMotor.getPosition().getValueAsDouble());
         
-        SmartDashboard.putNumber("/Subsystem/Hugger/RightMotor/position",rightMotor.getPosition().getValueAsDouble());
-        SmartDashboard.putNumber("/Subsystem/Hugger/RightMotor/velocity",rightMotor.getPosition().getValueAsDouble());
-        SmartDashboard.putData("Subsystem/Coral/currentCommand", this.getCurrentCommand());
-        SmartDashboard.putData("Subsystem/Coral/defaultCommand", this.getDefaultCommand());      
+        // SmartDashboard.putNumber("/Subsystem/Hugger/RightMotor/position",rightMotor.getPosition().getValueAsDouble());
+        // SmartDashboard.putNumber("/Subsystem/Hugger/RightMotor/velocity",rightMotor.getPosition().getValueAsDouble());
+        // SmartDashboard.putData("Subsystem/Coral/currentCommand", this.getCurrentCommand());
+        // SmartDashboard.putData("Subsystem/Coral/defaultCommand", this.getDefaultCommand());      
 
     }
 
@@ -83,9 +85,9 @@ public class HuggerSubsystem extends SubsystemBase{
         });
     }
 
-    public Command getSetSpeedCommand(double speed) {
+    public Command getSetSpeedCommand(DoubleSupplier speed) {
         return this.startEnd(() -> {
-            setSpeed(speed);
+            setSpeed(speed.getAsDouble());
         }, () -> {
             stop();
         });
@@ -93,7 +95,7 @@ public class HuggerSubsystem extends SubsystemBase{
 
     public void setSpeed(double speed) {
         leftMotor.set(speed);
-        rightMotor.set(-speed);
+        //rightMotor.set(-speed);
     }
     public void resetPivotEncoder(){
         pivotMotor.setPosition(0);

@@ -80,14 +80,14 @@ public final class Constants {
     public static final int kRightID = 31;
 
     public static final double kGearRatio = 9;
-
+    // position value restrictions
     public static final double kMin = 0;
-    public static final double kMax = 3;
+    public static final double kMax = 5;
 
 
     private static final MotionMagicConfigs kMagicConfigs = new MotionMagicConfigs()
-    .withMotionMagicAcceleration(10)
-    .withMotionMagicCruiseVelocity(5)
+    .withMotionMagicAcceleration(4)
+    .withMotionMagicCruiseVelocity(4)
     .withMotionMagicExpo_kA(0)
     .withMotionMagicExpo_kV(0);
 
@@ -99,10 +99,10 @@ public final class Constants {
 
     private static final Slot0Configs kSlot0Configs = new Slot0Configs()
     .withKA(0)
-    .withKG(0)
-    .withKS(0)
+    .withKG(.3)
+    .withKS(.0)
     .withKV(0)
-    .withKP(1)
+    .withKP(15)
     .withKI(0)
     .withKD(0);
 
@@ -139,7 +139,7 @@ public final class Constants {
     .withKP(1);
 
     public static final TalonFXConfiguration kClimberConfig= new TalonFXConfiguration()
-    .withSlot0(kSlot0Configs).
+    .withSlot0(kSlot0Configs);
   }
 
   public static class HuggerConstants {
