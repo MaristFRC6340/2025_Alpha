@@ -5,6 +5,9 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
+import com.ctre.phoenix6.controls.MotionMagicVelocityDutyCycle;
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -56,14 +59,21 @@ public class ElevatorSubsystem extends SubsystemBase{
         //instantiate control modes
 
         voltageOutput= new VoltageOut(appliedVoltage);
-        m_Follower = new Follower(leftMotor.getDeviceID(), true);
+        m_Follower = new Follower(leftMotor.getDeviceID(), true); // follows movements of right motor
 
         leftMotor.setControl(m_MMEV);
         rightMotor.setControl(m_Follower);
         
     }
-    
 
+    public void elevate() { // idk what i'm doing :sob:
+    // we're basically setting velocity using motion magic
+        final MotionMagicVoltage m_vrequest = new MotionMagicVoltage(0); // create a req
+        // insert code here that lets us control the pos via Triggers(?)
+        leftMotor.setControl(m_vrequest.withPosition(80)); // not sure what is a good value for pos
+        rightMotor.setControl(m_Follower); // follows left motor
+    }
+    
     public SysIdRoutine getRoutine(){
       return 
         new SysIdRoutine(
@@ -81,6 +91,8 @@ public class ElevatorSubsystem extends SubsystemBase{
             )
         );
     }
+
+    public 
 
     @Override
     public void periodic(){
