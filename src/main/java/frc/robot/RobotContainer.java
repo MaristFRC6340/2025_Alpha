@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
@@ -62,8 +63,8 @@ public class RobotContainer {
   private Trigger actuatorBack = m_actuatorController.back();
   private Trigger actuatorLTrigger = m_actuatorController.leftTrigger(.05);
   private Trigger actuatorRTrigger = m_actuatorController.rightTrigger(.05);
-  private Trigger actuatorLStick = m_actuatorController.leftStick();
-  private Trigger actuatorRStick = m_actuatorController.rightStick();
+  private Trigger actuatorLStick = new Trigger(() -> Math.abs(m_actuatorController.getLeftY()) > .05);
+  private Trigger actuatorRStick = new Trigger(() -> Math.abs(m_actuatorController.getRightY()) > .05);
   private Trigger actuatorDpadUp = m_actuatorController.povUp();
   private Trigger actuatorDpadRight = m_actuatorController.povRight();
   private Trigger actuatorDpadDown = m_actuatorController.povDown();
@@ -111,31 +112,57 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // m_elevator.setDefaultCommand(m_elevator.setPower(()->m_driverController.getLeftTriggerAxis()*.125));
-    driverLTrigger.whileTrue(m_elevator.setPower(()->m_driverController.getLeftTriggerAxis()*.2));
-    driverRTrigger.whileTrue(m_elevator.setPower(()->m_driverController.getRightTriggerAxis()*-.2));
+    // driverLTrigger.whileTrue(m_elevator.setPower(()->m_driverController.getLeftTriggerAxis()*.2));
+    // driverRTrigger.whileTrue(m_elevator.setPower(()->m_driverController.getRightTriggerAxis()*-.2));
 
-    driverY.onTrue(m_elevator.getSetPositionCommand(3));
-    driverX.onTrue(m_elevator.getSetPositionCommand(1.5));
-    driverA.onTrue(m_elevator.getSetPositionCommand(.1));
-    m_SwerveSubsystem.setDefaultCommand(m_SwerveSubsystem.driveFieldOriented(driveAngularVelocity));
-    driverStart.onTrue(new InstantCommand(() -> m_SwerveSubsystem.zeroGyro()));
-    actuatorL.whileTrue(m_CoralSubsystem.getSetSpeedCommand(.9));
-    actuatorR.whileTrue(m_CoralSubsystem.getShadowTechniqueCommand(.5));
-    actuatorA.whileTrue(m_HuggerSubsystem.getSetSpeedCommand(() -> .5));
-    actuatorY.whileTrue(m_HuggerSubsystem.getSetSpeedCommand(() -> -.5));
-    // actuatorB.onTrue(m_HuggerSubsystem.setPosition(-3));
-    // actuatorX.onTrue(m_HuggerSubsystem.setPosition(0));
-    //motor.setDefaultCommand(motor.setPower(()->m_driverController.getRightTriggerAxis()));
+    // driverY.onTrue(m_elevator.getSetPositionCommand(3));
+    // driverX.onTrue(m_elevator.getSetPositionCommand(1.5));
+    // driverA.onTrue(m_elevator.getSetPositionCommand(.1));
+    // m_SwerveSubsystem.setDefaultCommand(m_SwerveSubsystem.driveFieldOriented(driveAngularVelocity));
+    // driverStart.onTrue(new InstantCommand(() -> m_SwerveSubsystem.zeroGyro()));
+    // actuatorL.whileTrue(m_CoralSubsystem.getSetSpeedCommand(.9));
+    // actuatorR.whileTrue(m_CoralSubsystem.getShadowTechniqueCommand(.5));
+    // actuatorA.whileTrue(m_HuggerSubsystem.getSetSpeedCommand(() -> .5));
+    // actuatorY.whileTrue(m_HuggerSubsystem.getSetSpeedCommand(() -> -.5));
     
-      // m_driverController.y().whileTrue(m_elevator.getRoutine().quasistatic(Direction.kForward).finallyDo(()->m_elevator.setPosition(m_elevator.getPosition())));
-      // m_driverController.a().whileTrue(m_elevator.getRoutine().quasistatic(Direction.kReverse).finallyDo(()->m_elevator.setPosition(m_elevator.getPosition())));
-      // m_driverController.b().whileTrue(m_elevator.getRoutine().dynamic(Direction.kForward).finallyDo(()->m_elevator.setPosition(m_elevator.getPosition())));
-      // m_driverController.x().whileTrue(m_elevator.getRoutine().dynamic(Direction.kReverse).finallyDo(()->m_elevator.setPosition(m_elevator.getPosition())));
-      //  m_driverController.y().whileTrue(m_SwerveSubsystem.getRoutine().quasistatic(Direction.kForward));
-      // m_driverController.a().whileTrue(m_SwerveSubsystem.getRoutine().quasistatic(Direction.kReverse));
-      // m_driverController.b().whileTrue(m_SwerveSubsystem.getRoutine().dynamic(Direction.kForward));
-      // m_driverController.x().whileTrue(m_SwerveSubsystem.getRoutine().dynamic(Direction.kReverse));
-     
+    
+    
+      
+      //DRIVER CONTROLS
+        m_SwerveSubsystem.setDefaultCommand(m_SwerveSubsystem.driveFieldOriented(driveAngularVelocity));
+        driverRTrigger.whileTrue(m_SwerveSubsystem.driveFieldOriented(driveAngularVelocity.scaleTranslation(.4)));
+        driverLTrigger.whileTrue(m_SwerveSubsystem.driveCommand(() -> -m_driverController.getLeftY(), () -> -m_driverController.getLeftX(), () -> -m_driverController.getRightX()));
+        driverL.whileTrue(m_SwerveSubsystem.getDriveToClosestReefPoseCommand(true));
+        driverR.whileTrue(m_SwerveSubsystem.getDriveToClosestReefPoseCommand(false));
+        //DPAD Drive To Commands
+        // driverDpadUp.whileTrue(m_SwerveSubsystem.driveToPose(Constants.FieldPositions.BLUE_CLIMB_AREA));
+        // driverDpadRight.whileTrue(m_SwerveSubsystem.driveToPose(Constants.FieldPositions.BLUE_PROCESSOR));
+        // driverDpadLeft.whileTrue(m_SwerveSubsystem.driveToPose(Constants.FieldPositions.BLUE_LEFT_CORAL_STATION_PICKUP));
+
+        driverA.onTrue(new InstantCommand(()->m_SwerveSubsystem.zeroGyro()));
+        //BUMPERS
+        //m_SwerveSubsystem.getDriveToClosestReefPoseCommand();
+
+      //ACTUATOR CONTROLLER
+
+      // actuatorA.whileTrue(m_HuggerSubsystem.setPosition(Constants.HuggerConstants.intakeAlgaePosition).andThen(()->m_elevator.setPosition(ElevatorConstants.lowerAlgaeHeight)));
+      // actuatorX.whileTrue(m_HuggerSubsystem.setPosition(Constants.HuggerConstants.intakeAlgaePosition).andThen(()->m_elevator.setPosition(ElevatorConstants.processorAlgaeHight)));
+      // actuatorY.whileTrue(m_HuggerSubsystem.setPosition(Constants.HuggerConstants.intakeAlgaePosition).andThen(()->m_elevator.setPosition(ElevatorConstants.upperAlgaeHeight)));
+
+      actuatorB.whileTrue(m_CoralSubsystem.getL4OuttakeCommand());
+      actuatorDpadUp.onTrue(new InstantCommand(()->m_elevator.increaseCoralState()));
+      actuatorDpadDown.onTrue(new InstantCommand(()->m_elevator.decreseCoralState()));
+      actuatorDpadLeft.onTrue(new InstantCommand(()->m_elevator.setCoralIntake()));
+      
+      actuatorLStick.whileTrue(m_elevator.setPower(() -> m_actuatorController.getLeftY()));
+
+      actuatorL.whileTrue(m_CoralSubsystem.getSetSpeedCommand(.9));
+      actuatorR.whileTrue(m_CoralSubsystem.getShadowTechniqueCommand(.5));
+      
+      actuatorRTrigger.whileTrue(m_HuggerSubsystem.getSetSpeedCommand(()->m_actuatorController.getRightTriggerAxis()));
+      actuatorLTrigger.whileTrue(m_HuggerSubsystem.getSetSpeedCommand(()->-m_actuatorController.getLeftTriggerAxis()));
+
+      
   }
   /**
    * For cleanliness, register all named commands here

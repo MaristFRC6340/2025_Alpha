@@ -34,11 +34,22 @@ import static edu.wpi.first.units.Units.Volts;
 
 import java.util.function.DoubleSupplier;
 
-
+enum ElevatorStates{
+    REST,
+    CORALINTAKE,
+    CORALL1,
+    CORALL2,
+    CORALL3,
+    CORALL4,
+    PROCESSOROUTTAKE,
+    LOWERALGAE,
+    UPPERALGAE
+}
 public class ElevatorSubsystem extends SubsystemBase{
 
     TalonFX leftMotor;
     TalonFX rightMotor;
+    ElevatorStates state = ElevatorStates.REST;
 
     MutVoltage appliedVoltage = Volts.mutable(0);
     MutDistance distance = Meters.mutable(0);
@@ -50,7 +61,7 @@ public class ElevatorSubsystem extends SubsystemBase{
     private final VoltageOut voltageOutput;
     private final DutyCycleOut speedRequest = new DutyCycleOut(0);
 
-    
+
 
     public ElevatorSubsystem() {
 
@@ -70,18 +81,61 @@ public class ElevatorSubsystem extends SubsystemBase{
         
     }
 
-    // public Command requestElevation() {
-    //     return this.runOnce(() -> elevate());
-    // }
+   public void increaseCoralState(){
+        switch(state){
+            case CORALL1:
+                setPosition(ElevatorConstants.coralL2);
+                state = ElevatorStates.CORALL2;
+                break;
+            case CORALL2:
+                setPosition(ElevatorConstants.coralL3);
+                break;
+            case CORALL3:
+                setPosition(ElevatorConstants.coralL4);
+                state = ElevatorStates.CORALL4;
+                break;
+                case CORALL4:
+                setPosition(ElevatorConstants.coralL1);
+                state = ElevatorStates.CORALL1;
+                break;
+            default:
+                setPosition(ElevatorConstants.coralL4);
+                state = ElevatorStates.CORALL4;
+                break;
+        }
+   }
+   public void setCoralIntake(){
+    setPosition(ElevatorConstants.coralIntake);
+    state = ElevatorStates.CORALINTAKE;
+   }
 
-    // public void elevate() { // idk what i'm doing :sob:
-    // // we're basically setting velocity using motion magic
-    //     final MotionMagicVoltage m_vrequest = new MotionMagicVoltage(0); // create a req
-    //     // insert code here that lets us control the pos via Triggers(?)
-    //     leftMotor.setControl(m_vrequest.withPosition(80)); // not sure what is a good value for pos
-    //     rightMotor.setControl(m_Follower); // follows left motor
-    // }
+   public void decreseCoralState(){
+    switch(state){
+        case CORALL4:
+            setPosition(ElevatorConstants.coralL3);
+            state = ElevatorStates.CORALL3;
+            break;
+        case CORALL3:
+            setPosition(ElevatorConstants.coralL2);
+            state = ElevatorStates.CORALL2;
+            break;
+        case CORALL2:
+            setPosition(ElevatorConstants.coralL1);
+            state=ElevatorStates.CORALL1;
+            break;
+        case CORALL1:
+            setPosition(ElevatorConstants.coralIntake);
+            state=ElevatorStates.CORALINTAKE;
+            break;
+         default:
+            setPosition(ElevatorConstants.coralL1);
+            state=ElevatorStates.CORALL1;
+            break;
+
+    }
+   }
     
+
     public SysIdRoutine getRoutine(){
       return 
         new SysIdRoutine(

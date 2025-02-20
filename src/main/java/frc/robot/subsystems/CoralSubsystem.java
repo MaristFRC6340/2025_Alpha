@@ -44,10 +44,22 @@ public class CoralSubsystem extends SubsystemBase{
             stop();
         });
     }
+    public Command getL4OuttakeCommand() {
+        return this.startEnd(() -> {
+            l4Outtake();
+        },() -> {
+            stop();
+        });
+    }
 
     public void setSpeed(double speed) {
         topMotor.set(-speed);
         bottomMotor.set(speed);
+    }
+
+    public void l4Outtake() {
+        topMotor.set(-.25);
+        bottomMotor.set(.75);
     }
 
     public void shadowTechnique(double speed) {

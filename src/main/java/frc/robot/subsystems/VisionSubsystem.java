@@ -27,6 +27,7 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.VisionConstants.CameraTemplate;
+import frc.robot.Constants.VisionConstants.ReefCamera;
 
 import java.awt.Desktop;
 import java.util.ArrayList;
@@ -170,7 +171,7 @@ public class VisionSubsystem
     /**
      * Add Cameras Here; Try and put Constants in Vision SubsystemClass maybe in its Own Constants Class
      */
-    CENTER_CAM(CameraTemplate.name,CameraTemplate.robotToCamTransform,CameraTemplate.robotToCamTranslation,CameraTemplate.singleTagStdDevs, CameraTemplate.multiTagStdDevsMatrix);
+    REEF_CAM(ReefCamera.name,ReefCamera.robotToCamTransform,ReefCamera.robotToCamTranslation,ReefCamera.singleTagStdDevs, ReefCamera.multiTagStdDevsMatrix);
 
    
     /**
@@ -271,8 +272,8 @@ public class VisionSubsystem
       {
         mostRecentTimestamp = Math.max(mostRecentTimestamp, result.getTimestampSeconds());
       }
-    //   if ((resultsList.isEmpty() || (currentTimestamp - mostRecentTimestamp >= debounceTime)) &&
-    //       (currentTimestamp - lastReadTimestamp) >= debounceTime)
+      // if ((resultsList!=null && resultsList.isEmpty() || (currentTimestamp - mostRecentTimestamp >= debounceTime)) &&
+      //     (currentTimestamp - lastReadTimestamp) >= debounceTime)
     if(true)//not sure if yagsl has fixed this yet
       {
         resultsList = camera.getAllUnreadResults();

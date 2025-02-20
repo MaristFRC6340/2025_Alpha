@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.unmanaged.Unmanaged;
+
 //import edu.wpi.first.epilogue.Epilogue;
 //import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -31,13 +33,12 @@ public class Robot extends TimedRobot {
   public Robot() {
 
     //I love logging
-    DataLogManager.start();
+    //DataLogManager.start();
     // Record both DS control and joystick data
-    DriverStation.startDataLog(DataLogManager.getLog());
+    //DriverStation.startDataLog(DataLogManager.getLog());
     m_gcTimer.start();
-    if(m_gcTimer.advanceIfElapsed(5)) {
-      System.gc();
-    }
+    Unmanaged.setPhoenixDiagnosticsStartTime(-1); //DISABLES THE DIAGNOSTIC SERVER
+    
 
 
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
@@ -60,6 +61,11 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
     SmartDashboard.putData("General",CommandScheduler.getInstance());
+  
+    if(m_gcTimer.get()>5) {
+      System.gc();
+      m_gcTimer.reset();
+    }
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

@@ -20,6 +20,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -66,6 +67,16 @@ public final class Constants {
       public static  Matrix<N3, N1> singleTagStdDevs= VecBuilder.fill(4, 4, 8);
       public static  Matrix<N3, N1> multiTagStdDevsMatrix= VecBuilder.fill(0.5, 0.5, 1); 
     }
+
+    public static final class ReefCamera{
+      public static final String name = "Arducam_B0495_(USB3_2.3MP)";
+      public static  Rotation3d robotToCamTransform = new Rotation3d(0, 0, Units.degreesToRadians(-90));
+      public static  Translation3d robotToCamTranslation=new Translation3d(Units.inchesToMeters(7.5),
+      Units.inchesToMeters(-7.5),
+      Units.inchesToMeters(11.25));
+      public static  Matrix<N3, N1> singleTagStdDevs= VecBuilder.fill(2, 2, 6);
+      public static  Matrix<N3, N1> multiTagStdDevsMatrix= VecBuilder.fill(0.5, 0.5, 1); 
+    }
   }
 
   // goal: find a good config (maybe online?) and stick with it
@@ -82,7 +93,7 @@ public final class Constants {
     public static final double kGearRatio = 9;
     // position value restrictions
     public static final double kMin = 0;
-    public static final double kMax = 5;
+    public static final double kMax = 4.9;
 
 
     private static final MotionMagicConfigs kMagicConfigs = new MotionMagicConfigs()
@@ -117,6 +128,21 @@ public final class Constants {
     .withCurrentLimits(kCurrentLimitConfigs)
     .withFeedback(kFeedbackConfigs)
     .withMotionMagic(kMagicConfigs);
+    //to be tuned
+    public static final double lowerAlgaeHeight = 1;
+    public static final double upperAlgaeHeight = 2;
+    public static final double processorAlgaeHight = 0.25;
+    public static final double coralL2 = 1.5;
+    public static final double coralL3 = 3.2;
+    public static final double coralL4 = 4.8;
+
+    public static final double coralL1 = 1;
+    public static final double coralIntake = .1;
+
+
+
+
+
   }
 
   public static class CoralConstants {
@@ -140,6 +166,8 @@ public final class Constants {
 
     public static final TalonFXConfiguration kClimberConfig= new TalonFXConfiguration()
     .withSlot0(kSlot0Configs);
+
+
   }
 
   public static class HuggerConstants {
@@ -167,35 +195,38 @@ public final class Constants {
     public static final double kIPivot = 0;
     public static final double kDPivot = 0;
 
+    //Positions
+    public static final double intakeAlgaePosition = 0;
+
 
 
   }
 
   public static class SwerveConstants {
-    public static final double kPX = 1;
-    public static final double kPY = 1;
-    public static final double kPTheta = 1;
+    public static final double kPX = 2;
+    public static final double kPY = 2;
+    public static final double kPTheta = 5;
     public static final double kXTolerance = 0; //Meters
     public static final double kYTolerance = 0; //Meters
-    public static final double kThetaTolerance = Math.toRadians(15);
+    public static final double kThetaTolerance = 0;
     public static double kStoredRadius = 4; // to be configured later
   }
 
   public static class FieldPositions {
     //Blue
-    public static final Pose2d L17 = new Pose2d(3.82, 2.96, new Rotation2d(Math.toRadians(150)));
-    public static final Pose2d L18 = new Pose2d(3.22, 4.08, new Rotation2d(Math.toRadians(90)));
-    public static final Pose2d L19 = new Pose2d(3.89, 5.16, new Rotation2d(Math.toRadians(30)));
-    public static final Pose2d L20 = new Pose2d(5.16, 5.12, new Rotation2d(Math.toRadians(-30)));
-    public static final Pose2d L21 = new Pose2d(5.76, 4.00, new Rotation2d(Math.toRadians(-90)));
-    public static final Pose2d L22 = new Pose2d(5.09, 2.92, new Rotation2d(Math.toRadians(210)));
+    public static final Pose2d L17 = new Pose2d(4.019, 2.913, new Rotation2d(Math.toRadians(150)));
+    public static final Pose2d L18 = new Pose2d(3.357, 3.829, new Rotation2d(Math.toRadians(90)));
+    public static final Pose2d L19 = new Pose2d(3.75, 5.100, new Rotation2d(Math.toRadians(30)));
+    public static final Pose2d L20 = new Pose2d(4.915, 5.067, new Rotation2d(Math.toRadians(-30)));
+    public static final Pose2d L21 = new Pose2d(5.669, 4.190, new Rotation2d(Math.toRadians(-90)));
+    public static final Pose2d L22 = new Pose2d(5.142, 3.148, new Rotation2d(Math.toRadians(210)));
 
-    public static final Pose2d R17 = new Pose2d(4.32, 2.67, new Rotation2d(Math.toRadians(150)));
-    public static final Pose2d R18 = new Pose2d(3.22, 3.51, new Rotation2d(Math.toRadians(90)));
-    public static final Pose2d R19 = new Pose2d(3.40, 4.87, new Rotation2d(Math.toRadians(30)));
-    public static final Pose2d R20 = new Pose2d(4.67, 5.40, new Rotation2d(Math.toRadians(-30)));
-    public static final Pose2d R21 = new Pose2d(5.76, 4.57, new Rotation2d(Math.toRadians(-90)));
-    public static final Pose2d R22 = new Pose2d(5.59, 3.20, new Rotation2d(Math.toRadians(210)));
+    public static final Pose2d R17 = new Pose2d(4.328, 2.764, new Rotation2d(Math.toRadians(150)));
+    public static final Pose2d R18 = new Pose2d(3.304, 3.510, new Rotation2d(Math.toRadians(90)));
+    public static final Pose2d R19 = new Pose2d(3.439, 4.923, new Rotation2d(Math.toRadians(30)));
+    public static final Pose2d R20 = new Pose2d(4.636, 5.274, new Rotation2d(Math.toRadians(-30)));
+    public static final Pose2d R21 = new Pose2d(5.679, 4.479, new Rotation2d(Math.toRadians(-90)));
+    public static final Pose2d R22 = new Pose2d(5.483, 3.261, new Rotation2d(Math.toRadians(210)));
 
     //Red
     public static final Pose2d L6 = new Pose2d(13.65, 2.92, new Rotation2d(Math.toRadians(210)));
@@ -212,8 +243,11 @@ public final class Constants {
     public static final Pose2d R10 = new Pose2d(11.78, 3.51, new Rotation2d(Math.toRadians(90)));
     public static final Pose2d R11 = new Pose2d(12.87, 2.67, new Rotation2d(Math.toRadians(150)));
 
-    public static final List<Pose2d> kReefPoses=Arrays.asList(
-    L17, L18, L19, L20, L21, L22, R17, R18, R19, R20, R21, R22, L6, L7, L8, L9, L10, L11, R6, R7, R8, R9, R10, R11
+    public static final List<Pose2d> kLeftReefPoses=Arrays.asList(
+    L17, L18, L19, L20, L21, L22, L6, L7, L8, L9, L10, L11
+    );
+    public static final List<Pose2d> kRightReefPoses = Arrays.asList(
+      R17, R18, R19, R20, R21, R22, R6, R7, R8, R9, R10, R11
     );
 
 
@@ -224,6 +258,11 @@ public final class Constants {
       }
       return false;
     }
+
+    public static final Pose2d BLUE_LEFT_CORAL_STATION_PICKUP = new Pose2d(new Translation2d(1.2,7), Rotation2d.fromDegrees(120));
+    public static final Pose2d BLUE_CLIMB_AREA = new Pose2d(new Translation2d(7.638,6.174), Rotation2d.fromDegrees(0));
+    public static final Pose2d BLUE_PROCESSOR = new Pose2d(new Translation2d(6.332,.52), Rotation2d.fromDegrees(-90));
+
   }
 
 

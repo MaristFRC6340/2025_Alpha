@@ -84,9 +84,9 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public VisionSubsystem vision;
   
-  private PIDController xController = new PIDController(Constants.SwerveConstants.kPX, 0, 0);
-  private PIDController yController = new PIDController(Constants.SwerveConstants.kPY, 0, 0);
-  private PIDController thetaController = new PIDController(Constants.SwerveConstants.kPTheta, 0, 0);
+  private PIDController xController = new PIDController(Constants.SwerveConstants.kPX, .1, 0);
+  private PIDController yController = new PIDController(Constants.SwerveConstants.kPY, .1, 0);
+  private PIDController thetaController = new PIDController(Constants.SwerveConstants.kPTheta, .1, 0);
 
  
 
@@ -113,7 +113,7 @@ public class SwerveSubsystem extends SubsystemBase
     swerveDrive.setCosineCompensator(false);//TODO set this to true maybe? // Disables cosine compensation for simulations since it causes discrepancies not seen in real life.
     swerveDrive.setAngularVelocityCompensation(true,true,0.1); //Correct for skew that gets worse as angular velocity increases. Start with a coefficient of 0.1.
     swerveDrive.setModuleEncoderAutoSynchronize(false,1); // Enable if you want to resynchronize your absolute encoders and motor encoders periodically when they are not moving.
-    //setUpPhotonVision()
+    setupPhotonVision();
     setupPathPlanner();
 
     xController.setTolerance(Constants.SwerveConstants.kXTolerance);
@@ -136,7 +136,7 @@ public class SwerveSubsystem extends SubsystemBase
     
     // When vision is enabled we must manually update odometry in SwerveDrive
       swerveDrive.updateOdometry();
-      //vision.updatePoseEstimation(swerveDrive);
+      vision.updatePoseEstimation(swerveDrive);
 
     //these should also be printed out by Yagsl's logging, but I wanted to test out using structu publishers so that we can produe this logging fi we ever abandon yagsl
       finalPoseEstimate.set(getPose());
@@ -642,10 +642,15 @@ public Command getDriveToReefCommand(int id, boolean left) {
  * Drives to the closest deposit position on the reef
  * @return
  */
-public Command getDriveToClosestReefPoseCommand() {
+public Command getDriveToClosestReefPoseCommand(boolean left) {
   Set<Subsystem> requirements = new HashSet<Subsystem>();
   requirements.add(this);
-  return new DeferredCommand(() -> driveToPose(swerveDrive.getPose().nearest(Constants.FieldPositions.kReefPoses)), requirements);
+  if(left) {
+    return new DeferredCommand(() -> driveToPose(swerveDrive.getPose().nearest(Constants.FieldPositions.kLeftReefPoses)), requirements);
+  }
+  else {
+    return new DeferredCommand(() -> driveToPose(swerveDrive.getPose().nearest(Constants.FieldPositions.kRightReefPoses)), requirements);
+  }
 }
 
 
