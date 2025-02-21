@@ -31,7 +31,9 @@ public class HuggerSubsystem extends SubsystemBase{
     private TalonFX leftMotor;
     //private TalonFX rightMotor;
 
-    private PositionVoltage m_PositionVoltage = new PositionVoltage(0).withSlot(0); //Position in rotations
+    private PositionVoltage m_PositionVoltage = new PositionVoltage(0); //Position in rotations
+    private PositionVoltage huggerHold = new PositionVoltage(0); //Position in rotations
+
     public HuggerSubsystem() {
 
         //Pivot Motor
@@ -43,7 +45,6 @@ public class HuggerSubsystem extends SubsystemBase{
         FeedbackConfigs kFeedbackConfigs = new FeedbackConfigs().withRotorToSensorRatio(36);
         pivotMotor.getConfigurator().apply(kPivotConfig);
         pivotMotor.getConfigurator().apply(kFeedbackConfigs);
-        //pivotMotor.setControl(m_PositionVoltage);
 
         //left and right motors
 
@@ -51,9 +52,6 @@ public class HuggerSubsystem extends SubsystemBase{
         leftMotor.getConfigurator().apply(Constants.HuggerConstants.leftMotorConfig);
         leftMotor.setNeutralMode(NeutralModeValue.Brake);
 
-        // rightMotor = new TalonFX(Constants.HuggerConstants.kRightID);
-        // rightMotor.getConfigurator().apply(Constants.HuggerConstants.rightMotorConfig);
-        // rightMotor.setNeutralMode(NeutralModeValue.Brake);
 
     }
 
@@ -62,15 +60,35 @@ public class HuggerSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("/Subsystem/Hugger/Pivot/position",pivotMotor.getPosition().getValueAsDouble());
         SmartDashboard.putNumber("/Subsystem/Hugger/Pivot/velocity", pivotMotor.getVelocity().getValueAsDouble());
         SmartDashboard.putNumber("/Subsystem/Hugger/Pivot/angle", pivotMotor.getPosition().getValue().magnitude());
+        SmartDashboard.putNumber("/Subsystem/Hugger/Pivot/positionVoltageTarget", m_PositionVoltage.Position);
 
         SmartDashboard.putNumber("/Subsystem/Hugger/LeftMotor/position",leftMotor.getPosition().getValueAsDouble());
         SmartDashboard.putNumber("/Subsystem/Hugger/LeftMotor/velocity",leftMotor.getPosition().getValueAsDouble());
         
-        // SmartDashboard.putNumber("/Subsystem/Hugger/RightMotor/position",rightMotor.getPosition().getValueAsDouble());
-        // SmartDashboard.putNumber("/Subsystem/Hugger/RightMotor/velocity",rightMotor.getPosition().getValueAsDouble());
+        
         // SmartDashboard.putData("Subsystem/Coral/currentCommand", this.getCurrentCommand());
         // SmartDashboard.putData("Subsystem/Coral/defaultCommand", this.getDefaultCommand());      
 
+    }
+
+    public void holdHuggerWheelPosition(){
+        leftMotor.setControl(huggerHold.withPosition(leftMotor.getPosition().getValueAsDouble()));
+    }
+    public void setPivotPower(double power){
+        pivotMotor.set(power);
+    }
+
+    public Command getSetPivotPower(DoubleSupplier supp){
+        System.out.println(supp.getAsDouble());
+
+        return this.runEnd(()->{
+            setPivotPower(supp.getAsDouble());
+
+
+        }, ()->{
+            setPosition(getPosition());
+            //setPosition(getPosition());
+        });
     }
 
     /**
@@ -78,18 +96,18 @@ public class HuggerSubsystem extends SubsystemBase{
      * @param position the position in rotations
      * @return command to set position
      */
-    public Command setPosition(double position) {
+    public void setPosition(double position) {
         //position = MathUtil.clamp(position, 0, 0);
-        return this.runOnce(() -> {
+        
             pivotMotor.setControl(m_PositionVoltage.withPosition(position));
-        });
+            System.out.println(position);
     }
 
     public Command getSetSpeedCommand(DoubleSupplier speed) {
         return this.startEnd(() -> {
             setSpeed(speed.getAsDouble());
         }, () -> {
-            stop();
+            holdHuggerWheelPosition();
         });
     }
 

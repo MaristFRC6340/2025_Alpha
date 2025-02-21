@@ -95,6 +95,13 @@ public class RobotContainer {
   .deadband(OperatorConstants.DEADBAND)
   .scaleTranslation(0.8)
   .allianceRelativeControl(true);
+  SwerveInputStream driveAngularSlow = SwerveInputStream.of(m_SwerveSubsystem.getSwerveDrive(),
+  () -> m_driverController.getLeftY() * .25,
+  () -> m_driverController.getLeftX() * .25)
+  .withControllerRotationAxis(() -> m_driverController.getRightX()*-.25)
+  .deadband(OperatorConstants.DEADBAND)
+  .scaleTranslation(0.8)
+  .allianceRelativeControl(true);
   
 
   SendableChooser<Command> autoChooser;
@@ -130,7 +137,9 @@ public class RobotContainer {
       
       //DRIVER CONTROLS
         m_SwerveSubsystem.setDefaultCommand(m_SwerveSubsystem.driveFieldOriented(driveAngularVelocity));
-        driverRTrigger.whileTrue(m_SwerveSubsystem.driveFieldOriented(driveAngularVelocity.scaleTranslation(.4)));
+        //driverRTrigger.whileTrue(m_SwerveSubsystem.driveFieldOriented(driveAngularVelocity.scaleTranslation(.4)));
+        driverRTrigger.whileTrue(m_SwerveSubsystem.driveFieldOriented(driveAngularSlow));
+
         driverLTrigger.whileTrue(m_SwerveSubsystem.driveCommand(() -> -m_driverController.getLeftY(), () -> -m_driverController.getLeftX(), () -> -m_driverController.getRightX()));
         driverL.whileTrue(m_SwerveSubsystem.getDriveToClosestReefPoseCommand(true));
         driverR.whileTrue(m_SwerveSubsystem.getDriveToClosestReefPoseCommand(false));
@@ -145,22 +154,25 @@ public class RobotContainer {
 
       //ACTUATOR CONTROLLER
 
-      // actuatorA.whileTrue(m_HuggerSubsystem.setPosition(Constants.HuggerConstants.intakeAlgaePosition).andThen(()->m_elevator.setPosition(ElevatorConstants.lowerAlgaeHeight)));
-      // actuatorX.whileTrue(m_HuggerSubsystem.setPosition(Constants.HuggerConstants.intakeAlgaePosition).andThen(()->m_elevator.setPosition(ElevatorConstants.processorAlgaeHight)));
-      // actuatorY.whileTrue(m_HuggerSubsystem.setPosition(Constants.HuggerConstants.intakeAlgaePosition).andThen(()->m_elevator.setPosition(ElevatorConstants.upperAlgaeHeight)));
+      actuatorA.whileTrue(new InstantCommand(()->m_HuggerSubsystem.setPosition(Constants.HuggerConstants.intakeAlgaePosition)).andThen(()->m_elevator.setPosition(ElevatorConstants.lowerAlgaeHeight)));
+      actuatorX.whileTrue(new InstantCommand(()->m_HuggerSubsystem.setPosition(Constants.HuggerConstants.outtakeAlgaeProcessor)).andThen(()->m_elevator.setPosition(ElevatorConstants.processorAlgaeHight)));
+      actuatorY.whileTrue(new InstantCommand(()->m_HuggerSubsystem.setPosition(Constants.HuggerConstants.intakeAlgaePosition)).andThen(()->m_elevator.setPosition(ElevatorConstants.upperAlgaeHeight)));
 
       actuatorB.whileTrue(m_CoralSubsystem.getL4OuttakeCommand());
       actuatorDpadUp.onTrue(new InstantCommand(()->m_elevator.increaseCoralState()));
       actuatorDpadDown.onTrue(new InstantCommand(()->m_elevator.decreseCoralState()));
       actuatorDpadLeft.onTrue(new InstantCommand(()->m_elevator.setCoralIntake()));
       
-      actuatorLStick.whileTrue(m_elevator.setPower(() -> m_actuatorController.getLeftY()));
-
-      actuatorL.whileTrue(m_CoralSubsystem.getSetSpeedCommand(.9));
+      actuatorLStick.whileTrue(m_elevator.setPower(() -> -1*m_actuatorController.getLeftY()*.25));
+      // actuatorLStick.whileTrue(m_ClimberSubsystem.setPower(() -> m_actuatorController.getLeftY()*.9));
+      
+      actuatorRStick.whileTrue(m_HuggerSubsystem.getSetPivotPower(() -> -1*m_actuatorController.getRightY()*.25));
+      //actuatorY.whileTrue(new InstantCommand(()->m_HuggerSubsystem.setPosition(-8)));
+      actuatorL.whileTrue(m_CoralSubsystem.getSetSpeedCommand(1));
       actuatorR.whileTrue(m_CoralSubsystem.getShadowTechniqueCommand(.5));
       
-      actuatorRTrigger.whileTrue(m_HuggerSubsystem.getSetSpeedCommand(()->m_actuatorController.getRightTriggerAxis()));
-      actuatorLTrigger.whileTrue(m_HuggerSubsystem.getSetSpeedCommand(()->-m_actuatorController.getLeftTriggerAxis()));
+      actuatorRTrigger.whileTrue(m_HuggerSubsystem.getSetSpeedCommand(()->.8));
+      actuatorLTrigger.whileTrue(m_HuggerSubsystem.getSetSpeedCommand(()->-.8));
 
       
   }

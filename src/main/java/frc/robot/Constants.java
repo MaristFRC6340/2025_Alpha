@@ -129,11 +129,11 @@ public final class Constants {
     .withFeedback(kFeedbackConfigs)
     .withMotionMagic(kMagicConfigs);
     //to be tuned
-    public static final double lowerAlgaeHeight = 1;
-    public static final double upperAlgaeHeight = 2;
+    public static final double lowerAlgaeHeight = 2.67;
+    public static final double upperAlgaeHeight = 4.2;
     public static final double processorAlgaeHight = 0.25;
-    public static final double coralL2 = 1.5;
-    public static final double coralL3 = 3.2;
+    public static final double coralL2 = 1.558;
+    public static final double coralL3 = 2.929;
     public static final double coralL4 = 4.8;
 
     public static final double coralL1 = 1;
@@ -177,7 +177,7 @@ public final class Constants {
     public static final int kLeftID = 50;
     public static final int kRightID = 51;
     private static final Slot0Configs leftMotorSlot0 = new Slot0Configs()
-    .withKP(1);
+    .withKP(10);
     public static final TalonFXConfiguration leftMotorConfig= new TalonFXConfiguration().withSlot0(leftMotorSlot0);
     
     private static final Slot0Configs rightMotorSlot0 = new Slot0Configs()
@@ -191,12 +191,14 @@ public final class Constants {
     public static final double kGPivot = 0.1;
     public static final double kSPivot = 0;
     public static final double kVPivot = 0;
-    public static final double kPPivot = 1;
+    public static final double kPPivot = 10;
     public static final double kIPivot = 0;
     public static final double kDPivot = 0;
 
     //Positions
-    public static final double intakeAlgaePosition = 0;
+    public static final double intakeAlgaePosition = -10.11;
+    public static final double outtakeAlgaeProcessor = -7.17;
+
 
 
 
