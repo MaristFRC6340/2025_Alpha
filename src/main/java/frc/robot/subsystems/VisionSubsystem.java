@@ -75,6 +75,7 @@ public class VisionSubsystem
    */
   private             Field2d             field2d;
 
+  private PhotonCamera streamCamera;
   /**
    * Constructor for the Vision class.
    *
@@ -85,6 +86,7 @@ public class VisionSubsystem
   {
     this.currentPose = currentPose;
     this.field2d = field;
+    streamCamera = new PhotonCamera("Logitech");
 
 
 

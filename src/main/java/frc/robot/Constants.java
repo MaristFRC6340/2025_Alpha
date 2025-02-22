@@ -136,7 +136,7 @@ public final class Constants {
     public static final double lowerAlgaeHeight = 2.67;
     public static final double upperAlgaeHeight = 4.2;
     public static final double processorAlgaeHight = 0.25;
-    public static final double coralL2 = 1.558;
+    public static final double coralL2 = 1.36;
     public static final double coralL3 = 2.929;
     public static final double coralL4 = 4.8;
 
@@ -195,7 +195,7 @@ public final class Constants {
     public static final double kGPivot = 0.1;
     public static final double kSPivot = 0;
     public static final double kVPivot = 0;
-    public static final double kPPivot = 10;
+    public static final double kPPivot = 5;
     public static final double kIPivot = 0;
     public static final double kDPivot = 0;
 
@@ -207,7 +207,7 @@ public final class Constants {
     //Positions
     public static final double intakeAlgaePosition = -10.11;
     public static final double outtakeAlgaeProcessor = -4.17;
-    public static final double straightUp = -1;
+    public static final double straightUp = -3.56;
 
 
 

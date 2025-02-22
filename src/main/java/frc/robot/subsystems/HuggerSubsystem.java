@@ -67,7 +67,7 @@ public class HuggerSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("/Subsystem/Hugger/LeftMotor/velocity",leftMotor.getPosition().getValueAsDouble());
         
         
-     SmartDashboard.putData("Subsystem/Coral/currentCommand", this.getCurrentCommand()!=null?this.getCurrentCommand():new InstantCommand());
+    //  SmartDashboard.putData("Subsystem/Coral/currentCommand", this.getCurrentCommand()!=null?this.getCurrentCommand():new InstantCommand());
         // SmartDashboard.putData("Subsystem/Coral/defaultCommand", this.getDefaultCommand());      
 
     }
@@ -80,7 +80,6 @@ public class HuggerSubsystem extends SubsystemBase{
     }
 
     public Command getSetPivotPower(DoubleSupplier supp){
-        System.out.println(supp.getAsDouble());
 
         return this.runEnd(()->{
             setPivotPower(supp.getAsDouble());
@@ -101,7 +100,6 @@ public class HuggerSubsystem extends SubsystemBase{
         //position = MathUtil.clamp(position, 0, 0);
         
             pivotMotor.setControl(m_PositionVoltage.withPosition(position));
-            System.out.println(position);
     }
 
     public Command getSetSpeedCommand(DoubleSupplier speed) {

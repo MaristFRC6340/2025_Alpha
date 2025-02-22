@@ -23,12 +23,14 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -52,25 +54,44 @@ public class RobotContainer {
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
-  private final CommandXboxController m_actuatorController = new CommandXboxController(OperatorConstants.kActuatorControllerPort);
+  //private final CommandXboxController m_actuatorController = new CommandXboxController(OperatorConstants.kActuatorControllerPort);
 
+  private final CommandPS5Controller m_actuatorCommandPS5Controller = new CommandPS5Controller(OperatorConstants.kActuatorControllerPort);
   //Buttons!
-  private Trigger actuatorA = m_actuatorController.a();
-  private Trigger actuatorB = m_actuatorController.b();
-  private Trigger actuatorX = m_actuatorController.x();
-  private Trigger actuatorY = m_actuatorController.y();
-  private Trigger actuatorL = m_actuatorController.leftBumper();
-  private Trigger actuatorR = m_actuatorController.rightBumper();
-  private Trigger actuatorStart = m_actuatorController.start();
-  private Trigger actuatorBack = m_actuatorController.back();
-  private Trigger actuatorLTrigger = m_actuatorController.leftTrigger(.05);
-  private Trigger actuatorRTrigger = m_actuatorController.rightTrigger(.05);
-  private Trigger actuatorLStick = new Trigger(() -> Math.abs(m_actuatorController.getLeftY()) > .05);
-  private Trigger actuatorRStick = new Trigger(() -> Math.abs(m_actuatorController.getRightY()) > .05);
-  private Trigger actuatorDpadUp = m_actuatorController.povUp();
-  private Trigger actuatorDpadRight = m_actuatorController.povRight();
-  private Trigger actuatorDpadDown = m_actuatorController.povDown();
-  private Trigger actuatorDpadLeft = m_actuatorController.povLeft();
+  // private Trigger actuatorA = m_actuatorController.a();
+  // private Trigger actuatorB = m_actuatorController.b();
+  // private Trigger actuatorX = m_actuatorController.x();
+  // private Trigger actuatorY = m_actuatorController.y();
+  // private Trigger actuatorL = m_actuatorController.leftBumper();
+  // private Trigger actuatorR = m_actuatorController.rightBumper();
+  // private Trigger actuatorStart = m_actuatorController.start();
+  // private Trigger actuatorBack = m_actuatorController.back();
+  // private Trigger actuatorLTrigger = m_actuatorController.leftTrigger(.05);
+  // private Trigger actuatorRTrigger = m_actuatorController.rightTrigger(.05);
+  // private Trigger actuatorLStick = new Trigger(() -> Math.abs(m_actuatorController.getLeftY()) > .05);
+  // private Trigger actuatorRStick = new Trigger(() -> Math.abs(m_actuatorController.getRightY()) > .05);
+  // private Trigger actuatorDpadUp = m_actuatorController.povUp();
+  // private Trigger actuatorDpadRight = m_actuatorController.povRight();
+  // private Trigger actuatorDpadDown = m_actuatorController.povDown();
+  // private Trigger actuatorDpadLeft = m_actuatorController.povLeft();
+
+  //Play Station Controller
+  private Trigger actuatorA = m_actuatorCommandPS5Controller.cross();
+  private Trigger actuatorB = m_actuatorCommandPS5Controller.circle();
+  private Trigger actuatorX = m_actuatorCommandPS5Controller.square();
+  private Trigger actuatorY = m_actuatorCommandPS5Controller.triangle();
+  private Trigger actuatorL = m_actuatorCommandPS5Controller.L1();
+  private Trigger actuatorR = m_actuatorCommandPS5Controller.R1();
+  private Trigger actuatorStart = m_actuatorCommandPS5Controller.options();
+  private Trigger actuatorLTrigger = m_actuatorCommandPS5Controller.axisGreaterThan(3,.05);
+  private Trigger actuatorRTrigger = m_actuatorCommandPS5Controller.axisGreaterThan(4,.05);
+  private Trigger actuatorLStick = new Trigger(() -> Math.abs(m_actuatorCommandPS5Controller.getLeftY()) > .05);
+  private Trigger actuatorRStick = new Trigger(() -> Math.abs(m_actuatorCommandPS5Controller.getRightY()) > .05);
+  private Trigger actuatorDpadUp = m_actuatorCommandPS5Controller.povUp();
+  private Trigger actuatorDpadRight = m_actuatorCommandPS5Controller.povRight();
+  private Trigger actuatorDpadDown = m_actuatorCommandPS5Controller.povDown();
+  private Trigger actuatorDpadLeft = m_actuatorCommandPS5Controller.povLeft();
+
 
   private Trigger driverA = m_driverController.a();
   private Trigger driverB = m_driverController.b();
@@ -166,10 +187,10 @@ public class RobotContainer {
       actuatorDpadDown.onTrue(new InstantCommand(()->m_elevator.decreseCoralState()));
       actuatorDpadLeft.onTrue(new InstantCommand(()->m_elevator.setCoralIntake()));
       
-      //actuatorLStick.whileTrue(m_elevator.setPower(() -> -1*m_actuatorController.getLeftY()*.25));
-       actuatorLStick.whileTrue(m_ClimberSubsystem.setPower(() -> m_actuatorController.getLeftY()*.25));
+      actuatorLStick.whileTrue(m_elevator.setPower(() -> -1*m_actuatorCommandPS5Controller.getLeftY()*.25));
+       //actuatorLStick.whileTrue(m_ClimberSubsystem.setPower(() -> m_actuatorController.getLeftY()*.25));
       
-     actuatorRStick.whileTrue(m_HuggerSubsystem.getSetPivotPower(() -> -1*m_actuatorController.getRightY()*.25));
+     actuatorRStick.whileTrue(m_HuggerSubsystem.getSetPivotPower(() -> -1*m_actuatorCommandPS5Controller.getRightY()*.1));
       //actuatorY.whileTrue(new InstantCommand(()->m_HuggerSubsystem.setPosition(-8)));
       actuatorL.whileTrue(m_CoralSubsystem.getSetSpeedCommand(1));
       actuatorR.whileTrue(m_CoralSubsystem.getShadowTechniqueCommand(.5));

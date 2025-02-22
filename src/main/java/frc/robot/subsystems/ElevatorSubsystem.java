@@ -91,16 +91,16 @@ public class ElevatorSubsystem extends SubsystemBase{
                 setPosition(ElevatorConstants.coralL3);
                 break;
             case CORALL3:
-                setPosition(ElevatorConstants.coralL1);
-                state = ElevatorStates.CORALL1;
+                setPosition(ElevatorConstants.coralL4);
+                state = ElevatorStates.CORALL4;
                 break;
             case CORALL4:
                 setPosition(ElevatorConstants.coralL1);
                 state = ElevatorStates.CORALL1;
                 break;
             default:
-                setPosition(ElevatorConstants.coralL3);
-                state = ElevatorStates.CORALL3;
+                setPosition(ElevatorConstants.coralL4);
+                state = ElevatorStates.CORALL4;
                 break;
         }
    }
@@ -111,10 +111,10 @@ public class ElevatorSubsystem extends SubsystemBase{
 
    public void decreseCoralState(){
     switch(state){
-        // case CORALL4:
-        //     setPosition(ElevatorConstants.coralL3);
-        //     state = ElevatorStates.CORALL3;
-        //     break;
+        case CORALL4:
+            setPosition(ElevatorConstants.coralL3);
+            state = ElevatorStates.CORALL3;
+            break;
         case CORALL3:
             setPosition(ElevatorConstants.coralL2);
             state = ElevatorStates.CORALL2;
@@ -124,8 +124,8 @@ public class ElevatorSubsystem extends SubsystemBase{
             state=ElevatorStates.CORALL1;
             break;
         case CORALL1:
-            setPosition(ElevatorConstants.coralL3);
-            state=ElevatorStates.CORALL3;
+            setPosition(ElevatorConstants.coralL4);
+            state=ElevatorStates.CORALL4;
             break;
          default:
             setPosition(ElevatorConstants.coralL1);
