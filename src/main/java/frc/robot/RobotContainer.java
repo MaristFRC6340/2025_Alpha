@@ -144,7 +144,7 @@ public class RobotContainer {
        
         driverL.whileTrue(m_SwerveSubsystem.getDriveToClosestReefPoseCommand(true));
         driverR.whileTrue(m_SwerveSubsystem.getDriveToClosestReefPoseCommand(false));
-        //driverR.onTrue(new RunCommand(()->m_SwerveSubsystem.drive(new Translation2d(0,1),Math.toRadians(0),false)).withTimeout(1));
+        //driverR.onTrue(new RunCommand(()->m_SwerveSubsystem.drive(new Translation2d(0,1),Math.toRadians(0),false)));
 
 
         //DPAD Drive To Commands
@@ -166,10 +166,10 @@ public class RobotContainer {
       actuatorDpadDown.onTrue(new InstantCommand(()->m_elevator.decreseCoralState()));
       actuatorDpadLeft.onTrue(new InstantCommand(()->m_elevator.setCoralIntake()));
       
-      actuatorLStick.whileTrue(m_elevator.setPower(() -> -1*m_actuatorController.getLeftY()*.25));
-      // actuatorLStick.whileTrue(m_ClimberSubsystem.setPower(() -> m_actuatorController.getLeftY()*.9));
+      //actuatorLStick.whileTrue(m_elevator.setPower(() -> -1*m_actuatorController.getLeftY()*.25));
+       actuatorLStick.whileTrue(m_ClimberSubsystem.setPower(() -> m_actuatorController.getLeftY()*.25));
       
-      actuatorRStick.whileTrue(m_HuggerSubsystem.getSetPivotPower(() -> -1*m_actuatorController.getRightY()*.25));
+     actuatorRStick.whileTrue(m_HuggerSubsystem.getSetPivotPower(() -> -1*m_actuatorController.getRightY()*.25));
       //actuatorY.whileTrue(new InstantCommand(()->m_HuggerSubsystem.setPosition(-8)));
       actuatorL.whileTrue(m_CoralSubsystem.getSetSpeedCommand(1));
       actuatorR.whileTrue(m_CoralSubsystem.getShadowTechniqueCommand(.5));

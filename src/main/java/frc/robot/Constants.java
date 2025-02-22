@@ -77,6 +77,10 @@ public final class Constants {
       public static  Matrix<N3, N1> singleTagStdDevs= VecBuilder.fill(2, 2, 6);
       public static  Matrix<N3, N1> multiTagStdDevsMatrix= VecBuilder.fill(0.5, 0.5, 1); 
     }
+    public static final class ChuteCamera{//used only for streaming
+      public static final String name = "Arducam_B0495_(USB3_2.3MP)";
+      
+    }
   }
 
   // goal: find a good config (maybe online?) and stick with it
