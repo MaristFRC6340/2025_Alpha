@@ -195,9 +195,16 @@ public final class Constants {
     public static final double kIPivot = 0;
     public static final double kDPivot = 0;
 
+    public static final Slot0Configs kPivotConfig = new Slot0Configs().withKP(kPPivot).withKG(kGPivot);
+   public static final  FeedbackConfigs kFeedbackConfigs = new FeedbackConfigs().withRotorToSensorRatio(36);
+
+   
+
     //Positions
     public static final double intakeAlgaePosition = -10.11;
-    public static final double outtakeAlgaeProcessor = -7.17;
+    public static final double outtakeAlgaeProcessor = -4.17;
+    public static final double straightUp = -1;
+
 
 
 

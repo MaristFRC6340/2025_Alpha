@@ -401,6 +401,10 @@ public class SwerveSubsystem extends SubsystemBase
     swerveDrive.drive(velocity);
   }
 
+  public Command driveRobotCentric(Supplier<ChassisSpeeds> speeds){
+    return this.run(()->swerveDrive.drive(speeds.get()));
+  }
+
 
 
   /**

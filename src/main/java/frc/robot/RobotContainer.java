@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.HuggerConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
@@ -20,6 +21,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -133,24 +135,25 @@ public class RobotContainer {
     // actuatorY.whileTrue(m_HuggerSubsystem.getSetSpeedCommand(() -> -.5));
     
     
-    
       
       //DRIVER CONTROLS
         m_SwerveSubsystem.setDefaultCommand(m_SwerveSubsystem.driveFieldOriented(driveAngularVelocity));
-        //driverRTrigger.whileTrue(m_SwerveSubsystem.driveFieldOriented(driveAngularVelocity.scaleTranslation(.4)));
         driverRTrigger.whileTrue(m_SwerveSubsystem.driveFieldOriented(driveAngularSlow));
-
-        driverLTrigger.whileTrue(m_SwerveSubsystem.driveCommand(() -> -m_driverController.getLeftY(), () -> -m_driverController.getLeftX(), () -> -m_driverController.getRightX()));
+        driverLTrigger.whileTrue(m_SwerveSubsystem.driveRobotCentric(driveAngularVelocity));
+       
+       
         driverL.whileTrue(m_SwerveSubsystem.getDriveToClosestReefPoseCommand(true));
         driverR.whileTrue(m_SwerveSubsystem.getDriveToClosestReefPoseCommand(false));
+        //driverR.onTrue(new RunCommand(()->m_SwerveSubsystem.drive(new Translation2d(0,1),Math.toRadians(0),false)).withTimeout(1));
+
+
         //DPAD Drive To Commands
         // driverDpadUp.whileTrue(m_SwerveSubsystem.driveToPose(Constants.FieldPositions.BLUE_CLIMB_AREA));
         // driverDpadRight.whileTrue(m_SwerveSubsystem.driveToPose(Constants.FieldPositions.BLUE_PROCESSOR));
         // driverDpadLeft.whileTrue(m_SwerveSubsystem.driveToPose(Constants.FieldPositions.BLUE_LEFT_CORAL_STATION_PICKUP));
 
         driverA.onTrue(new InstantCommand(()->m_SwerveSubsystem.zeroGyro()));
-        //BUMPERS
-        //m_SwerveSubsystem.getDriveToClosestReefPoseCommand();
+       
 
       //ACTUATOR CONTROLLER
 
@@ -173,6 +176,8 @@ public class RobotContainer {
       
       actuatorRTrigger.whileTrue(m_HuggerSubsystem.getSetSpeedCommand(()->.8));
       actuatorLTrigger.whileTrue(m_HuggerSubsystem.getSetSpeedCommand(()->-.8));
+
+      actuatorStart.onTrue(new InstantCommand(()->m_HuggerSubsystem.setPosition(HuggerConstants.straightUp)));
 
       
   }

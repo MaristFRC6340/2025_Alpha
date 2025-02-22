@@ -185,7 +185,7 @@ public class ElevatorSubsystem extends SubsystemBase{
     }
     //Clamps the position value
     public void setPosition(double position) {
-        position = MathUtil.clamp(position,Constants.ElevatorConstants.kMin,Constants.ElevatorConstants.kMax);
+        //position = MathUtil.clamp(position,Constants.ElevatorConstants.kMin,Constants.ElevatorConstants.kMax);
         leftMotor.setControl(m_MMEV.withPosition(position));
         rightMotor.setControl(m_Follower); // could be needed (or not)
     }
@@ -199,12 +199,12 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     public Command setPower(DoubleSupplier dubSupp){
         return this.runEnd(()->{
-            if(!((getPosition()>=ElevatorConstants.kMax&&dubSupp.getAsDouble()>0) ||(getPosition()<=ElevatorConstants.kMin && dubSupp.getAsDouble()<0))){
+           // if(!((getPosition()>=ElevatorConstants.kMax&&dubSupp.getAsDouble()>0) ||(getPosition()<=ElevatorConstants.kMin && dubSupp.getAsDouble()<0))){
                 leftMotor.setControl(speedRequest.withOutput(dubSupp.getAsDouble()));
-            }
-            else{
-                setPosition(getPosition());
-            }
+            // }
+            // else{
+            //     setPosition(getPosition());
+            // }
         },()->{
             setPosition(getPosition());
         });

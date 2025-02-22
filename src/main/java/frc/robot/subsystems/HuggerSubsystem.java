@@ -20,8 +20,11 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.HuggerConstants;
 
 public class HuggerSubsystem extends SubsystemBase{
 
@@ -38,13 +41,11 @@ public class HuggerSubsystem extends SubsystemBase{
 
         //Pivot Motor
         pivotMotor = new TalonFX(Constants.HuggerConstants.kPivotID);
-        Slot0Configs kPivotConfig = new Slot0Configs();
-        kPivotConfig.kP=Constants.HuggerConstants.kPPivot;
-        kPivotConfig.kG=Constants.HuggerConstants.kGPivot;
+        pivotMotor.getConfigurator().apply(HuggerConstants.kPivotConfig);
+        pivotMotor.getConfigurator().apply(HuggerConstants.kFeedbackConfigs);
+
         pivotMotor.setNeutralMode(NeutralModeValue.Brake); // From Mr Michaud: Should this be "brake"?
-        FeedbackConfigs kFeedbackConfigs = new FeedbackConfigs().withRotorToSensorRatio(36);
-        pivotMotor.getConfigurator().apply(kPivotConfig);
-        pivotMotor.getConfigurator().apply(kFeedbackConfigs);
+
 
         //left and right motors
 
@@ -66,7 +67,7 @@ public class HuggerSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("/Subsystem/Hugger/LeftMotor/velocity",leftMotor.getPosition().getValueAsDouble());
         
         
-        // SmartDashboard.putData("Subsystem/Coral/currentCommand", this.getCurrentCommand());
+     SmartDashboard.putData("Subsystem/Coral/currentCommand", this.getCurrentCommand()!=null?this.getCurrentCommand():new InstantCommand());
         // SmartDashboard.putData("Subsystem/Coral/defaultCommand", this.getDefaultCommand());      
 
     }
@@ -104,11 +105,8 @@ public class HuggerSubsystem extends SubsystemBase{
     }
 
     public Command getSetSpeedCommand(DoubleSupplier speed) {
-        return this.startEnd(() -> {
-            setSpeed(speed.getAsDouble());
-        }, () -> {
-            holdHuggerWheelPosition();
-        });
+        //return run command so scheduling pivot commands doesnt stop the wheel
+        return new RunCommand(()->setSpeed(speed.getAsDouble())).finallyDo(()->holdHuggerWheelPosition());
     }
 
     public void setSpeed(double speed) {
