@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "ResetOdom"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "1M Forward"
@@ -13,7 +19,7 @@
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }

@@ -5,7 +5,11 @@
 package frc.robot;
 
 import com.ctre.phoenix.unmanaged.Unmanaged;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 //import edu.wpi.first.epilogue.Epilogue;
 //import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -61,11 +65,12 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
     SmartDashboard.putData("General",CommandScheduler.getInstance());
-  
     if(m_gcTimer.get()>5) {
       System.gc();
       m_gcTimer.reset();
     }
+
+
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

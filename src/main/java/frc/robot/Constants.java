@@ -12,6 +12,7 @@ import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -139,7 +140,7 @@ public final class Constants {
     public static final double upperAlgaeHeight = 4.2;
     public static final double processorAlgaeHight = 0.25;
     public static final double coralL2 = 1.36;
-    public static final double coralL3 = 2.929;
+    public static final double coralL3 = 2.729;
     public static final double coralL4 = 4.8;
 
     public static final double coralL1 = 1;
@@ -278,7 +279,9 @@ public final class Constants {
     public static final Pose2d BLUE_LEFT_CORAL_STATION_PICKUP = new Pose2d(new Translation2d(1.2,7), Rotation2d.fromDegrees(120));
     public static final Pose2d BLUE_CLIMB_AREA = new Pose2d(new Translation2d(7.638,6.174), Rotation2d.fromDegrees(0));
     public static final Pose2d BLUE_PROCESSOR = new Pose2d(new Translation2d(6.332,.52), Rotation2d.fromDegrees(-90));
-
+    public static class StartPositions {
+      public static final Pose2d ODO_TEST = new PathPlannerAuto("Odom Testing").getStartingPose();
+    }
   }
 
 

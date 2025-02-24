@@ -16,10 +16,14 @@ import frc.robot.subsystems.SingleTalonTesterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 
+import java.awt.List;
 import java.io.File;
+import java.util.ArrayList;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -28,6 +32,7 @@ import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -136,16 +141,18 @@ public class RobotContainer {
   
 
   SendableChooser<Command> autoChooser;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
     // Configure the trigger bindings
     registerNamedCommands();
-    autoChooser = AutoBuilder.buildAutoChooser("R20, L18");
+    //configureAutoChooser("default");
+    autoChooser = AutoBuilder.buildAutoChooser();
+    
     SmartDashboard.putData("OPMODE/autochooser",autoChooser);
     configureBindings();
-    
   }
-
   /**
    * 
    */
@@ -195,8 +202,8 @@ public class RobotContainer {
       actuatorDpadDown.onTrue(new InstantCommand(()->m_elevator.decreseCoralState()));
       actuatorDpadLeft.onTrue(new InstantCommand(()->m_elevator.setCoralIntake()));
       
-      //actuatorLStick.whileTrue(m_elevator.setPower(() -> -1*m_actuatorCommandPS5Controller.getLeftY()*.25));
-      actuatorLStick.whileTrue(m_ClimberSubsystem.setPower(() -> m_actuatorCommandPS5Controller.getLeftY()*.25));
+      actuatorLStick.whileTrue(m_elevator.setPower(() -> -1*m_actuatorCommandPS5Controller.getLeftY()*.25));
+      //actuatorLStick.whileTrue(m_ClimberSubsystem.setPower(() -> m_actuatorCommandPS5Controller.getLeftY()*.25));
       
      actuatorRStick.whileTrue(m_HuggerSubsystem.getSetPivotPower(() -> -1*m_actuatorCommandPS5Controller.getRightY()*.1));
       //actuatorY.whileTrue(new InstantCommand(()->m_HuggerSubsystem.setPosition(-8)));
@@ -221,7 +228,14 @@ public class RobotContainer {
       NamedCommands.registerCommand("L1", new InstantCommand(() -> m_elevator.setCoralState(1)));
       NamedCommands.registerCommand("L2", new InstantCommand(() -> m_elevator.setCoralState(2)));
       NamedCommands.registerCommand("L3", new InstantCommand(() -> m_elevator.setCoralState(3)));
-      NamedCommands.registerCommand("L4", new InstantCommand(() -> m_elevator.increaseCoralState()));
+      NamedCommands.registerCommand("L4", new InstantCommand(() -> m_elevator.setCoralState(4)));
+
+
+
+
+      NamedCommands.registerCommand("ResetOdom", new InstantCommand(() -> {
+        m_SwerveSubsystem.resetOdometry(((PathPlannerAuto)autoChooser.getSelected()).getStartingPose());
+      }));
   }
 
   /**
