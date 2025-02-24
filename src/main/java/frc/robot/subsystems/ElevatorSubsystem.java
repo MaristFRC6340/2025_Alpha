@@ -134,6 +134,28 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     }
    }
+
+   public void setCoralState(int level) {
+    switch(level){
+        case 1:
+            setPosition(ElevatorConstants.coralL1);
+            state=ElevatorStates.CORALL1;
+            break;
+        case 2:
+            setPosition(ElevatorConstants.coralL2);
+            state=ElevatorStates.CORALL2;
+            break;
+        case 3:
+            setPosition(ElevatorConstants.coralL4);
+            state=ElevatorStates.CORALL4;
+            break;
+        case 4:
+            setPosition(ElevatorConstants.coralL4);
+            state=ElevatorStates.CORALL4;
+            break;
+    }
+   }
+   
     
 
     public SysIdRoutine getRoutine(){

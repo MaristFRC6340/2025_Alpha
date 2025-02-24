@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.3040342298288503,
-        "y": 3.5100855745721264
+        "x": 1.0,
+        "y": 4.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6744829477775682,
-        "y": 5.1613676258541785
+        "x": 2.0,
+        "y": 4.0
       },
       "isLocked": false,
-      "linkedName": "R18"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.6217948717948713,
-        "y": 7.678461538461538
+        "x": 2.0,
+        "y": 4.0
       },
       "prevControl": {
-        "x": 0.9933333333333327,
-        "y": 6.852820512820513
+        "x": 1.0,
+        "y": 4.0
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "CoralL"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.5,
-    "maxAcceleration": 1.5,
+    "maxVelocity": 0.5,
+    "maxAcceleration": 0.5,
     "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 180.0,
     "nominalVoltage": 12.0,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 126.0
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Deposit to CoralL",
+  "folder": "Odom Testing",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 0.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

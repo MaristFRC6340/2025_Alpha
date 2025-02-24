@@ -87,7 +87,7 @@ public class VisionSubsystem
     this.currentPose = currentPose;
     this.field2d = field;
     streamCamera = new PhotonCamera("Logitech");
-
+    // Constants.VisionConstants.ReefCamera.stdDevsMap.put();
 
 
     
@@ -366,14 +366,14 @@ public class VisionSubsystem
           avgDist /= numTags;
           // Decrease std devs if multiple targets are visible
           if(reef) {
-            estStdDevs = VecBuilder.fill(0.05, 0.05, 0.05);
+            //estStdDevs = VecBuilder.fill(0.05, 0.05, 0.05);
           }
           else if (numTags > 1)
           {
             estStdDevs = multiTagStdDevs;
           }
           // Increase std devs based on (average) distance
-          else if (numTags == 1 && avgDist > 4)
+          else if (avgDist > 2.5)
           {
             estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
           } else

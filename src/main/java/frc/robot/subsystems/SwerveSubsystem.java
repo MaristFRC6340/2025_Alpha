@@ -104,7 +104,7 @@ public class SwerveSubsystem extends SubsystemBase
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
     try
     {
-      swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.RobotConstants.MAX_SPEED,new Pose2d(new Translation2d(Meter.of(1),Meter.of(4)),Rotation2d.fromDegrees(0)));
+      swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.RobotConstants.MAX_SPEED, new Pose2d(new Translation2d(Meter.of(1), Meter.of(4)), new Rotation2d(0)));
     } catch (Exception e)
     {
       throw new RuntimeException(e);
@@ -137,7 +137,8 @@ public class SwerveSubsystem extends SubsystemBase
     // When vision is enabled we must manually update odometry in SwerveDrive
       swerveDrive.updateOdometry();
       vision.updatePoseEstimation(swerveDrive);
-
+      SmartDashboard.putNumber("Subsystem/Swerve/FlipDirection", flipDirection());
+      SmartDashboard.putBoolean("Subsystem/Swerve/ShouldFlip", isRedAlliance());
     //these should also be printed out by Yagsl's logging, but I wanted to test out using structu publishers so that we can produe this logging fi we ever abandon yagsl
       finalPoseEstimate.set(getPose());
       curChassisSpeed.set(swerveDrive.getRobotVelocity());
@@ -189,9 +190,9 @@ public class SwerveSubsystem extends SubsystemBase
           // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
           new PPHolonomicDriveController(
               // PPHolonomicController is the built in path following controller for holonomic drive trains
-              new PIDConstants(5.0, 0.0, 0.0),
+              new PIDConstants(4.0, 0.0, 0.0),
               // Translation PID constants
-              new PIDConstants(5.0, 0.0, 0.0)
+              new PIDConstants(4.0, 0.0, 0.0)
               // Rotation PID constants
           ),
           config,
@@ -200,7 +201,7 @@ public class SwerveSubsystem extends SubsystemBase
             // Boolean supplier that controls when the path will be mirrored for the red alliance
             // This will flip the path being followed to the red side of the field.
             // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-            return shouldFlip();
+            return isRedAlliance();
           },
           this
           // Reference to this subsystem to set requirements
@@ -219,34 +220,31 @@ public class SwerveSubsystem extends SubsystemBase
 
 
 
-//   /**
-//    * Use PathPlanner Path finding to go to a point on the field.
-//    *
-//    * @param pose Target {@link Pose2d} to go to.
-//    * @return PathFinding command
-//    */
-//   public Command pathFindToPose(Pose2d pose)
-//   {
-// // Create the constraints to use while pathfinding
-//     PathConstraints constraints = new PathConstraints(
-//         swerveDrive.getMaximumChassisVelocity(), 4.0,
-//         swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720));
+  /**
+   * Use PathPlanner Path finding to go to a point on the field.
+   *
+   * @param pose Target {@link Pose2d} to go to.
+   * @return PathFinding command
+   */
+  public Command pathFindToPose(Pose2d pose)
+  {
+// Create the constraints to use while pathfinding
+    PathConstraints constraints = new PathConstraints(
+        swerveDrive.getMaximumChassisVelocity(), 4.0,
+        swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720));
 
-// // Since AutoBuilder is configured, we can use it to build pathfinding commands
-//     return AutoBuilder.pathfindToPose(
-//         pose,
-//         constraints,
-//         edu.wpi.first.units.Units.MetersPerSecond.of(0) // Goal end velocity in meters/sec
-//                                      );
-//   }
+// Since AutoBuilder is configured, we can use it to build pathfinding commands
+    return AutoBuilder.pathfindToPose(
+        pose,
+        constraints,
+        edu.wpi.first.units.Units.MetersPerSecond.of(0) // Goal end velocity in meters/sec
+                                     );
+  }
 
-  public boolean shouldFlip() {
-    var alliance = DriverStation.getAlliance();
-    if (alliance.isPresent())
-    {
-      return alliance.get() == DriverStation.Alliance.Red;
-    }
-    return false;
+
+
+  public int flipDirection() {
+    return isRedAlliance() ? -1 : 1;
   }
 
   /**
@@ -448,6 +446,7 @@ public class SwerveSubsystem extends SubsystemBase
   private boolean isRedAlliance()
   {
     var alliance = DriverStation.getAlliance();
+    System.out.println(alliance.get() == DriverStation.Alliance.Red);
     return alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
   }
 
@@ -546,12 +545,11 @@ public class SwerveSubsystem extends SubsystemBase
 
   public double [] getWheelRadiusCharacterizationPosition() {
     double [] out = new double [4];
-    swervelib.SwerveModule[] modules = swerveDrive.getModules();
-
+    
     SwerveModulePosition [] positions = swerveDrive.getModulePositions();
     for(int i = 0; i<4; i++) {
-      
-      out[i]=positions[i].distanceMeters/(Constants.SwerveConstants.kStoredRadius); //CHANGE TO WHATEVER STORED RADIUS IS
+      //current position in radians = distancemeters/(radius*2*pi)*2*pi=distancemeters/radius
+      out[i]=positions[i].distanceMeters/(Constants.SwerveConstants.kStoredRadius*2*Math.PI)*2*Math.PI; //CHANGE TO WHATEVER STORED RADIUS IS
     }
     return out;
   }
@@ -563,10 +561,9 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public Command driveToPose(Pose2d pose) {
     return run(() -> {
-      int flip = shouldFlip() ? 1 : -1;
-      double xPower = -xController.calculate(pose.getX(), swerveDrive.getPose().getX()) * flip;
-      double yPower = -yController.calculate(pose.getY(), swerveDrive.getPose().getY()) * flip;
-      double thetaPower = -thetaController.calculate(pose.getRotation().getRadians(), swerveDrive.getPose().getRotation().getRadians()) * flip;
+      double xPower = -xController.calculate(pose.getX(), swerveDrive.getPose().getX());
+      double yPower = -yController.calculate(pose.getY(), swerveDrive.getPose().getY());
+      double thetaPower = -thetaController.calculate(pose.getRotation().getRadians(), swerveDrive.getPose().getRotation().getRadians());
       this.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
       new ChassisSpeeds(xPower, yPower, thetaPower), getHeading()
       ));
@@ -640,6 +637,69 @@ public Command getDriveToReefCommand(int id, boolean left) {
     }
     return new InstantCommand();
 }
+
+/**
+ * drives to a given deposit location on the field
+ * @param id the april tag id of the reef side
+ * @param left the pole of the reef to score on
+ * @return
+ */
+public Command getPathfindToReefCommand(int id, boolean left) {
+  if (left) {
+    switch (id) {
+        case 7:
+            return pathFindToPose(Constants.FieldPositions.L7);
+        case 8:
+            return pathFindToPose(Constants.FieldPositions.L8);
+        case 9:
+            return pathFindToPose(Constants.FieldPositions.L9);
+        case 10:
+            return pathFindToPose(Constants.FieldPositions.L10);
+        case 11:
+            return pathFindToPose(Constants.FieldPositions.L11);
+        case 17:
+            return pathFindToPose(Constants.FieldPositions.L17);
+        case 18:
+            return pathFindToPose(Constants.FieldPositions.L18);
+        case 19:
+            return pathFindToPose(Constants.FieldPositions.L19);
+        case 20:
+            return pathFindToPose(Constants.FieldPositions.L20);
+        case 21:
+            return pathFindToPose(Constants.FieldPositions.L21);
+        case 22:
+            return pathFindToPose(Constants.FieldPositions.L22);
+      }
+    }
+    else {
+      switch (id) {
+        case 7:
+            return pathFindToPose(Constants.FieldPositions.R7);
+        case 8:
+            return pathFindToPose(Constants.FieldPositions.R8);
+        case 9:
+            return pathFindToPose(Constants.FieldPositions.R9);
+        case 10:
+            return pathFindToPose(Constants.FieldPositions.R10);
+        case 11:
+            return pathFindToPose(Constants.FieldPositions.R11);
+        case 17:
+            return pathFindToPose(Constants.FieldPositions.R17);
+        case 18:
+            return pathFindToPose(Constants.FieldPositions.R18);
+        case 19:
+            return pathFindToPose(Constants.FieldPositions.R19);
+        case 20:
+            return pathFindToPose(Constants.FieldPositions.R20);
+        case 21:
+            return pathFindToPose(Constants.FieldPositions.R21);
+        case 22:
+            return pathFindToPose(Constants.FieldPositions.R22);
+      }
+      
+    }
+    return new InstantCommand();
+}
   
 
 /**
@@ -654,6 +714,21 @@ public Command getDriveToClosestReefPoseCommand(boolean left) {
   }
   else {
     return new DeferredCommand(() -> driveToPose(swerveDrive.getPose().nearest(Constants.FieldPositions.kRightReefPoses)), requirements);
+  }
+}
+
+/**
+ * Pathfinds to the closest deposit position on the reef
+ * @return
+ */
+public Command getPathfindToClosestReefPoseCommand(boolean left) {
+  Set<Subsystem> requirements = new HashSet<Subsystem>();
+  requirements.add(this);
+  if(left) {
+    return new DeferredCommand(() -> pathFindToPose(swerveDrive.getPose().nearest(Constants.FieldPositions.kLeftReefPoses)), requirements);
+  }
+  else {
+    return new DeferredCommand(() -> pathFindToPose(swerveDrive.getPose().nearest(Constants.FieldPositions.kRightReefPoses)), requirements);
   }
 }
 

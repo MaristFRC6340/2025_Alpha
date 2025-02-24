@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.HuggerConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.LittletonWheelRadiusCommand;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -112,29 +113,37 @@ public class RobotContainer {
   
 
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(m_SwerveSubsystem.getSwerveDrive(),
-  () -> m_driverController.getLeftY() * 1,
-  () -> m_driverController.getLeftX() * 1)
+  () -> m_driverController.getLeftY() * -1 * m_SwerveSubsystem.flipDirection(),
+  () -> m_driverController.getLeftX() * -1 * m_SwerveSubsystem.flipDirection())
   .withControllerRotationAxis(() -> m_driverController.getRightX()*-1)
   .deadband(OperatorConstants.DEADBAND)
   .scaleTranslation(0.8)
-  .allianceRelativeControl(true);
+  .allianceRelativeControl(false);
   SwerveInputStream driveAngularSlow = SwerveInputStream.of(m_SwerveSubsystem.getSwerveDrive(),
-  () -> m_driverController.getLeftY() * .25,
-  () -> m_driverController.getLeftX() * .25)
-  .withControllerRotationAxis(() -> m_driverController.getRightX()*-.25)
+  () -> m_driverController.getLeftY() * -.35 * m_SwerveSubsystem.flipDirection(),
+  () -> m_driverController.getLeftX() * -.35 * m_SwerveSubsystem.flipDirection())
+  .withControllerRotationAxis(() -> m_driverController.getRightX()*-.35)
   .deadband(OperatorConstants.DEADBAND)
   .scaleTranslation(0.8)
-  .allianceRelativeControl(true);
+  .allianceRelativeControl(false);
+  SwerveInputStream driveAngularAdjustment = SwerveInputStream.of(m_SwerveSubsystem.getSwerveDrive(),
+  () -> m_driverController.getLeftY() * -.35,
+  () -> 0)
+  .withControllerRotationAxis(() -> m_driverController.getRightX()*-.35)
+  .deadband(OperatorConstants.DEADBAND)
+  .scaleTranslation(0.8)
+  .allianceRelativeControl(false);
   
 
   SendableChooser<Command> autoChooser;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
-   // autoChooser = AutoBuilder.buildAutoChooser("default");
-    //SmartDashboard.putData("OPMODE/autochooser",autoChooser);
-    configureBindings();
     registerNamedCommands();
+    autoChooser = AutoBuilder.buildAutoChooser("R20, L18");
+    SmartDashboard.putData("OPMODE/autochooser",autoChooser);
+    configureBindings();
+    
   }
 
   /**
@@ -155,12 +164,12 @@ public class RobotContainer {
     // actuatorA.whileTrue(m_HuggerSubsystem.getSetSpeedCommand(() -> .5));
     // actuatorY.whileTrue(m_HuggerSubsystem.getSetSpeedCommand(() -> -.5));
     
-    
+    driverB.whileTrue(new LittletonWheelRadiusCommand(m_SwerveSubsystem, 1));
       
       //DRIVER CONTROLS
         m_SwerveSubsystem.setDefaultCommand(m_SwerveSubsystem.driveFieldOriented(driveAngularVelocity));
         driverRTrigger.whileTrue(m_SwerveSubsystem.driveFieldOriented(driveAngularSlow));
-        driverLTrigger.whileTrue(m_SwerveSubsystem.driveRobotCentric(driveAngularVelocity));
+        driverLTrigger.whileTrue(m_SwerveSubsystem.driveRobotCentric(driveAngularAdjustment));
        
        
         driverL.whileTrue(m_SwerveSubsystem.getDriveToClosestReefPoseCommand(true));
@@ -182,13 +191,12 @@ public class RobotContainer {
       actuatorX.whileTrue(new InstantCommand(()->m_HuggerSubsystem.setPosition(Constants.HuggerConstants.outtakeAlgaeProcessor)).andThen(()->m_elevator.setPosition(ElevatorConstants.processorAlgaeHight)));
       actuatorY.whileTrue(new InstantCommand(()->m_HuggerSubsystem.setPosition(Constants.HuggerConstants.intakeAlgaePosition)).andThen(()->m_elevator.setPosition(ElevatorConstants.upperAlgaeHeight)));
 
-      actuatorB.whileTrue(m_CoralSubsystem.getL4OuttakeCommand());
       actuatorDpadUp.onTrue(new InstantCommand(()->m_elevator.increaseCoralState()));
       actuatorDpadDown.onTrue(new InstantCommand(()->m_elevator.decreseCoralState()));
       actuatorDpadLeft.onTrue(new InstantCommand(()->m_elevator.setCoralIntake()));
       
-      actuatorLStick.whileTrue(m_elevator.setPower(() -> -1*m_actuatorCommandPS5Controller.getLeftY()*.25));
-       //actuatorLStick.whileTrue(m_ClimberSubsystem.setPower(() -> m_actuatorController.getLeftY()*.25));
+      //actuatorLStick.whileTrue(m_elevator.setPower(() -> -1*m_actuatorCommandPS5Controller.getLeftY()*.25));
+      actuatorLStick.whileTrue(m_ClimberSubsystem.setPower(() -> m_actuatorCommandPS5Controller.getLeftY()*.25));
       
      actuatorRStick.whileTrue(m_HuggerSubsystem.getSetPivotPower(() -> -1*m_actuatorCommandPS5Controller.getRightY()*.1));
       //actuatorY.whileTrue(new InstantCommand(()->m_HuggerSubsystem.setPosition(-8)));
@@ -206,7 +214,14 @@ public class RobotContainer {
    * For cleanliness, register all named commands here
    */
   private void registerNamedCommands(){
-      //NamedCommands.registerCommand("outtake", m_CoralSubsystem.getOuttakeCommand().withTimeout(1));
+      NamedCommands.registerCommand("Outtake", m_CoralSubsystem.getSetSpeedCommand(1).withTimeout(1));
+      NamedCommands.registerCommand("ShadowTechnique", m_CoralSubsystem.getShadowTechniqueCommand(.5).withTimeout(1));
+      NamedCommands.registerCommand("RickyTechnique", m_CoralSubsystem.getSetSpeedCommand(1).withTimeout(.7).andThen(m_CoralSubsystem.getShadowTechniqueCommand(.5).withTimeout(.7)));
+      NamedCommands.registerCommand("CoralIntake", new InstantCommand(() -> m_elevator.setCoralIntake()));
+      NamedCommands.registerCommand("L1", new InstantCommand(() -> m_elevator.setCoralState(1)));
+      NamedCommands.registerCommand("L2", new InstantCommand(() -> m_elevator.setCoralState(2)));
+      NamedCommands.registerCommand("L3", new InstantCommand(() -> m_elevator.setCoralState(3)));
+      NamedCommands.registerCommand("L4", new InstantCommand(() -> m_elevator.increaseCoralState()));
   }
 
   /**
@@ -216,7 +231,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    //return autoChooser.getSelected();
-    return null;
+    return autoChooser.getSelected();
+    //return null;
   }
 }

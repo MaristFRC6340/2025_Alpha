@@ -22,6 +22,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
@@ -64,7 +65,7 @@ public final class Constants {
       public static  Translation3d robotToCamTranslation=new Translation3d(Units.inchesToMeters(-4.628),
       Units.inchesToMeters(-10.687),
       Units.inchesToMeters(16.129));
-      public static  Matrix<N3, N1> singleTagStdDevs= VecBuilder.fill(4, 4, 8);
+      public static  Matrix<N3, N1> singleTagStdDevs= VecBuilder.fill(2, 2, 8);
       public static  Matrix<N3, N1> multiTagStdDevsMatrix= VecBuilder.fill(0.5, 0.5, 1); 
     }
 
@@ -74,8 +75,9 @@ public final class Constants {
       public static  Translation3d robotToCamTranslation=new Translation3d(Units.inchesToMeters(7.5),
       Units.inchesToMeters(-7.5),
       Units.inchesToMeters(11.25));
-      public static  Matrix<N3, N1> singleTagStdDevs= VecBuilder.fill(2, 2, 6);
+      public static  Matrix<N3, N1> singleTagStdDevs= VecBuilder.fill(4, 4, 8);
       public static  Matrix<N3, N1> multiTagStdDevsMatrix= VecBuilder.fill(0.5, 0.5, 1); 
+      public static InterpolatingDoubleTreeMap stdDevsMap = new InterpolatingDoubleTreeMap();
     }
     public static final class ChuteCamera{//used only for streaming
       public static final String name = "Arducam_B0495_(USB3_2.3MP)";
@@ -222,7 +224,8 @@ public final class Constants {
     public static final double kXTolerance = 0; //Meters
     public static final double kYTolerance = 0; //Meters
     public static final double kThetaTolerance = 0;
-    public static double kStoredRadius = 4; // to be configured later
+    public static double kStoredRadius = 3.9527559/2; // to be configured later
+    public static double kDrivebaseRadius = .409;
   }
 
   public static class FieldPositions {

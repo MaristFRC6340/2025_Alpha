@@ -18,16 +18,17 @@ import frc.robot.subsystems.SwerveSubsystem;
 import java.io.File;
 import java.nio.file.FileSystem;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import java.util.function.DoubleSupplier;
 
 public class LittletonWheelRadiusCommand extends Command {
   private static final double characterizationSpeed = 0.1;
-  private static final double driveRadius = Constants.SwerveConstants.kStoredRadius;
+  private static final double driveRadius = Constants.SwerveConstants.kDrivebaseRadius;
 
   private SwerveSubsystem drive = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),"swerve"));
     private final DoubleSupplier gyroYawRadsSupplier =
         () -> drive.getHeading().getRadians();
-    private final int omegaDirection;
     private final SlewRateLimiter omegaLimiter = new SlewRateLimiter(1.0);
   
     private double lastGyroYawRads = 0.0;
@@ -39,7 +40,6 @@ public class LittletonWheelRadiusCommand extends Command {
   
     public LittletonWheelRadiusCommand(SwerveSubsystem drive, int omegaDirection) {
       this.drive = drive;
-    this.omegaDirection = omegaDirection;
     addRequirements(drive);
   }
 
@@ -57,8 +57,8 @@ public class LittletonWheelRadiusCommand extends Command {
   @Override
   public void execute() {
     // Run drive at velocity
-    drive.runWheelRadiusCharacterization(
-        omegaLimiter.calculate(omegaDirection * characterizationSpeed));
+    drive.runWheelRadiusCharacterization(omegaLimiter.calculate(1));
+
 
     // Get yaw and wheel positions
     accumGyroYawRads += MathUtil.angleModulus(gyroYawRadsSupplier.getAsDouble() - lastGyroYawRads);
@@ -71,10 +71,12 @@ public class LittletonWheelRadiusCommand extends Command {
     averageWheelPosition /= 4.0;
 
     currentEffectiveWheelRadius = (accumGyroYawRads * driveRadius) / averageWheelPosition;
+    System.out.println(currentEffectiveWheelRadius);
   }
 
   @Override
   public void end(boolean interrupted) {
+    drive.runWheelRadiusCharacterization(0);
     if (accumGyroYawRads <= Math.PI * 2.0) {
       System.out.println("Not enough data for characterization");
     } else {
