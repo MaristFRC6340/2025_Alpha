@@ -208,7 +208,7 @@ public final class Constants {
    
 
     //Positions
-    public static final double intakeAlgaePosition = -10.11;
+    public static final double intakeAlgaePosition = -6.8;
     public static final double outtakeAlgaeProcessor = -4.17;
     public static final double straightUp = -3.56;
 

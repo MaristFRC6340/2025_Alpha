@@ -5,9 +5,21 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "ResetOdom"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Start to R21"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4"
           }
         },
         {
@@ -19,13 +31,25 @@
         {
           "type": "named",
           "data": {
-            "name": "RickyTechnique"
+            "name": "Outtake"
           }
         },
         {
           "type": "wait",
           "data": {
             "waitTime": 2.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RickyTechnique"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "CoralIntake"
           }
         },
         {
@@ -37,7 +61,7 @@
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": "CoralL",
   "choreoAuto": false
 }

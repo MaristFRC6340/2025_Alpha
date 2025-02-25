@@ -4,6 +4,20 @@
 
 package frc.robot;
 
+import java.io.File;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.HuggerConstants;
 import frc.robot.Constants.OperatorConstants;
@@ -12,35 +26,8 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.HuggerSubsystem;
-import frc.robot.subsystems.SingleTalonTesterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import swervelib.SwerveInputStream;
-
-import java.awt.List;
-import java.io.File;
-import java.util.ArrayList;
-
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-
-
-import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.PS5Controller;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -132,8 +119,15 @@ public class RobotContainer {
   .scaleTranslation(0.8)
   .allianceRelativeControl(false);
   SwerveInputStream driveAngularAdjustment = SwerveInputStream.of(m_SwerveSubsystem.getSwerveDrive(),
-  () -> m_driverController.getLeftY() * -.35,
-  () -> 0)
+  () -> {
+    if(Math.abs(m_driverController.getLeftY())>Math.abs(m_driverController.getLeftX()))
+      return m_driverController.getLeftY() * -.35;
+    else return 0;},
+  () -> {
+    if(Math.abs(m_driverController.getLeftY())<=Math.abs(m_driverController.getLeftX()))
+      return m_driverController.getLeftX() * -.35;
+    else return 0;
+  })
   .withControllerRotationAxis(() -> m_driverController.getRightX()*-.35)
   .deadband(OperatorConstants.DEADBAND)
   .scaleTranslation(0.8)
