@@ -199,8 +199,6 @@ public class ElevatorSubsystem extends SubsystemBase{
     }
 
     public void resetEncoder(){
-        this.getCurrentCommand().cancel();
-        leftMotor.setControl(speedRequest.withOutput(0));
         leftMotor.setPosition(0);
         rightMotor.setPosition(0);
         setPosition(0);

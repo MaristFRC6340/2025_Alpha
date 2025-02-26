@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -84,6 +85,7 @@ public class RobotContainer {
   private Trigger actuatorDpadRight = m_actuatorCommandPS5Controller.povRight();
   private Trigger actuatorDpadDown = m_actuatorCommandPS5Controller.povDown();
   private Trigger actuatorDpadLeft = m_actuatorCommandPS5Controller.povLeft();
+  private Trigger actuatorBack = m_actuatorCommandPS5Controller.create();
 
 
   private Trigger driverA = m_driverController.a();
@@ -151,19 +153,7 @@ public class RobotContainer {
    * 
    */
   private void configureBindings() {
-    // m_elevator.setDefaultCommand(m_elevator.setPower(()->m_driverController.getLeftTriggerAxis()*.125));
-    // driverLTrigger.whileTrue(m_elevator.setPower(()->m_driverController.getLeftTriggerAxis()*.2));
-    // driverRTrigger.whileTrue(m_elevator.setPower(()->m_driverController.getRightTriggerAxis()*-.2));
-
-    // driverY.onTrue(m_elevator.getSetPositionCommand(3));
-    // driverX.onTrue(m_elevator.getSetPositionCommand(1.5));
-    // driverA.onTrue(m_elevator.getSetPositionCommand(.1));
-    // m_SwerveSubsystem.setDefaultCommand(m_SwerveSubsystem.driveFieldOriented(driveAngularVelocity));
-    // driverStart.onTrue(new InstantCommand(() -> m_SwerveSubsystem.zeroGyro()));
-    // actuatorL.whileTrue(m_CoralSubsystem.getSetSpeedCommand(.9));
-    // actuatorR.whileTrue(m_CoralSubsystem.getShadowTechniqueCommand(.5));
-    // actuatorA.whileTrue(m_HuggerSubsystem.getSetSpeedCommand(() -> .5));
-    // actuatorY.whileTrue(m_HuggerSubsystem.getSetSpeedCommand(() -> -.5));
+   
     
     driverB.whileTrue(new LittletonWheelRadiusCommand(m_SwerveSubsystem, 1));
       
@@ -177,6 +167,8 @@ public class RobotContainer {
         driverR.whileTrue(m_SwerveSubsystem.getDriveToClosestReefPoseCommand(false));
         //driverR.onTrue(new RunCommand(()->m_SwerveSubsystem.drive(new Translation2d(0,1),Math.toRadians(0),false)));
 
+        
+       
 
         //DPAD Drive To Commands
         // driverDpadUp.whileTrue(m_SwerveSubsystem.driveToPose(Constants.FieldPositions.BLUE_CLIMB_AREA));
@@ -197,18 +189,28 @@ public class RobotContainer {
       actuatorDpadLeft.onTrue(new InstantCommand(()->m_elevator.setCoralIntake()));
       
       actuatorLStick.whileTrue(m_elevator.setPower(() -> -1*m_actuatorCommandPS5Controller.getLeftY()*.25));
-      //actuatorLStick.whileTrue(m_ClimberSubsystem.setPower(() -> m_actuatorCommandPS5Controller.getLeftY()*.25));
       
      actuatorRStick.whileTrue(m_HuggerSubsystem.getSetPivotPower(() -> -1*m_actuatorCommandPS5Controller.getRightY()*.1));
-      //actuatorY.whileTrue(new InstantCommand(()->m_HuggerSubsystem.setPosition(-8)));
-      actuatorL.whileTrue(m_CoralSubsystem.getSetSpeedCommand(1));
+
+     actuatorL.whileTrue(m_CoralSubsystem.getSetSpeedCommand(1));
       actuatorR.whileTrue(m_CoralSubsystem.getShadowTechniqueCommand(.5));
       
       actuatorRTrigger.whileTrue(m_HuggerSubsystem.getSetSpeedCommand(()->.8));
       actuatorLTrigger.whileTrue(m_HuggerSubsystem.getSetSpeedCommand(()->-.8));
 
+
+      actuatorB.whileTrue(m_ClimberSubsystem.setPower(()->.25));
+      actuatorDpadRight.whileTrue(m_ClimberSubsystem.setPower(()->-.25));
       actuatorStart.onTrue(new InstantCommand(()->m_HuggerSubsystem.setPosition(HuggerConstants.straightUp)));
 
+      SmartDashboard.putData("Subsystem/Hugger/RESET_HUGGER_ENCODER",new InstantCommand(()->{
+        m_HuggerSubsystem.resetPivotEncoder();
+        m_HuggerSubsystem.setPosition(0);
+      }));
+      SmartDashboard.putData("Subsystem/Elevator/RESET_ELEVATOR_ENCODER",new InstantCommand(()->{
+        m_elevator.resetEncoder();
+        m_elevator.setPosition(0);
+      }));
       
   }
   /**

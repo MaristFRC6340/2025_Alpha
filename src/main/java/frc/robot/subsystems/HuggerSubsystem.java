@@ -54,19 +54,21 @@ public class HuggerSubsystem extends SubsystemBase{
         leftMotor.setNeutralMode(NeutralModeValue.Brake);
 
 
+
     }
 
     @Override 
     public void periodic(){
-        SmartDashboard.putNumber("/Subsystem/Hugger/Pivot/position",pivotMotor.getPosition().getValueAsDouble());
-        SmartDashboard.putNumber("/Subsystem/Hugger/Pivot/velocity", pivotMotor.getVelocity().getValueAsDouble());
-        SmartDashboard.putNumber("/Subsystem/Hugger/Pivot/angle", pivotMotor.getPosition().getValue().magnitude());
-        SmartDashboard.putNumber("/Subsystem/Hugger/Pivot/positionVoltageTarget", m_PositionVoltage.Position);
+        SmartDashboard.putNumber("Subsystem/Hugger/Pivot/position",pivotMotor.getPosition().getValueAsDouble());
+        SmartDashboard.putNumber("Subsystem/Hugger/Pivot/velocity", pivotMotor.getVelocity().getValueAsDouble());
+        SmartDashboard.putNumber("Subsystem/Hugger/Pivot/angle", pivotMotor.getPosition().getValue().magnitude());
+        SmartDashboard.putNumber("Subsystem/Hugger/Pivot/positionVoltageTarget", m_PositionVoltage.Position);
 
-        SmartDashboard.putNumber("/Subsystem/Hugger/LeftMotor/position",leftMotor.getPosition().getValueAsDouble());
-        SmartDashboard.putNumber("/Subsystem/Hugger/LeftMotor/velocity",leftMotor.getPosition().getValueAsDouble());
+        SmartDashboard.putNumber("Subsystem/Hugger/LeftMotor/position",leftMotor.getPosition().getValueAsDouble());
+        SmartDashboard.putNumber("Subsystem/Hugger/LeftMotor/velocity",leftMotor.getPosition().getValueAsDouble());
         
         
+
     //  SmartDashboard.putData("Subsystem/Coral/currentCommand", this.getCurrentCommand()!=null?this.getCurrentCommand():new InstantCommand());
         // SmartDashboard.putData("Subsystem/Coral/defaultCommand", this.getDefaultCommand());      
 
@@ -113,6 +115,7 @@ public class HuggerSubsystem extends SubsystemBase{
     }
     public void resetPivotEncoder(){
         pivotMotor.setPosition(0);
+        setPosition(0);
     }
     
     public void stop() {
