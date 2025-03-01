@@ -57,6 +57,13 @@ public class HuggerSubsystem extends SubsystemBase{
 
     }
 
+    public TalonFX getHuggerPivot(){
+        return pivotMotor;
+    }
+    public TalonFX getHUggerMotor(){
+        return leftMotor;
+    }
+
     @Override 
     public void periodic(){
         SmartDashboard.putNumber("Subsystem/Hugger/Pivot/position",pivotMotor.getPosition().getValueAsDouble());
