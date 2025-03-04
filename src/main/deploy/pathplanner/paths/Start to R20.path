@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.464294871794872,
-        "y": 5.717564102564102
+        "x": 7.448778409090909,
+        "y": 6.133991477272727
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.43224358974359,
-        "y": 6.047820512820513
+        "x": 6.361875,
+        "y": 5.844815340909091
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.884166666666666,
-        "y": 5.30474358974359
+        "x": 4.656732954545454,
+        "y": 5.435980113636362
       },
       "prevControl": {
-        "x": 5.647884615384615,
-        "y": 5.727884615384615
+        "x": 5.50623106060606,
+        "y": 5.786591637529136
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,7 +48,7 @@
   "folder": "Start to Deposit",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -36.46623447531883
   },
   "useDefaultConstraints": true
 }

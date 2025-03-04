@@ -192,7 +192,7 @@ public class RobotContainer {
       
      actuatorRStick.whileTrue(m_HuggerSubsystem.getSetPivotPower(() -> -1*m_actuatorCommandPS5Controller.getRightY()*.1));
 
-     actuatorL.whileTrue(m_CoralSubsystem.getSetSpeedCommand(1));
+     actuatorL.whileTrue(m_CoralSubsystem.getSetSpeedCommand(.7));
       actuatorR.whileTrue(m_CoralSubsystem.getShadowTechniqueCommand(.5));
       
       actuatorRTrigger.whileTrue(m_HuggerSubsystem.getSetSpeedCommand(()->.8));
@@ -200,7 +200,7 @@ public class RobotContainer {
 
 
       actuatorB.whileTrue(m_ClimberSubsystem.setPower(()->.25));
-      actuatorDpadRight.whileTrue(m_ClimberSubsystem.setPower(()->-.25));
+      actuatorDpadRight.whileTrue(m_ClimberSubsystem.setPower(()->-.6));
       actuatorStart.onTrue(new InstantCommand(()->m_HuggerSubsystem.setPosition(HuggerConstants.straightUp)));
 
       SmartDashboard.putData("Subsystem/Hugger/RESET_HUGGER_ENCODER",new InstantCommand(()->{
@@ -217,9 +217,9 @@ public class RobotContainer {
    * For cleanliness, register all named commands here
    */
   private void registerNamedCommands(){
-      NamedCommands.registerCommand("Outtake", m_CoralSubsystem.getSetSpeedCommand(1).withTimeout(1));
+      NamedCommands.registerCommand("Outtake", m_CoralSubsystem.getSetSpeedCommand(.3).withTimeout(5));//used to be 1,1,
       NamedCommands.registerCommand("ShadowTechnique", m_CoralSubsystem.getShadowTechniqueCommand(.5).withTimeout(1));
-      NamedCommands.registerCommand("RickyTechnique", m_CoralSubsystem.getSetSpeedCommand(1).withTimeout(.7).andThen(m_CoralSubsystem.getShadowTechniqueCommand(.5).withTimeout(.7)));
+      NamedCommands.registerCommand("RickyTechnique", /**m_CoralSubsystem.getSetSpeedCommand(1).withTimeout(.7).andThen(m_CoralSubsystem.getShadowTechniqueCommand(.5).withTimeout(.7))**/new InstantCommand());
       NamedCommands.registerCommand("CoralIntake", new InstantCommand(() -> m_elevator.setCoralIntake()));
       NamedCommands.registerCommand("L1", new InstantCommand(() -> m_elevator.setCoralState(1)));
       NamedCommands.registerCommand("L2", new InstantCommand(() -> m_elevator.setCoralState(2)));
