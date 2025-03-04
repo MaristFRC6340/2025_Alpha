@@ -65,6 +65,7 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     public ElevatorSubsystem() {
 
+
         leftMotor = new TalonFX(Constants.ElevatorConstants.kLeftID);
         leftMotor.getConfigurator().apply(Constants.ElevatorConstants.kLeftConfig);
 

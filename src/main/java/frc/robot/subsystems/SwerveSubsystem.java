@@ -26,6 +26,8 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -49,6 +51,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
+import frc.robot.Constants.VisionConstants;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.AbstractSet;
@@ -86,7 +90,7 @@ public class SwerveSubsystem extends SubsystemBase
   
   private PIDController xController = new PIDController(Constants.SwerveConstants.kPX, .1, 0);
   private PIDController yController = new PIDController(Constants.SwerveConstants.kPY, .1, 0);
-  private PIDController thetaController = new PIDController(Constants.SwerveConstants.kPTheta, .1, 0);
+  private PIDController thetaController = new PIDController(Constants.SwerveConstants.kPTheta*2, .1, 0);
 
  
 
@@ -119,6 +123,11 @@ public class SwerveSubsystem extends SubsystemBase
     xController.setTolerance(Constants.SwerveConstants.kXTolerance);
     yController.setTolerance(Constants.SwerveConstants.kYTolerance);
     thetaController.setTolerance(Constants.SwerveConstants.kThetaTolerance);
+
+    SmartDashboard.putNumber("Subsystem/Vision/xSetPoint", VisionConstants.rightAlignmentX);
+    SmartDashboard.putNumber("Subsystem/Vision/ySetPoint", VisionConstants.rightAlignmentY);
+
+
   }
 
   /**
@@ -126,7 +135,7 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public void setupPhotonVision()
   {
-    vision = new VisionSubsystem(swerveDrive::getPose, swerveDrive.field);
+    vision = new VisionSubsystem( swerveDrive.field);
   }
 
   @Override
@@ -136,7 +145,7 @@ public class SwerveSubsystem extends SubsystemBase
     
     // When vision is enabled we must manually update odometry in SwerveDrive
       swerveDrive.updateOdometry();
-      vision.updatePoseEstimation(swerveDrive);
+      //vision.updatePoseEstimation(swerveDrive);
       SmartDashboard.putNumber("Subsystem/Swerve/FlipDirection", flipDirection());
       SmartDashboard.putBoolean("Subsystem/Swerve/ShouldFlip", isRedAlliance());
     //these should also be printed out by Yagsl's logging, but I wanted to test out using structu publishers so that we can produe this logging fi we ever abandon yagsl
@@ -575,163 +584,23 @@ public class SwerveSubsystem extends SubsystemBase
     });
 }
 
-/**
- * drives to a given deposit location on the field
- * @param id the april tag id of the reef side
- * @param left the pole of the reef to score on
- * @return
- */
-public Command getDriveToReefCommand(int id, boolean left) {
-  if (left) {
-    switch (id) {
-        case 7:
-            return driveToPose(Constants.FieldPositions.L7);
-        case 8:
-            return driveToPose(Constants.FieldPositions.L8);
-        case 9:
-            return driveToPose(Constants.FieldPositions.L9);
-        case 10:
-            return driveToPose(Constants.FieldPositions.L10);
-        case 11:
-            return driveToPose(Constants.FieldPositions.L11);
-        case 17:
-            return driveToPose(Constants.FieldPositions.L17);
-        case 18:
-            return driveToPose(Constants.FieldPositions.L18);
-        case 19:
-            return driveToPose(Constants.FieldPositions.L19);
-        case 20:
-            return driveToPose(Constants.FieldPositions.L20);
-        case 21:
-            return driveToPose(Constants.FieldPositions.L21);
-        case 22:
-            return driveToPose(Constants.FieldPositions.L22);
-      }
-    }
-    else {
-      switch (id) {
-        case 7:
-            return driveToPose(Constants.FieldPositions.R7);
-        case 8:
-            return driveToPose(Constants.FieldPositions.R8);
-        case 9:
-            return driveToPose(Constants.FieldPositions.R9);
-        case 10:
-            return driveToPose(Constants.FieldPositions.R10);
-        case 11:
-            return driveToPose(Constants.FieldPositions.R11);
-        case 17:
-            return driveToPose(Constants.FieldPositions.R17);
-        case 18:
-            return driveToPose(Constants.FieldPositions.R18);
-        case 19:
-            return driveToPose(Constants.FieldPositions.R19);
-        case 20:
-            return driveToPose(Constants.FieldPositions.R20);
-        case 21:
-            return driveToPose(Constants.FieldPositions.R21);
-        case 22:
-            return driveToPose(Constants.FieldPositions.R22);
-      }
-      
-    }
-    return new InstantCommand();
-}
+public Command driveToRobotRelativeTransform(Supplier<Transform3d> transformSupplier) {
+  return run(() -> {
+    //Transform3d tr = transformSupplier.get().plus(new Transform3d(0,0,0, Constants.VisionConstants.ReefCamera.robotToCamTransform));
+    Translation2d tr = new Translation2d(transformSupplier.get().getX(),transformSupplier.get().getY()).rotateBy(Rotation2d.fromDegrees(-30+transformSupplier.get().getRotation().getZ()));
+    Rotation3d rotated = transformSupplier.get().getRotation().rotateBy(new Rotation3d(0,0,Math.toRadians(-30)));
+    double xPower = xController.calculate(tr.getX(), Constants.VisionConstants.rightAlignmentX);
+    double yPower = yController.calculate(tr.getY(), Constants.VisionConstants.rightAlignmentY);
+    double thetaPower = thetaController.calculate(rotated.getAngle(), 4);
+    //this.drive(new ChassisSpeeds(-xPower, -yPower, 2*thetaPower));
+    SmartDashboard.putNumber("Subsystem/Vision/xActualPose", tr.getX());
+    SmartDashboard.putNumber("Subsystem/Vision/yActualPose", tr.getY());
+    SmartDashboard.putNumber("Subsystem/Vision/ThetaActual", rotated.getAngle());
 
-/**
- * drives to a given deposit location on the field
- * @param id the april tag id of the reef side
- * @param left the pole of the reef to score on
- * @return
- */
-public Command getPathfindToReefCommand(int id, boolean left) {
-  if (left) {
-    switch (id) {
-        case 7:
-            return pathFindToPose(Constants.FieldPositions.L7);
-        case 8:
-            return pathFindToPose(Constants.FieldPositions.L8);
-        case 9:
-            return pathFindToPose(Constants.FieldPositions.L9);
-        case 10:
-            return pathFindToPose(Constants.FieldPositions.L10);
-        case 11:
-            return pathFindToPose(Constants.FieldPositions.L11);
-        case 17:
-            return pathFindToPose(Constants.FieldPositions.L17);
-        case 18:
-            return pathFindToPose(Constants.FieldPositions.L18);
-        case 19:
-            return pathFindToPose(Constants.FieldPositions.L19);
-        case 20:
-            return pathFindToPose(Constants.FieldPositions.L20);
-        case 21:
-            return pathFindToPose(Constants.FieldPositions.L21);
-        case 22:
-            return pathFindToPose(Constants.FieldPositions.L22);
-      }
-    }
-    else {
-      switch (id) {
-        case 7:
-            return pathFindToPose(Constants.FieldPositions.R7);
-        case 8:
-            return pathFindToPose(Constants.FieldPositions.R8);
-        case 9:
-            return pathFindToPose(Constants.FieldPositions.R9);
-        case 10:
-            return pathFindToPose(Constants.FieldPositions.R10);
-        case 11:
-            return pathFindToPose(Constants.FieldPositions.R11);
-        case 17:
-            return pathFindToPose(Constants.FieldPositions.R17);
-        case 18:
-            return pathFindToPose(Constants.FieldPositions.R18);
-        case 19:
-            return pathFindToPose(Constants.FieldPositions.R19);
-        case 20:
-            return pathFindToPose(Constants.FieldPositions.R20);
-        case 21:
-            return pathFindToPose(Constants.FieldPositions.R21);
-        case 22:
-            return pathFindToPose(Constants.FieldPositions.R22);
-      }
-      
-    }
-    return new InstantCommand();
-}
-  
+    SmartDashboard.putString("AlignmentState","Enabled");
 
-/**
- * Drives to the closest deposit position on the reef
- * @return
- */
-public Command getDriveToClosestReefPoseCommand(boolean left) {
-  Set<Subsystem> requirements = new HashSet<Subsystem>();
-  requirements.add(this);
-  if(left) {
-    return new DeferredCommand(() -> driveToPose(swerveDrive.getPose().nearest(Constants.FieldPositions.kLeftReefPoses)), requirements);
-  }
-  else {
-    return new DeferredCommand(() -> driveToPose(swerveDrive.getPose().nearest(Constants.FieldPositions.kRightReefPoses)), requirements);
-  }
+  }).andThen(new InstantCommand(()->SmartDashboard.putString("AlignmentState","Disabled")));
 }
-
-/**
- * Pathfinds to the closest deposit position on the reef
- * @return
- */
-public Command getPathfindToClosestReefPoseCommand(boolean left) {
-  Set<Subsystem> requirements = new HashSet<Subsystem>();
-  requirements.add(this);
-  if(left) {
-    return new DeferredCommand(() -> pathFindToPose(swerveDrive.getPose().nearest(Constants.FieldPositions.kLeftReefPoses)), requirements);
-  }
-  else {
-    return new DeferredCommand(() -> pathFindToPose(swerveDrive.getPose().nearest(Constants.FieldPositions.kRightReefPoses)), requirements);
-  }
-}
-
 
 
 }

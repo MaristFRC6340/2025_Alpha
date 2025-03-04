@@ -72,10 +72,10 @@ public final class Constants {
 
     public static final class ReefCamera{
       public static final String name = "Arducam_B0495_(USB3_2.3MP)";
-      public static  Rotation3d robotToCamTransform = new Rotation3d(0, 0, Units.degreesToRadians(-90));
-      public static  Translation3d robotToCamTranslation=new Translation3d(Units.inchesToMeters(7.5),
-      Units.inchesToMeters(-7.5),
-      Units.inchesToMeters(11.25));
+      public static  Rotation3d robotToCamTransform = new Rotation3d(0, 0, Units.degreesToRadians(30));
+      public static  Translation3d robotToCamTranslation=new Translation3d(Units.inchesToMeters(0),
+      Units.inchesToMeters(0),
+      Units.inchesToMeters(0));
       public static  Matrix<N3, N1> singleTagStdDevs= VecBuilder.fill(4, 4, 8);
       public static  Matrix<N3, N1> multiTagStdDevsMatrix= VecBuilder.fill(0.5, 0.5, 1); 
       public static InterpolatingDoubleTreeMap stdDevsMap = new InterpolatingDoubleTreeMap();
@@ -84,6 +84,11 @@ public final class Constants {
       public static final String name = "Arducam_B0495_(USB3_2.3MP)";
       
     }
+
+    public static final double leftAlignmentX = .329;
+    public static final double leftAlignmentY = .152;
+    public static final double rightAlignmentX = .473;
+    public static final double rightAlignmentY = .439;
   }
 
   // goal: find a good config (maybe online?) and stick with it
@@ -219,9 +224,9 @@ public final class Constants {
   }
 
   public static class SwerveConstants {
-    public static final double kPX = 2;
-    public static final double kPY = 2;
-    public static final double kPTheta = 5;
+    public static final double kPX = .5;
+    public static final double kPY = .5;
+    public static final double kPTheta = .5;
     public static final double kXTolerance = 0; //Meters
     public static final double kYTolerance = 0; //Meters
     public static final double kThetaTolerance = 0;

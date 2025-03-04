@@ -164,8 +164,7 @@ public class RobotContainer {
         driverLTrigger.whileTrue(m_SwerveSubsystem.driveRobotCentric(driveAngularAdjustment));
        
        
-        driverL.whileTrue(m_SwerveSubsystem.getDriveToClosestReefPoseCommand(true));
-        driverR.whileTrue(m_SwerveSubsystem.getDriveToClosestReefPoseCommand(false));
+        driverR.whileTrue(m_SwerveSubsystem.driveToRobotRelativeTransform(()->m_SwerveSubsystem.vision.getReefToCamera()));
         //driverR.onTrue(new RunCommand(()->m_SwerveSubsystem.drive(new Translation2d(0,1),Math.toRadians(0),false)));
 
         
@@ -220,6 +219,7 @@ public class RobotContainer {
       NamedCommands.registerCommand("Outtake", m_CoralSubsystem.getSetSpeedCommand(.3).withTimeout(5));//used to be 1,1,
       NamedCommands.registerCommand("ShadowTechnique", m_CoralSubsystem.getShadowTechniqueCommand(.5).withTimeout(1));
       NamedCommands.registerCommand("RickyTechnique", /**m_CoralSubsystem.getSetSpeedCommand(1).withTimeout(.7).andThen(m_CoralSubsystem.getShadowTechniqueCommand(.5).withTimeout(.7))**/new InstantCommand());
+     
       NamedCommands.registerCommand("CoralIntake", new InstantCommand(() -> m_elevator.setCoralIntake()));
       NamedCommands.registerCommand("L1", new InstantCommand(() -> m_elevator.setCoralState(1)));
       NamedCommands.registerCommand("L2", new InstantCommand(() -> m_elevator.setCoralState(2)));
