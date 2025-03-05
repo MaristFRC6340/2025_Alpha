@@ -88,8 +88,8 @@ public class VisionSubsystem extends SubsystemBase
   public void periodic(){
 
     updateResults();
-    reefTagDisp.set(getReefToCamera());
-    SmartDashboard.putNumber("SmartDashboard/Subsystem/Vision/rotation", Math.toDegrees(getReefToCamera().getRotation().getAngle()));
+    reefTagDisp.set(getCameraToReef());
+    SmartDashboard.putNumber("SmartDashboard/Subsystem/Vision/rotation", Math.toDegrees(getCameraToReef().getRotation().getAngle()));
   }
 
 
@@ -104,7 +104,7 @@ public class VisionSubsystem extends SubsystemBase
     }
   }
 
-  public Transform3d getReefToCamera() {
+  public Transform3d getCameraToReef() {
     if(latestSuccessfulResult != null && Constants.FieldPositions.isReefID(latestSuccessfulResult.getBestTarget().getFiducialId())) {
       return latestSuccessfulResult.getBestTarget().getBestCameraToTarget();
     }

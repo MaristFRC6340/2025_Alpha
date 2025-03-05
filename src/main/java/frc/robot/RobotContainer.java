@@ -164,7 +164,8 @@ public class RobotContainer {
         driverLTrigger.whileTrue(m_SwerveSubsystem.driveRobotCentric(driveAngularAdjustment));
        
        
-        driverR.whileTrue(m_SwerveSubsystem.driveToRobotRelativeTransform(()->m_SwerveSubsystem.vision.getReefToCamera()));
+        driverR.whileTrue(m_SwerveSubsystem.driveToRobotRelativeTransform(()->m_SwerveSubsystem.vision.getCameraToReef(), false));
+        driverL.whileTrue(m_SwerveSubsystem.driveToRobotRelativeTransform(()->m_SwerveSubsystem.vision.getCameraToReef(), true));
         //driverR.onTrue(new RunCommand(()->m_SwerveSubsystem.drive(new Translation2d(0,1),Math.toRadians(0),false)));
 
         
