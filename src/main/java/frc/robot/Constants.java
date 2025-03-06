@@ -86,10 +86,12 @@ public final class Constants {
       
     }
 
-    public static final double leftAlignmentX = .294;
-    public static final double leftAlignmentY = .26;
-    public static final double rightAlignmentX = .605;
-    public static final double rightAlignmentY = .26;
+    public static final double leftAlignmentX = .2435737274077523; //meters
+    public static final double leftAlignmentY = 0.2773943783670729;
+    public static final double rightAlignmentX = .2435737274077523;
+    public static final double rightAlignmentY = 0.6354460866293814;
+    public static final double thetaAlignment = -Math.PI/2; //degrees
+    public static double maxAlignmentDistance = 1.5;
   }
 
   // goal: find a good config (maybe online?) and stick with it
@@ -225,11 +227,11 @@ public final class Constants {
   }
 
   public static class SwerveConstants {
-    public static final double kPX = 3;
-    public static final double kPY = 3;
-    public static final double kPTheta = 1;
-    public static final double kXTolerance = 0; //Meters
-    public static final double kYTolerance = 0; //Meters
+    public static final double kPX = 1.5;
+    public static final double kPY = 1.5;
+    public static final double kPTheta = 1.5;
+    public static final double kXTolerance = 0.00; //Meters
+    public static final double kYTolerance = 0.00; //Meters
     public static final double kThetaTolerance = 0;
     public static double kStoredRadius = 3.9527559/2; // to be configured later
     public static double kDrivebaseRadius = .409;

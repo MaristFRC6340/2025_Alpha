@@ -9,6 +9,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -23,6 +24,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTablesJNI;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -70,45 +72,86 @@ public class VisionSubsystem extends SubsystemBase
   private             Field2d             field2d;
 
   private PhotonCamera reefCamera;
-  private PhotonPipelineResult latestSuccessfulResult;
+  private Optional<Pose2d> lastCalculatedDist;
+  private PhotonPoseEstimator poseEstimator;
+  private int latestID;
 
-  StructPublisher<Transform3d> reefTagDisp = NetworkTableInstance.getDefault().getStructTopic("SmartDashboard/Subsystem/Vision/reefToCameraTransform", Transform3d.struct).publish();
+  StructPublisher<Pose2d> reefTagDisp = NetworkTableInstance.getDefault().getStructTopic("SmartDashboard/Subsystem/Vision/RobotToTag", Pose2d.struct).publish();
 
   public VisionSubsystem( Field2d field)
   {
     this.field2d = field;
     reefCamera = new PhotonCamera(Constants.VisionConstants.ReefCamera.name);
     // Constants.VisionConstants.ReefCamera.stdDevsMap.put();
-
-
+    poseEstimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.LOWEST_AMBIGUITY, new Transform3d(Constants.VisionConstants.ReefCamera.robotToCamTranslation, Constants.VisionConstants.ReefCamera.robotToCamTransform));
+    lastCalculatedDist = Optional.empty();
     
   }
 
   @Override
   public void periodic(){
-
-    updateResults();
-    reefTagDisp.set(getCameraToReef());
-    SmartDashboard.putNumber("SmartDashboard/Subsystem/Vision/rotation", Math.toDegrees(getCameraToReef().getRotation().getAngle()));
+    var pose = getRobotInTagSpace();
+    if(pose!=null && pose.isPresent())  {
+      reefTagDisp.set(pose.get());
+    }
+    
+    var result = reefCamera.getLatestResult();
+    if(result!=null && result.hasTargets()) {
+      latestID = result.getBestTarget().getFiducialId();
+    }
+    else {
+      latestID = -1;
+    }
+    
   }
 
 
-  public void updateResults() {
-    PhotonPipelineResult currentResult = null;
-    var unreadResults = reefCamera.getAllUnreadResults();
-    if(unreadResults.size()>0) {
-      currentResult = unreadResults.get(0);
+ 
+
+
+
+  public Optional<Pose2d> getRobotInTagSpace() {
+    // Get the latest result from the camera
+    PhotonPipelineResult result = reefCamera.getLatestResult();
+    
+    // Check if any targets are detected
+    if (result!=null && result.hasTargets()) {
+        // Get the current timestamp
+
+        // Update the pose estimator with the latest result
+        Optional<EstimatedRobotPose> estimatedPoseOptional = poseEstimator.update(result);
+
+        // Check if a pose was estimated
+        if (estimatedPoseOptional.isPresent()) {
+            EstimatedRobotPose estimatedPose = estimatedPoseOptional.get();
+
+            // Get the ID of the first detected tag
+            int tagID = result.getBestTarget().getFiducialId();
+
+            // Retrieve the pose of the detected tag from the field layout
+            Optional<Pose3d> tagPoseOptional = fieldLayout.getTagPose(tagID);
+
+            // Ensure the tag pose is available
+            if (tagPoseOptional.isPresent()) {
+                Pose3d tagPose = tagPoseOptional.get();
+
+                // Compute the robot's pose relative to the tag
+                Pose2d robotPose = estimatedPose.estimatedPose.toPose2d();
+                Pose2d tagPose2d = tagPose.toPose2d();
+                Pose2d robotInTagSpace = robotPose.relativeTo(tagPose2d);
+                lastCalculatedDist = Optional.of(robotInTagSpace);
+
+                // Return the robot's pose in tag space
+                return Optional.of(robotInTagSpace);
+            }
+        }
     }
-    if(currentResult!=null && currentResult.hasTargets() && currentResult.getBestTarget().poseAmbiguity<.3) {
-      latestSuccessfulResult = currentResult;
-    }
+
+    // Return empty if no valid pose could be estimated
+    return lastCalculatedDist;
   }
 
-  public Transform3d getCameraToReef() {
-    if(latestSuccessfulResult != null && Constants.FieldPositions.isReefID(latestSuccessfulResult.getBestTarget().getFiducialId())) {
-      return latestSuccessfulResult.getBestTarget().getBestCameraToTarget();
-    }
-    return new Transform3d();
+  public int getLatestID() { 
+    return latestID;
   }
-
 }

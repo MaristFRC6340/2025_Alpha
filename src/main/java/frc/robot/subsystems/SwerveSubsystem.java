@@ -63,6 +63,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleSupplier;
+import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import org.json.simple.parser.ParseException;
 import org.photonvision.targeting.PhotonPipelineResult;
@@ -88,9 +89,9 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public VisionSubsystem vision;
   
-  private PIDController xController = new PIDController(Constants.SwerveConstants.kPX, .1, 0);
-  private PIDController yController = new PIDController(Constants.SwerveConstants.kPY, .1, 0);
-  private PIDController thetaController = new PIDController(Constants.SwerveConstants.kPTheta*2, .1, 0);
+  private PIDController xController = new PIDController(Constants.SwerveConstants.kPX, 0, 0);
+  private PIDController yController = new PIDController(Constants.SwerveConstants.kPY, 0, 0);
+  private PIDController thetaController = new PIDController(Constants.SwerveConstants.kPTheta, 0, 0);
 
  
 
@@ -113,7 +114,7 @@ public class SwerveSubsystem extends SubsystemBase
     {
       throw new RuntimeException(e);
     }
-    swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.
+    swerveDrive.setHeadingCorrection(true); // Heading correction should only be used while controlling the robot via angle.
     swerveDrive.setCosineCompensator(false);//TODO set this to true maybe? // Disables cosine compensation for simulations since it causes discrepancies not seen in real life.
     swerveDrive.setAngularVelocityCompensation(true,true,0.1); //Correct for skew that gets worse as angular velocity increases. Start with a coefficient of 0.1.
     swerveDrive.setModuleEncoderAutoSynchronize(false,1); // Enable if you want to resynchronize your absolute encoders and motor encoders periodically when they are not moving.
@@ -123,10 +124,11 @@ public class SwerveSubsystem extends SubsystemBase
     xController.setTolerance(Constants.SwerveConstants.kXTolerance);
     yController.setTolerance(Constants.SwerveConstants.kYTolerance);
     thetaController.setTolerance(Constants.SwerveConstants.kThetaTolerance);
-
-    SmartDashboard.putNumber("Subsystem/Vision/xSetPoint", VisionConstants.rightAlignmentX);
-    SmartDashboard.putNumber("Subsystem/Vision/ySetPoint", VisionConstants.rightAlignmentY);
-
+    SmartDashboard.putNumber("Subsystem/Vision/rightXSetPoint", VisionConstants.rightAlignmentX);
+    SmartDashboard.putNumber("Subsystem/Vision/rightYSetPoint", VisionConstants.rightAlignmentY);
+    SmartDashboard.putNumber("Subsystem/Vision/ThetaSetpoint", VisionConstants.thetaAlignment);
+    SmartDashboard.putNumber("Subsystem/Vision/leftXSetpoint", VisionConstants.leftAlignmentX);
+    SmartDashboard.putNumber("Subsystem/Vision/leftYSetpoint", VisionConstants.leftAlignmentY);
 
   }
 
@@ -606,6 +608,35 @@ public Command driveToRobotRelativeTransform(Supplier<Transform3d> transformSupp
     SmartDashboard.putString("AlignmentState","Enabled");
   }).andThen(new InstantCommand(()->SmartDashboard.putString("AlignmentState","Disabled")));
 }
+
+public Command alignWithReef(Supplier<Optional<Pose2d>> poseSupplier, DoubleSupplier driverInput, IntSupplier idSupplier, boolean left) {
+
+  
+  return Commands.either(runEnd(() -> {
+    Optional<Pose2d> currentPoseOpt = poseSupplier.get();
+    if(currentPoseOpt.isPresent()) {
+      Pose2d currentPose = currentPoseOpt.get();
+      double xPower = xController.calculate(currentPose.getX(), left ? Constants.VisionConstants.leftAlignmentX : Constants.VisionConstants.rightAlignmentX);
+      double yPower = yController.calculate(currentPose.getY(), left ? Constants.VisionConstants.leftAlignmentY : Constants.VisionConstants.rightAlignmentY);
+      double thetaPower = thetaController.calculate(currentPose.getRotation().getRadians(), Constants.VisionConstants.thetaAlignment);
+      SmartDashboard.putNumber("Subsystem/Vision/actualAlignmentX",currentPose.getX());
+      SmartDashboard.putNumber("Subsystem/Vision/actualAlignmentY",currentPose.getY());
+      SmartDashboard.putNumber("Subsystem/Vision/actualAlignmentTheta",currentPose.getRotation().getRadians());
+      SmartDashboard.putNumber("Subsystem/Vision/xPOut",xPower);
+      SmartDashboard.putNumber("Subsystem/Vision/yPOut",yPower);
+      SmartDashboard.putNumber("Subsystem/Vision/thetaOut",thetaPower);
+      this.drive(new ChassisSpeeds(-yPower, driverInput.getAsDouble(), thetaPower));
+    }
+  }, () -> {
+    swerveDrive.drive(new ChassisSpeeds(0,0,0));
+  }),
+  Commands.none(),
+  () -> {
+    return (Constants.FieldPositions.isReefID(idSupplier.getAsInt()) && poseSupplier.get().isPresent() && poseSupplier.get().get().getX()<Constants.VisionConstants.maxAlignmentDistance);
+  });
+
+}
+
 
 
 }

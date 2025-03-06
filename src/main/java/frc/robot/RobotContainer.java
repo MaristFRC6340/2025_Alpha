@@ -164,12 +164,12 @@ public class RobotContainer {
         driverLTrigger.whileTrue(m_SwerveSubsystem.driveRobotCentric(driveAngularAdjustment));
        
        
-        driverR.whileTrue(m_SwerveSubsystem.driveToRobotRelativeTransform(()->m_SwerveSubsystem.vision.getCameraToReef(), false));
-        driverL.whileTrue(m_SwerveSubsystem.driveToRobotRelativeTransform(()->m_SwerveSubsystem.vision.getCameraToReef(), true));
+        // driverR.whileTrue(m_SwerveSubsystem.driveToRobotRelativeTransform(()->m_SwerveSubsystem.vision.getCameraToReef(), false));
+        // driverL.whileTrue(m_SwerveSubsystem.driveToRobotRelativeTransform(()->m_SwerveSubsystem.vision.getCameraToReef(), true));
         //driverR.onTrue(new RunCommand(()->m_SwerveSubsystem.drive(new Translation2d(0,1),Math.toRadians(0),false)));
 
-        
-       
+        driverL.whileTrue(m_SwerveSubsystem.alignWithReef(() -> m_SwerveSubsystem.vision.getRobotInTagSpace(), () -> m_driverController.getLeftY(), () -> m_SwerveSubsystem.vision.getLatestID(), true));
+        driverR.whileTrue(m_SwerveSubsystem.alignWithReef(() -> m_SwerveSubsystem.vision.getRobotInTagSpace(), () -> m_driverController.getLeftY(), () -> m_SwerveSubsystem.vision.getLatestID(), false));
 
         //DPAD Drive To Commands
         // driverDpadUp.whileTrue(m_SwerveSubsystem.driveToPose(Constants.FieldPositions.BLUE_CLIMB_AREA));
