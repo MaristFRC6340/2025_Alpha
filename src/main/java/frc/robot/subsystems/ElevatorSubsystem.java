@@ -19,6 +19,7 @@ import edu.wpi.first.units.measure.MutDistance;
 import edu.wpi.first.units.measure.MutLinearVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycle;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -35,7 +36,6 @@ import static edu.wpi.first.units.Units.Volts;
 import java.util.function.DoubleSupplier;
 
 enum ElevatorStates{
-    REST,
     CORALINTAKE,
     CORALL1,
     CORALL2,
@@ -49,7 +49,8 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     TalonFX leftMotor;
     TalonFX rightMotor;
-    ElevatorStates state = ElevatorStates.REST;
+    ElevatorStates state = ElevatorStates.CORALINTAKE;
+    DigitalInput limitSwitch = new DigitalInput(0);
 
     MutVoltage appliedVoltage = Volts.mutable(0);
     MutDistance distance = Meters.mutable(0);
@@ -80,6 +81,19 @@ public class ElevatorSubsystem extends SubsystemBase{
         rightMotor.setControl(m_Follower);
         //SignalLogger.start();
         
+    }
+
+    public void toggleL1Intake(){
+        switch(state){
+            case CORALINTAKE:
+                setCoralState(1);
+                state = ElevatorStates.CORALL1;
+                break;
+            default:
+                setCoralIntake();
+                state = ElevatorStates.CORALINTAKE;
+                break;
+        }
     }
 
    public void increaseCoralState(){
@@ -147,8 +161,8 @@ public class ElevatorSubsystem extends SubsystemBase{
             state=ElevatorStates.CORALL2;
             break;
         case 3:
-            setPosition(ElevatorConstants.coralL4);
-            state=ElevatorStates.CORALL4;
+            setPosition(ElevatorConstants.coralL3);
+            state=ElevatorStates.CORALL3;
             break;
         case 4:
             setPosition(ElevatorConstants.coralL4);
@@ -190,7 +204,8 @@ public class ElevatorSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("Subsystem/Elevator/RightMotor/angle", rightMotor.getPosition().getValue().magnitude());
         SmartDashboard.putNumber("Subsystem/Elevator/RightMotor/voltage", rightMotor.getMotorVoltage().getValueAsDouble());
         SmartDashboard.putNumber("Subsystem/Elevator/RightMotor/velocity", rightMotor.getVelocity().getValueAsDouble());
-        
+        SmartDashboard.putBoolean("Subsystem/Elevator/LimitSwitch", getLimitSwitch());
+
         //SmartDashboard.putData("Subsystem/Elevator/currentCommand", this.getCurrentCommand());
         //SmartDashboard.putData("Subsystem/Elevator/defaultCommand", this.getDefaultCommand());
     }
@@ -236,5 +251,12 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     public Command goHome() {
         return getSetPositionCommand(0);
+    }
+    /**
+     * returns true if at rest
+     * @return
+     */
+    public boolean getLimitSwitch() {
+        return !limitSwitch.get();
     }
 }

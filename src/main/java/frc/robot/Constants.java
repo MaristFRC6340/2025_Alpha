@@ -112,8 +112,8 @@ public final class Constants {
 
 
     private static final MotionMagicConfigs kMagicConfigs = new MotionMagicConfigs()
-    .withMotionMagicAcceleration(4)
-    .withMotionMagicCruiseVelocity(4)
+    .withMotionMagicAcceleration(5)
+    .withMotionMagicCruiseVelocity(6)
     .withMotionMagicExpo_kA(0)
     .withMotionMagicExpo_kV(0);
 

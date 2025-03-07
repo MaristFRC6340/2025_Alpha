@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
@@ -105,6 +106,8 @@ public class RobotContainer {
   private Trigger driverDpadRight = m_driverController.povRight();
   private Trigger driverDpadDown = m_driverController.povDown();
   private Trigger driverDpadLeft = m_driverController.povLeft();
+
+  private Trigger limitSwitch = new Trigger(() -> m_elevator.getLimitSwitch());
   
 
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(m_SwerveSubsystem.getSwerveDrive(),
@@ -181,13 +184,16 @@ public class RobotContainer {
       //ACTUATOR CONTROLLER
 
       actuatorA.whileTrue(new InstantCommand(()->m_HuggerSubsystem.setPosition(Constants.HuggerConstants.intakeAlgaePosition)).andThen(()->m_elevator.setPosition(ElevatorConstants.lowerAlgaeHeight)));
-      actuatorX.whileTrue(new InstantCommand(()->m_HuggerSubsystem.setPosition(Constants.HuggerConstants.outtakeAlgaeProcessor)).andThen(()->m_elevator.setPosition(ElevatorConstants.processorAlgaeHight)));
+      //actuatorX.whileTrue(new InstantCommand(()->m_HuggerSubsystem.setPosition(Constants.HuggerConstants.outtakeAlgaeProcessor)).andThen(()->m_elevator.setPosition(ElevatorConstants.processorAlgaeHight)));
       actuatorY.whileTrue(new InstantCommand(()->m_HuggerSubsystem.setPosition(Constants.HuggerConstants.intakeAlgaePosition)).andThen(()->m_elevator.setPosition(ElevatorConstants.upperAlgaeHeight)));
 
-      actuatorDpadUp.onTrue(new InstantCommand(()->m_elevator.increaseCoralState()));
-      actuatorDpadDown.onTrue(new InstantCommand(()->m_elevator.decreseCoralState()));
-      actuatorDpadLeft.onTrue(new InstantCommand(()->m_elevator.setCoralIntake()));
       
+      actuatorDpadUp.onTrue(new InstantCommand(()->m_elevator.setCoralState(4)));
+      actuatorDpadLeft.onTrue(new InstantCommand(()->m_elevator.setCoralState(2)));
+      actuatorDpadRight.whileTrue(new InstantCommand(()->m_elevator.setCoralState(3)));
+      actuatorDpadDown.whileTrue(new InstantCommand(()->m_elevator.toggleL1Intake()));
+
+
       actuatorLStick.whileTrue(m_elevator.setPower(() -> -1*m_actuatorCommandPS5Controller.getLeftY()*.25));
       
      actuatorRStick.whileTrue(m_HuggerSubsystem.getSetPivotPower(() -> -1*m_actuatorCommandPS5Controller.getRightY()*.1));
@@ -198,11 +204,13 @@ public class RobotContainer {
       actuatorRTrigger.whileTrue(m_HuggerSubsystem.getSetSpeedCommand(()->.8));
       actuatorLTrigger.whileTrue(m_HuggerSubsystem.getSetSpeedCommand(()->-.8));
 
+      actuatorX.whileTrue(m_ClimberSubsystem.setPower(()->-.25));
 
       actuatorB.whileTrue(m_ClimberSubsystem.setPower(()->.25));
-      actuatorDpadRight.whileTrue(m_ClimberSubsystem.setPower(()->-.6));
       actuatorStart.onTrue(new InstantCommand(()->m_HuggerSubsystem.setPosition(HuggerConstants.straightUp)));
 
+
+      limitSwitch.onTrue(Commands.runOnce(() -> m_elevator.resetEncoder()));
       SmartDashboard.putData("Subsystem/Hugger/RESET_HUGGER_ENCODER",new InstantCommand(()->{
         m_HuggerSubsystem.resetPivotEncoder();
         m_HuggerSubsystem.setPosition(0);

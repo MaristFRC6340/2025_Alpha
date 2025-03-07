@@ -37,9 +37,9 @@ public class Robot extends TimedRobot {
   public Robot() {
 
     //I love logging
-    //DataLogManager.start();
+    DataLogManager.start();
     // Record both DS control and joystick data
-    //DriverStation.startDataLog(DataLogManager.getLog());
+    DriverStation.startDataLog(DataLogManager.getLog());
     m_gcTimer.start();
     Unmanaged.setPhoenixDiagnosticsStartTime(-1); //DISABLES THE DIAGNOSTIC SERVER
     
