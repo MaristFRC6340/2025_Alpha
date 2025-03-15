@@ -586,28 +586,6 @@ public class SwerveSubsystem extends SubsystemBase
     });
 }
 
-public Command driveToRobotRelativeTransform(Supplier<Transform3d> transformSupplier, boolean left) {
-  return run(() -> {
-    Transform3d robotToCamera = new Transform3d(0,0,0, Constants.VisionConstants.ReefCamera.robotToCamTransform);
-    Rotation3d rotated = transformSupplier.get().getRotation().rotateBy(new Rotation3d(0,0,Math.toRadians(-30)));
-    Pose3d disp = new Pose3d().transformBy(transformSupplier.get());
-    double angle = Math.toRadians(45)+disp.getRotation().getZ()-Math.toRadians(135);
-
-    //reefToCamera + robottoCamera^-1 = reef to Robot
-    double gigaX = disp.getY()*Math.sin(angle)+disp.getX()*Math.cos(angle);
-    double gigaY = disp.getX()*Math.sin(angle)-disp.getY()*Math.cos(angle); //Chatgpt did this idk what it does
-    double xPower = xController.calculate(gigaX, left ? Constants.VisionConstants.leftAlignmentX : Constants.VisionConstants.rightAlignmentX);
-    double yPower = yController.calculate(gigaY, left ? Constants.VisionConstants.leftAlignmentY : Constants.VisionConstants.rightAlignmentY);
-    double thetaPower = thetaController.calculate(disp.getRotation().getZ(), Math.toRadians(135));
-    this.drive(new ChassisSpeeds(-xPower, yPower, -thetaPower));
-    SmartDashboard.putNumber("Subsystem/Vision/xActualPose", disp.getX());
-    SmartDashboard.putNumber("Subsystem/Vision/yActualPose", disp.getY());
-    SmartDashboard.putNumber("Subsystem/Vision/ThetaActual", disp.getRotation().getZ());
-    SmartDashboard.putNumber("Subsystem/Vision/AdjustedY", disp.getX()*Math.sin(angle)-disp.getY()*Math.cos(angle));
-    SmartDashboard.putNumber("Subsystem/Vision/AdjustedX", disp.getY()*Math.sin(angle)+disp.getX()*Math.cos(angle));
-    SmartDashboard.putString("AlignmentState","Enabled");
-  }).andThen(new InstantCommand(()->SmartDashboard.putString("AlignmentState","Disabled")));
-}
 
 public Command alignWithReef(Supplier<Optional<Pose2d>> poseSupplier, DoubleSupplier driverInput, IntSupplier idSupplier, boolean left) {
 

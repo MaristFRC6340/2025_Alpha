@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.DutyCycleOut;
@@ -24,6 +25,8 @@ import edu.wpi.first.wpilibj.DutyCycle;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
@@ -69,9 +72,11 @@ public class ElevatorSubsystem extends SubsystemBase{
 
         leftMotor = new TalonFX(Constants.ElevatorConstants.kLeftID);
         leftMotor.getConfigurator().apply(Constants.ElevatorConstants.kLeftConfig);
+        leftMotor.setNeutralMode(NeutralModeValue.Brake);
 
         rightMotor = new TalonFX(Constants.ElevatorConstants.kRightID);
         rightMotor.getConfigurator().apply(Constants.ElevatorConstants.kRightConfig);
+        rightMotor.setNeutralMode(NeutralModeValue.Brake);
         //instantiate control modes
 
         voltageOutput= new VoltageOut(appliedVoltage);
@@ -83,6 +88,15 @@ public class ElevatorSubsystem extends SubsystemBase{
         
     }
 
+    public Command resetElevatortoRest(){
+
+        return (new InstantCommand(()->setCoralIntake())
+        .andThen(new RunCommand(()->{},this)
+        .until(()->Math.abs(getPosition()-ElevatorConstants.coralIntake)<.005))
+        .andThen(new RunCommand(()->setPower(()->-.1),this))
+        .until(()->getLimitSwitch()));
+    }
+
     public void toggleL1Intake(){
         switch(state){
             case CORALINTAKE:
@@ -91,6 +105,7 @@ public class ElevatorSubsystem extends SubsystemBase{
                 break;
             default:
                 setCoralIntake();
+                //resetElevatortoRest();
                 state = ElevatorStates.CORALINTAKE;
                 break;
         }

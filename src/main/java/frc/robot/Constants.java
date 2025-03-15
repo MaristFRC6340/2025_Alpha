@@ -147,8 +147,8 @@ public final class Constants {
     public static final double lowerAlgaeHeight = 2.67;
     public static final double upperAlgaeHeight = 4.2;
     public static final double processorAlgaeHight = 0.25;
-    public static final double coralL2 = 1.36;
-    public static final double coralL3 = 2.729;
+    public static final double coralL2 = 1.15; // Original 1.36: Reset by Michaud 15 Mar
+    public static final double coralL3 = 2.55; // Original 2.729: Reset by Michaud 15 mar
     public static final double coralL4 = 4.8;
 
     public static final double coralL1 = 1;

@@ -102,6 +102,7 @@ public class VisionSubsystem extends SubsystemBase
     else {
       latestID = -1;
     }
+    SmartDashboard.putBoolean("Subsystem/Vision_CAN_ALIGN", latestID!=-1 && Constants.FieldPositions.isReefID(latestID));
     
   }
 

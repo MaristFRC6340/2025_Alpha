@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.HuggerConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AutoAlignCommand;
 import frc.robot.commands.LittletonWheelRadiusCommand;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
@@ -234,6 +235,7 @@ public class RobotContainer {
       NamedCommands.registerCommand("L2", new InstantCommand(() -> m_elevator.setCoralState(2)));
       NamedCommands.registerCommand("L3", new InstantCommand(() -> m_elevator.setCoralState(3)));
       NamedCommands.registerCommand("L4", new InstantCommand(() -> m_elevator.setCoralState(4)));
+      NamedCommands.registerCommand("AutoAlign", new AutoAlignCommand(() -> m_SwerveSubsystem.vision.getRobotInTagSpace(), () -> m_SwerveSubsystem.vision.getLatestID(), true, m_SwerveSubsystem));
 
 
 
