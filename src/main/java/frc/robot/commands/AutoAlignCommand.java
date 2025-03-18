@@ -5,11 +5,13 @@ import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants;
 import frc.robot.subsystems.SwerveSubsystem;
 
@@ -29,40 +31,50 @@ public class AutoAlignCommand extends Command{
         this.idSupplier = idSupplier;
         this.left = left;
         this.swerve = swerve;
+
     }
 
-
+    @Override
+    public void initialize() {
+        
+    }
 
     @Override
     public void execute(){
         Optional<Pose2d> currentPoseOpt = poseSupplier.get();
+
+
     if(currentPoseOpt.isPresent()) {
+
       Pose2d currentPose = currentPoseOpt.get();
       distFromTag = currentPose;
 
-      double xPower = xController.calculate(currentPose.getX(), left ? Constants.VisionConstants.leftAlignmentX : Constants.VisionConstants.rightAlignmentX);
-      double yPower = yController.calculate(currentPose.getY(), left ? Constants.VisionConstants.leftAlignmentY : Constants.VisionConstants.rightAlignmentY);
+      double xPower = MathUtil.clamp(xController.calculate(currentPose.getX(), left ? Constants.VisionConstants.leftAlignmentX : Constants.VisionConstants.rightAlignmentX), -1, 1);
+      double yPower = MathUtil.clamp(yController.calculate(currentPose.getY(), left ? Constants.VisionConstants.leftAlignmentY : Constants.VisionConstants.rightAlignmentY), -1, 1);
       double thetaPower = thetaController.calculate(currentPose.getRotation().getRadians(), Constants.VisionConstants.thetaAlignment);
-    //   SmartDashboard.putNumber("Subsystem/Vision/actualAlignmentX",currentPose.getX());
-    //   SmartDashboard.putNumber("Subsystem/Vision/actualAlignmentY",currentPose.getY());
-    //   SmartDashboard.putNumber("Subsystem/Vision/actualAlignmentTheta",currentPose.getRotation().getRadians());
-    //   SmartDashboard.putNumber("Subsystem/Vision/xPOut",xPower);
-    //   SmartDashboard.putNumber("Subsystem/Vision/yPOut",yPower);
-      //SmartDashboard.putNumber("Subsystem/Vision/thetaOut",thetaPower);
-      swerve.drive(new ChassisSpeeds(-yPower, xPower, thetaPower));
+      SmartDashboard.putNumber("Subsystem/Vision/actualAlignmentX",currentPose.getX());
+      SmartDashboard.putNumber("Subsystem/Vision/actualAlignmentY",currentPose.getY());
+      SmartDashboard.putNumber("Subsystem/Vision/actualAlignmentTheta",currentPose.getRotation().getRadians());
+      SmartDashboard.putNumber("Subsystem/Vision/xPOut",xPower);
+      SmartDashboard.putNumber("Subsystem/Vision/yPOut",yPower);
+      SmartDashboard.putNumber("Subsystem/Vision/thetaOut",thetaPower);
+       swerve.drive(new ChassisSpeeds(-yPower, xPower, thetaPower));
+
      // System.out.println("in");
     }
-    //System.out.println("out");
+    
 
 }
 
+
     @Override
     public boolean isFinished(){
+       
         return (Math.abs(distFromTag.getX()-(left ? Constants.VisionConstants.leftAlignmentX : Constants.VisionConstants.rightAlignmentX))<.05) 
         && (Math.abs(distFromTag.getY()-(left ? Constants.VisionConstants.leftAlignmentY : Constants.VisionConstants.rightAlignmentY))<.05)
-        && (Math.abs(distFromTag.getRotation().getRadians()-Constants.VisionConstants.thetaAlignment)<.02)
+        && (Math.abs(distFromTag.getRotation().getRadians()-Constants.VisionConstants.thetaAlignment)<.05)
 
-        ;
+        ; 
 
     } 
 }

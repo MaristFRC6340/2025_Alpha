@@ -27,6 +27,7 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.HuggerConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoAlignCommand;
+import frc.robot.commands.Autos;
 import frc.robot.commands.LittletonWheelRadiusCommand;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
@@ -161,18 +162,24 @@ public class RobotContainer {
     configureBindings();
   }
 
+  // private void addAutos() {
+  //   autoChooser.addOption("Two Coral", Autos.getTwoCoral(
+  //     m_SwerveSubsystem.alignWithReef(() -> m_SwerveSubsystem.vision.getRobotInTagSpace(), () -> m_driverController.getLeftY(), () -> m_SwerveSubsystem.vision.getLatestID(), false),
+  //      Commands.sequence(new InstantCommand(() -> m_elevator.setCoralState(4)), new WaitCommand(1), m_CoralSubsystem.getSetSpeedCommand(.7).withTimeout(1.5)));
+  // }
+
   /**
    * 
    */
   private void configureBindings() {
-   
+  
+
+    //FOR TESTING:
+    driverX.whileTrue(new AutoAlignCommand(() -> m_SwerveSubsystem.vision.getRobotInTagSpace(), () -> m_SwerveSubsystem.vision.getLatestID(), false, m_SwerveSubsystem));
     
     driverB.whileTrue(new LittletonWheelRadiusCommand(m_SwerveSubsystem, 1));
       
       //DRIVER CONTROLS
-      //m_SwerveSubsystem.drive
-        m_SwerveSubsystem.setDefaultCommand(m_SwerveSubsystem.driveFieldOriented(driveAngularVelocity));
-        m_SwerveSubsystem.setDefaultCommand(m_SwerveSubsystem.driveFieldOriented(driveAngularVelocity));
         driverRTrigger.whileTrue(m_SwerveSubsystem.driveFieldOriented(driveAngularSlow));
         driverLTrigger.whileTrue(m_SwerveSubsystem.driveRobotCentric(driveAngularAdjustment));
        
@@ -235,7 +242,7 @@ public class RobotContainer {
    * For cleanliness, register all named commands here
    */
   private void registerNamedCommands(){
-      NamedCommands.registerCommand("Outtake", m_CoralSubsystem.getSetSpeedCommand(.3).withTimeout(5));//used to be 1,1,
+      NamedCommands.registerCommand("Outtake", m_CoralSubsystem.getSetSpeedCommand(.7).withTimeout(.7));//used to be 1,1,
       NamedCommands.registerCommand("ShadowTechnique", m_CoralSubsystem.getShadowTechniqueCommand(.5).withTimeout(1));
       NamedCommands.registerCommand("RickyTechnique", /**m_CoralSubsystem.getSetSpeedCommand(1).withTimeout(.7).andThen(m_CoralSubsystem.getShadowTechniqueCommand(.5).withTimeout(.7))**/new InstantCommand());
      
@@ -251,6 +258,9 @@ public class RobotContainer {
 
       NamedCommands.registerCommand("ResetOdom", new InstantCommand(() -> {
         m_SwerveSubsystem.resetOdometry(((PathPlannerAuto)autoChooser.getSelected()).getStartingPose());
+      }));
+      NamedCommands.registerCommand("ResetOdomL21", new InstantCommand(() -> {
+        m_SwerveSubsystem.resetOdometry(Constants.FieldPositions.L21);
       }));
   }
   public void periodic(){
@@ -269,5 +279,10 @@ public class RobotContainer {
   }
   public void onTeleopInit(){
     m_elevator.setPosition(m_elevator.getPosition());
+      m_SwerveSubsystem.setDefaultCommand(m_SwerveSubsystem.driveFieldOriented(driveAngularVelocity));
+
+  }
+  public void onAutoInit(){
+    m_SwerveSubsystem.removeDefaultCommand();
   }
 }

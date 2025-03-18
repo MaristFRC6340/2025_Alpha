@@ -91,8 +91,14 @@ public class VisionSubsystem extends SubsystemBase
   @Override
   public void periodic(){
     var pose = getRobotInTagSpace();
+    SmartDashboard.putBoolean("Subsystem/posePresent", pose.isPresent());
+
     if(pose!=null && pose.isPresent())  {
       reefTagDisp.set(pose.get());
+      SmartDashboard.putBoolean("Subsystem/idCheck", latestID!=-1 && Constants.FieldPositions.isReefID(latestID));
+      SmartDashboard.putBoolean("Subsystem/posCHeck",  pose.get().getX()<Constants.VisionConstants.maxAlignmentDistance );
+
+
       SmartDashboard.putBoolean("Subsystem/Vision_CAN_ALIGN", latestID!=-1 && Constants.FieldPositions.isReefID(latestID) && pose.get().getX()<Constants.VisionConstants.maxAlignmentDistance);
 
     }

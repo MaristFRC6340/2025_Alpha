@@ -243,7 +243,7 @@ public final class Constants {
     public static final Pose2d L18 = new Pose2d(3.357, 3.829, new Rotation2d(Math.toRadians(90)));
     public static final Pose2d L19 = new Pose2d(3.75, 5.100, new Rotation2d(Math.toRadians(30)));
     public static final Pose2d L20 = new Pose2d(4.915, 5.067, new Rotation2d(Math.toRadians(-30)));
-    public static final Pose2d L21 = new Pose2d(5.669, 4.190, new Rotation2d(Math.toRadians(-90)));
+    public static final Pose2d L21 = new Pose2d(5.669, 3.664, new Rotation2d(Math.toRadians(-90)));
     public static final Pose2d L22 = new Pose2d(5.142, 3.148, new Rotation2d(Math.toRadians(210)));
 
     public static final Pose2d R17 = new Pose2d(4.328, 2.764, new Rotation2d(Math.toRadians(150)));
