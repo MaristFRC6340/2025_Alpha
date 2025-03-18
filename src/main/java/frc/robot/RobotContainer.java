@@ -9,8 +9,11 @@ import java.io.File;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.studica.frc.AHRS;
+import com.studica.frc.AHRS.NavXComType;
 
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -142,9 +145,12 @@ public class RobotContainer {
   
 
   SendableChooser<Command> autoChooser;
+  ///private final AHRS m_gyro;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    ///m_gyro = new AHRS(NavXComType.kMXP_SPI);
+
 
     // Configure the trigger bindings
     registerNamedCommands();
@@ -154,6 +160,7 @@ public class RobotContainer {
     SmartDashboard.putData("OPMODE/autochooser",autoChooser);
     configureBindings();
   }
+
   /**
    * 
    */
@@ -163,6 +170,8 @@ public class RobotContainer {
     driverB.whileTrue(new LittletonWheelRadiusCommand(m_SwerveSubsystem, 1));
       
       //DRIVER CONTROLS
+      //m_SwerveSubsystem.drive
+        m_SwerveSubsystem.setDefaultCommand(m_SwerveSubsystem.driveFieldOriented(driveAngularVelocity));
         m_SwerveSubsystem.setDefaultCommand(m_SwerveSubsystem.driveFieldOriented(driveAngularVelocity));
         driverRTrigger.whileTrue(m_SwerveSubsystem.driveFieldOriented(driveAngularSlow));
         driverLTrigger.whileTrue(m_SwerveSubsystem.driveRobotCentric(driveAngularAdjustment));
@@ -180,7 +189,7 @@ public class RobotContainer {
         // driverDpadRight.whileTrue(m_SwerveSubsystem.driveToPose(Constants.FieldPositions.BLUE_PROCESSOR));
         // driverDpadLeft.whileTrue(m_SwerveSubsystem.driveToPose(Constants.FieldPositions.BLUE_LEFT_CORAL_STATION_PICKUP));
 
-        driverA.onTrue(new InstantCommand(()->m_SwerveSubsystem.zeroGyro()));
+        driverA.onTrue(new InstantCommand(()->m_SwerveSubsystem.zeroGyro()/**m_gyro.zeroYaw()**/));
 
       //ACTUATOR CONTROLLER
 
@@ -244,6 +253,9 @@ public class RobotContainer {
         m_SwerveSubsystem.resetOdometry(((PathPlannerAuto)autoChooser.getSelected()).getStartingPose());
       }));
   }
+  public void periodic(){
+    ///SmartDashboard.putNumber("gyroraw", m_gyro.getYaw());
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -254,5 +266,8 @@ public class RobotContainer {
     // An example command will be run in autonomous
     return autoChooser.getSelected();
     //return null;
+  }
+  public void onTeleopInit(){
+    m_elevator.setPosition(m_elevator.getPosition());
   }
 }

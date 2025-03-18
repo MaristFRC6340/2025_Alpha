@@ -18,6 +18,9 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
+import com.studica.frc.AHRS;
+import com.studica.frc.AHRS.NavXComType;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.epilogue.Logged;
@@ -98,6 +101,7 @@ public class SwerveSubsystem extends SubsystemBase
   StructPublisher<Pose2d> finalPoseEstimate = NetworkTableInstance.getDefault().getStructTopic("SmartDashboard/Subsystem/Swerve/finalPoseEstimate", Pose2d.struct).publish();
   StructPublisher<ChassisSpeeds> curChassisSpeed = NetworkTableInstance.getDefault().getStructTopic("SmartDashboard/Subsystem/Swerve/curChassisSpeeds", ChassisSpeeds.struct).publish();
   StructArrayPublisher<SwerveModuleState> swerveModuleState = NetworkTableInstance.getDefault().getStructArrayTopic("SmartDashboard/Subsystem/Swerve/curModuleStates", SwerveModuleState.struct).publish();
+
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
    *
@@ -158,7 +162,7 @@ public class SwerveSubsystem extends SubsystemBase
      // SmartDashboard.putData("Subsystem/Swerve/currentCommand", this.getCurrentCommand());
       //SmartDashboard.putData("Subsystem/Swerve/defaultCommand", this.getDefaultCommand());
 
-
+    //swerveDrive.getGyro().getRotation3d().getZ();
     
   }
 
@@ -603,7 +607,7 @@ public Command alignWithReef(Supplier<Optional<Pose2d>> poseSupplier, DoubleSupp
       SmartDashboard.putNumber("Subsystem/Vision/xPOut",xPower);
       SmartDashboard.putNumber("Subsystem/Vision/yPOut",yPower);
       SmartDashboard.putNumber("Subsystem/Vision/thetaOut",thetaPower);
-      this.drive(new ChassisSpeeds(-yPower, driverInput.getAsDouble(), thetaPower));
+      this.drive(new ChassisSpeeds(-yPower, xPower, thetaPower));
     }
   }, () -> {
     swerveDrive.drive(new ChassisSpeeds(0,0,0));

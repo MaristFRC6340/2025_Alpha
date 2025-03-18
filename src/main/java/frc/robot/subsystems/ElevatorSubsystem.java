@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.HuggerConstants;
 
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -236,6 +237,8 @@ public class ElevatorSubsystem extends SubsystemBase{
     }
     //Clamps the position value
     public void setPosition(double position) {
+        if(position==ElevatorConstants.upperAlgaeHeight)state=ElevatorStates.UPPERALGAE;
+        else if(position ==ElevatorConstants.lowerAlgaeHeight)state = ElevatorStates.LOWERALGAE;
         //position = MathUtil.clamp(position,Constants.ElevatorConstants.kMin,Constants.ElevatorConstants.kMax);
         leftMotor.setControl(m_MMEV.withPosition(position));
         rightMotor.setControl(m_Follower); // could be needed (or not)

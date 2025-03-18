@@ -149,7 +149,7 @@ public final class Constants {
     public static final double processorAlgaeHight = 0.25;
     public static final double coralL2 = 1.15; // Original 1.36: Reset by Michaud 15 Mar
     public static final double coralL3 = 2.55; // Original 2.729: Reset by Michaud 15 mar
-    public static final double coralL4 = 4.8;
+    public static final double coralL4 = 4.736;//original 4.8
 
     public static final double coralL1 = 1;
     public static final double coralIntake = .1;
@@ -218,7 +218,7 @@ public final class Constants {
     //Positions
     public static final double intakeAlgaePosition = -6.8;
     public static final double outtakeAlgaeProcessor = -4.17;
-    public static final double straightUp = -3.56;
+    public static final double straightUp = 0;
 
 
 
@@ -227,7 +227,7 @@ public final class Constants {
   }
 
   public static class SwerveConstants {
-    public static final double kPX = 1.5;
+    public static final double kPX = 2;
     public static final double kPY = 1.5;
     public static final double kPTheta = 1.5;
     public static final double kXTolerance = 0.00; //Meters

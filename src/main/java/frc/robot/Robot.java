@@ -69,6 +69,7 @@ public class Robot extends TimedRobot {
       System.gc();
       m_gcTimer.reset();
     }
+    m_robotContainer.periodic();
 
 
   }
@@ -104,6 +105,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    m_robotContainer.onTeleopInit();
+
     
   }
 

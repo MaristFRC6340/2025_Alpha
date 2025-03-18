@@ -93,6 +93,12 @@ public class VisionSubsystem extends SubsystemBase
     var pose = getRobotInTagSpace();
     if(pose!=null && pose.isPresent())  {
       reefTagDisp.set(pose.get());
+      SmartDashboard.putBoolean("Subsystem/Vision_CAN_ALIGN", latestID!=-1 && Constants.FieldPositions.isReefID(latestID) && pose.get().getX()<Constants.VisionConstants.maxAlignmentDistance);
+
+    }
+    else{
+      SmartDashboard.putBoolean("Subsystem/Vision_CAN_ALIGN", false);
+
     }
     
     var result = reefCamera.getLatestResult();
@@ -102,7 +108,6 @@ public class VisionSubsystem extends SubsystemBase
     else {
       latestID = -1;
     }
-    SmartDashboard.putBoolean("Subsystem/Vision_CAN_ALIGN", latestID!=-1 && Constants.FieldPositions.isReefID(latestID));
     
   }
 
@@ -155,4 +160,5 @@ public class VisionSubsystem extends SubsystemBase
   public int getLatestID() { 
     return latestID;
   }
+  
 }
