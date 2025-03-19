@@ -75,6 +75,7 @@ public class VisionSubsystem extends SubsystemBase
   private Optional<Pose2d> lastCalculatedDist;
   private PhotonPoseEstimator poseEstimator;
   private int latestID;
+  private Pose2d reefDstPose;
 
   StructPublisher<Pose2d> reefTagDisp = NetworkTableInstance.getDefault().getStructTopic("SmartDashboard/Subsystem/Vision/RobotToTag", Pose2d.struct).publish();
 
@@ -94,16 +95,24 @@ public class VisionSubsystem extends SubsystemBase
     SmartDashboard.putBoolean("Subsystem/posePresent", pose.isPresent());
 
     if(pose!=null && pose.isPresent())  {
-      reefTagDisp.set(pose.get());
-      SmartDashboard.putBoolean("Subsystem/idCheck", latestID!=-1 && Constants.FieldPositions.isReefID(latestID));
-      SmartDashboard.putBoolean("Subsystem/posCHeck",  pose.get().getX()<Constants.VisionConstants.maxAlignmentDistance );
+      reefDstPose = pose.get();
+      reefTagDisp.set(reefDstPose);
 
+      SmartDashboard.putBoolean("Subsystem/ALIGNED", 
+      (((Math.abs(reefDstPose.getX()- Constants.VisionConstants.leftAlignmentX)<VisionConstants.xTolerance) 
+      && (Math.abs(reefDstPose.getY()-Constants.VisionConstants.leftAlignmentY)<VisionConstants.yTolerance)
+      && (Math.abs(reefDstPose.getRotation().getRadians()-Constants.VisionConstants.thetaAlignment)<VisionConstants.thetaTolerance))||
+      ((Math.abs(reefDstPose.getX()- Constants.VisionConstants.rightAlignmentX)<VisionConstants.xTolerance) 
+      && (Math.abs(reefDstPose.getY()-Constants.VisionConstants.rightAlignmentY)<VisionConstants.yTolerance)
+      && (Math.abs(reefDstPose.getRotation().getRadians()-Constants.VisionConstants.thetaAlignment)<VisionConstants.thetaTolerance))
+      ));
 
       SmartDashboard.putBoolean("Subsystem/Vision_CAN_ALIGN", latestID!=-1 && Constants.FieldPositions.isReefID(latestID) && pose.get().getX()<Constants.VisionConstants.maxAlignmentDistance);
 
     }
     else{
       SmartDashboard.putBoolean("Subsystem/Vision_CAN_ALIGN", false);
+      SmartDashboard.putBoolean("Subsystem/ALIGNED", false);
 
     }
     

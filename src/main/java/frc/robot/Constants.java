@@ -92,6 +92,10 @@ public final class Constants {
     public static final double rightAlignmentY = 0.6354460866293814;
     public static final double thetaAlignment = -Math.PI/2; //degrees
     public static double maxAlignmentDistance = 1.5;
+
+    public static final double xTolerance = .05;
+    public static final double yTolerance = .05;
+    public static final double thetaTolerance = .05;
   }
 
   // goal: find a good config (maybe online?) and stick with it
