@@ -262,6 +262,9 @@ public class RobotContainer {
       NamedCommands.registerCommand("ResetOdomL21", new InstantCommand(() -> {
         m_SwerveSubsystem.resetOdometry(Constants.FieldPositions.L21);
       }));
+      NamedCommands.registerCommand("ResetOdomL20", new InstantCommand(() -> {
+        m_SwerveSubsystem.resetOdometry(Constants.FieldPositions.L20);
+      }));
   }
   public void periodic(){
     ///SmartDashboard.putNumber("gyroraw", m_gyro.getYaw());

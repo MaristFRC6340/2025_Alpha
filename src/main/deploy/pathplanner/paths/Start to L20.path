@@ -3,37 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.9373295454545455,
-        "y": 7.320610795454545
+        "x": 7.449,
+        "y": 6.134
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.5875218531468533,
-        "y": 6.536251821095571
+        "x": 7.0824358974358965,
+        "y": 5.903333333333333
       },
       "isLocked": false,
-      "linkedName": "CoralL"
+      "linkedName": "Barge Start"
     },
     {
       "anchor": {
-        "x": 3.439,
-        "y": 4.922884615384615
+        "x": 5.111217948717948,
+        "y": 5.170576923076924
       },
       "prevControl": {
-        "x": 2.8713717948717945,
-        "y": 5.862051282051281
+        "x": 6.060884615384613,
+        "y": 5.521935897435899
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "R19"
+      "linkedName": "L20"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 1,
-      "rotationDegrees": 0.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -47,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 29.999999999999996
+    "rotation": -29.999999999999996
   },
   "reversed": false,
-  "folder": "CoralL to Deposit",
+  "folder": "Start to Deposit",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 126.0
+    "rotation": -29.999999999999996
   },
   "useDefaultConstraints": true
 }

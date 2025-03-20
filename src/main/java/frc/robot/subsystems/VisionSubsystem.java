@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -26,6 +27,7 @@ import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -36,6 +38,7 @@ import frc.robot.Constants.VisionConstants.CameraTemplate;
 import frc.robot.Constants.VisionConstants.ReefCamera;
 
 import java.awt.Desktop;
+import java.text.FieldPosition;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -65,7 +68,7 @@ public class VisionSubsystem extends SubsystemBase
   /**
    * April Tag Field Layout of the year.
    */
-  public static final AprilTagFieldLayout fieldLayout  = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded); // k2025Reefscape
+  public static  AprilTagFieldLayout fieldLayout;
   
   
  
@@ -82,10 +85,29 @@ public class VisionSubsystem extends SubsystemBase
   public VisionSubsystem( Field2d field)
   {
     this.field2d = field;
+    try{
+      //= new AprilTagFieldLayout(Filesystem.getDeployDirectory()+"2025-reefscape-welded.json"); // k2025Reefscape
+    }
+    catch(Exception e){
+      System.out.println("Failed");
+
+    }
+    fieldLayout= AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
     reefCamera = new PhotonCamera(Constants.VisionConstants.ReefCamera.name);
     // Constants.VisionConstants.ReefCamera.stdDevsMap.put();
     poseEstimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.LOWEST_AMBIGUITY, new Transform3d(Constants.VisionConstants.ReefCamera.robotToCamTranslation, Constants.VisionConstants.ReefCamera.robotToCamTransform));
     lastCalculatedDist = Optional.empty();
+    // try{
+    //   Thread.sleep(1000);
+
+    //   reefCamera.setDriverMode(true);
+    //   Thread.sleep(1000);
+    //   reefCamera.setDriverMode(false);
+    // }
+    // catch(InterruptedException e){
+
+    // }
+   
     
   }
 
@@ -145,12 +167,26 @@ public class VisionSubsystem extends SubsystemBase
         // Check if a pose was estimated
         if (estimatedPoseOptional.isPresent()) {
             EstimatedRobotPose estimatedPose = estimatedPoseOptional.get();
+            // double rotation = estimatedPose.estimatedPose.toPose2d().getRotation().getRadians();
+            double y = estimatedPose.estimatedPose.toPose2d().getRotation().getRadians();
 
             // Get the ID of the first detected tag
-            int tagID = result.getBestTarget().getFiducialId();
+            int bestId = 0;
+            double bestDistance = Double.MAX_VALUE;
+            for(PhotonTrackedTarget t : result.getTargets()) {
+              if(!Constants.FieldPositions.isReefID(t.getFiducialId())) continue;
+              // double distance = Math.abs(t.getYaw()-rotation);
+                double distance = Math.abs(t.getBestCameraToTarget().getY());
+
+              if(distance<bestDistance) {
+                bestId=t.getFiducialId();
+                bestDistance=distance;
+              }
+            }
+            //int tagID = result.getBestTarget().getFiducialId();
 
             // Retrieve the pose of the detected tag from the field layout
-            Optional<Pose3d> tagPoseOptional = fieldLayout.getTagPose(tagID);
+            Optional<Pose3d> tagPoseOptional = fieldLayout.getTagPose(bestId);
 
             // Ensure the tag pose is available
             if (tagPoseOptional.isPresent()) {
@@ -175,5 +211,7 @@ public class VisionSubsystem extends SubsystemBase
   public int getLatestID() { 
     return latestID;
   }
+
+
   
 }

@@ -87,7 +87,7 @@ public final class Constants {
     }
 
     public static final double leftAlignmentX = .2435737274077523; //meters
-    public static final double leftAlignmentY = 0.2773943783670729;
+    public static final double leftAlignmentY = 0.26;
     public static final double rightAlignmentX = .2435737274077523;
     public static final double rightAlignmentY = 0.6354460866293814;
     public static final double thetaAlignment = -Math.PI/2; //degrees
@@ -246,14 +246,14 @@ public final class Constants {
     public static final Pose2d L17 = new Pose2d(4.019, 2.913, new Rotation2d(Math.toRadians(150)));
     public static final Pose2d L18 = new Pose2d(3.357, 3.829, new Rotation2d(Math.toRadians(90)));
     public static final Pose2d L19 = new Pose2d(3.75, 5.100, new Rotation2d(Math.toRadians(30)));
-    public static final Pose2d L20 = new Pose2d(4.915, 5.067, new Rotation2d(Math.toRadians(-30)));
+    public static final Pose2d L20 = new Pose2d(5.142, 5.263, new Rotation2d(Math.toRadians(-30)));
     public static final Pose2d L21 = new Pose2d(5.669, 3.664, new Rotation2d(Math.toRadians(-90)));
     public static final Pose2d L22 = new Pose2d(5.142, 3.148, new Rotation2d(Math.toRadians(210)));
 
     public static final Pose2d R17 = new Pose2d(4.328, 2.764, new Rotation2d(Math.toRadians(150)));
     public static final Pose2d R18 = new Pose2d(3.304, 3.510, new Rotation2d(Math.toRadians(90)));
     public static final Pose2d R19 = new Pose2d(3.439, 4.923, new Rotation2d(Math.toRadians(30)));
-    public static final Pose2d R20 = new Pose2d(4.636, 5.274, new Rotation2d(Math.toRadians(-30)));
+    public static final Pose2d R20 = new Pose2d(4.657, 5.436, new Rotation2d(Math.toRadians(-30)));
     public static final Pose2d R21 = new Pose2d(5.679, 4.479, new Rotation2d(Math.toRadians(-90)));
     public static final Pose2d R22 = new Pose2d(5.483, 3.261, new Rotation2d(Math.toRadians(210)));
 
@@ -271,7 +271,8 @@ public final class Constants {
     public static final Pose2d R9 = new Pose2d(11.95, 4.87, new Rotation2d(Math.toRadians(30)));
     public static final Pose2d R10 = new Pose2d(11.78, 3.51, new Rotation2d(Math.toRadians(90)));
     public static final Pose2d R11 = new Pose2d(12.87, 2.67, new Rotation2d(Math.toRadians(150)));
-
+    public static final Pose2d BARGE_START = new Pose2d(7.449, 6.134, new Rotation2d(Math.toRadians(-30)));
+    public static final Pose2d PROCESSOR_START = new Pose2d(7.449, 6.134, new Rotation2d(Math.toRadians(-30)));
     public static final List<Pose2d> kLeftReefPoses=Arrays.asList(
     L17, L18, L19, L20, L21, L22, L6, L7, L8, L9, L10, L11
     );

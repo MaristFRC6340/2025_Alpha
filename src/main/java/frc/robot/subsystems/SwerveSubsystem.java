@@ -460,7 +460,7 @@ public class SwerveSubsystem extends SubsystemBase
    */
   private boolean isRedAlliance()
   {
-    //var alliance = DriverStation.getAlliance();
+    var alliance = DriverStation.getAlliance();
     return false;
     //return alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
   }
@@ -614,7 +614,7 @@ public Command alignWithReef(Supplier<Optional<Pose2d>> poseSupplier, DoubleSupp
   }),
   Commands.none(),
   () -> {
-    return (Constants.FieldPositions.isReefID(idSupplier.getAsInt()) && poseSupplier.get().isPresent() && poseSupplier.get().get().getX()<Constants.VisionConstants.maxAlignmentDistance);
+    return true;//(Constants.FieldPositions.isReefID(idSupplier.getAsInt()) && poseSupplier.get().isPresent());
   });
 
 }
