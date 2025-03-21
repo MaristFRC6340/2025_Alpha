@@ -280,6 +280,9 @@ public final class Constants {
       R17, R18, R19, R20, R21, R22, R6, R7, R8, R9, R10, R11
     );
 
+    public static final Translation2d BLUE_REEF_CENTER = new Translation2d(4.5, 4);
+    public static final Translation2d RED_REEF_CENTER = new Translation2d(13, 4);
+
 
     public static final int [] kReefIDs = {6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22};
     public static boolean isReefID(int id) {

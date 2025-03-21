@@ -27,6 +27,7 @@ import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -81,6 +82,7 @@ public class VisionSubsystem extends SubsystemBase
   private Pose2d reefDstPose;
 
   StructPublisher<Pose2d> reefTagDisp = NetworkTableInstance.getDefault().getStructTopic("SmartDashboard/Subsystem/Vision/RobotToTag", Pose2d.struct).publish();
+  StructPublisher<Pose2d> estimatedCaemraPose = NetworkTableInstance.getDefault().getStructTopic("SmartDashboard/Subsystem/Vision/estimatedCameraPose", Pose2d.struct).publish();
 
   public VisionSubsystem( Field2d field)
   {
@@ -171,7 +173,10 @@ public class VisionSubsystem extends SubsystemBase
             double y = estimatedPose.estimatedPose.toPose2d().getRotation().getRadians();
 
             // Get the ID of the first detected tag
-            int bestId = 0;
+            //int bestId = getClosestReefSide(estimatedPose.estimatedPose.toPose2d());
+            //SmartDashboard.putNumber("Subsystem/Vision/BestReefId", bestId);
+            estimatedCaemraPose.set(estimatedPose.estimatedPose.toPose2d());
+            int bestId=0;
             double bestDistance = Double.MAX_VALUE;
             for(PhotonTrackedTarget t : result.getTargets()) {
               if(!Constants.FieldPositions.isReefID(t.getFiducialId())) continue;
@@ -212,6 +217,56 @@ public class VisionSubsystem extends SubsystemBase
     return latestID;
   }
 
+    /**
+   * Find the closest reef side to the estimated robot pose
+   * @return
+   */
+  public static int getClosestReefSide (Pose2d pose) {
+    var alliance = DriverStation.getAlliance();
+    boolean red = alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
+    Translation2d reefCenter = red ? Constants.FieldPositions.RED_REEF_CENTER : Constants.FieldPositions.BLUE_REEF_CENTER;
+    Translation2d reefRelativePose = new Translation2d(pose.getX()-reefCenter.getX(), pose.getY()-reefCenter.getY());
+    double angleToReef = 90;
+    if(reefRelativePose.getY()!=0)
+    {
+      angleToReef = Math.toDegrees(Math.atan(reefRelativePose.getY()/reefRelativePose.getX()));
+    }
+    System.out.println(angleToReef);
+    //TODO: Replace with checking which side we are on
+    if(true) {
+      //BLUE
+      if(reefRelativePose.getY()>=0) {
+        if(angleToReef>=0 && angleToReef <=30) {
+          return 21;
+        }
+        if(angleToReef>=30 && angleToReef<=90) {
+          return 20;
+        }
+        if(angleToReef<=-30 && angleToReef>=-90) {
+          return 19;
+        }
+        if(angleToReef >=-30 && angleToReef<=0) {
+          return 18;
+        }
+      }
+      else {
+          if(angleToReef>=0 && angleToReef <=30) {
+            return 18;
+          }
+          if(angleToReef>=30 && angleToReef<=90) {
+            return 17;
+          }
+          if(angleToReef<=-30 && angleToReef>=-90) {
+            return 22;
+          }
+          if(angleToReef >=-30 && angleToReef<=0) {
+            return 21;
+          }
+          
+      }
+    }
+    return -1;
+  }
 
   
 }
