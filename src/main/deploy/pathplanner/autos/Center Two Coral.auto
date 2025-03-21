@@ -47,9 +47,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "CoralL to L19"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShadowTechnique"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CoralL to L19"
+                }
+              }
+            ]
           }
         },
         {

@@ -174,7 +174,7 @@ public class VisionSubsystem extends SubsystemBase
 
             // Get the ID of the first detected tag
             //int bestId = getClosestReefSide(estimatedPose.estimatedPose.toPose2d());
-            //SmartDashboard.putNumber("Subsystem/Vision/BestReefId", bestId);
+            
             estimatedCaemraPose.set(estimatedPose.estimatedPose.toPose2d());
             int bestId=0;
             double bestDistance = Double.MAX_VALUE;
@@ -189,7 +189,7 @@ public class VisionSubsystem extends SubsystemBase
               }
             }
             //int tagID = result.getBestTarget().getFiducialId();
-
+            SmartDashboard.putNumber("Subsystem/Vision/BestReefId", bestId);
             // Retrieve the pose of the detected tag from the field layout
             Optional<Pose3d> tagPoseOptional = fieldLayout.getTagPose(bestId);
 
@@ -233,7 +233,7 @@ public class VisionSubsystem extends SubsystemBase
     }
     System.out.println(angleToReef);
     //TODO: Replace with checking which side we are on
-    if(true) {
+    if(!red) {
       //BLUE
       if(reefRelativePose.getY()>=0) {
         if(angleToReef>=0 && angleToReef <=30) {
@@ -261,6 +261,36 @@ public class VisionSubsystem extends SubsystemBase
           }
           if(angleToReef >=-30 && angleToReef<=0) {
             return 21;
+          }
+          
+      }
+    } else {
+      if(reefRelativePose.getY()>=0) {
+        if(angleToReef>=0 && angleToReef <=30) {
+          return 7;
+        }
+        if(angleToReef>=30 && angleToReef<=90) {
+          return 8;
+        }
+        if(angleToReef<=-30 && angleToReef>=-90) {
+          return 9;
+        }
+        if(angleToReef >=-30 && angleToReef<=0) {
+          return 10;
+        }
+      }
+      else {
+          if(angleToReef>=0 && angleToReef <=30) {
+            return 10;
+          }
+          if(angleToReef>=30 && angleToReef<=90) {
+            return 11;
+          }
+          if(angleToReef<=-30 && angleToReef>=-90) {
+            return 6;
+          }
+          if(angleToReef >=-30 && angleToReef<=0) {
+            return 7;
           }
           
       }

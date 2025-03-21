@@ -175,7 +175,6 @@ public class RobotContainer {
   
 
     //FOR TESTING:
-    driverX.whileTrue(new AutoAlignCommand(() -> m_SwerveSubsystem.vision.getRobotInTagSpace(), () -> m_SwerveSubsystem.vision.getLatestID(), false, m_SwerveSubsystem));
     
     driverB.whileTrue(new LittletonWheelRadiusCommand(m_SwerveSubsystem, 1));
       
@@ -197,6 +196,7 @@ public class RobotContainer {
         // driverDpadLeft.whileTrue(m_SwerveSubsystem.driveToPose(Constants.FieldPositions.BLUE_LEFT_CORAL_STATION_PICKUP));
 
         driverA.onTrue(new InstantCommand(()->m_SwerveSubsystem.zeroGyro()/**m_gyro.zeroYaw()**/));
+        driverX.whileTrue(new RunCommand(()->m_SwerveSubsystem.swerveDrive.lockPose()));
 
       //ACTUATOR CONTROLLER
 
@@ -221,9 +221,9 @@ public class RobotContainer {
       actuatorRTrigger.whileTrue(m_HuggerSubsystem.getSetSpeedCommand(()->.8));
       actuatorLTrigger.whileTrue(m_HuggerSubsystem.getSetSpeedCommand(()->-.8));
 
-      actuatorX.whileTrue(m_ClimberSubsystem.setPower(()->-.25));
+      actuatorX.whileTrue(m_ClimberSubsystem.setPower(()->-.6));
 
-      actuatorB.whileTrue(m_ClimberSubsystem.setPower(()->.25));
+      actuatorB.whileTrue(m_ClimberSubsystem.setPower(()->.7));
       actuatorStart.onTrue(new InstantCommand(()->m_HuggerSubsystem.setPosition(HuggerConstants.straightUp)));
 
 
