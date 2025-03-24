@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.9373295454545455,
-        "y": 7.320610795454545
+        "x": 0.658125,
+        "y": 7.1112073863636365
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.0519449300699297,
-        "y": 6.5156107954545455
+        "x": 1.7727403846153842,
+        "y": 6.306207386363637
       },
       "isLocked": false,
       "linkedName": "CoralL"
     },
     {
       "anchor": {
-        "x": 3.200880681818182,
-        "y": 5.555639204545454
+        "x": 2.9914772727272725,
+        "y": 5.326292613636363
       },
       "prevControl": {
-        "x": 2.5387652972027968,
-        "y": 6.382536640442889
+        "x": 2.2436079545454546,
+        "y": 6.084133522727272
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,15 +33,15 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.5,
-    "maxAcceleration": 1.5,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 180.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 1.0,
     "rotation": 29.999999999999996
   },
   "reversed": false,
@@ -50,5 +50,5 @@
     "velocity": 0,
     "rotation": 126.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

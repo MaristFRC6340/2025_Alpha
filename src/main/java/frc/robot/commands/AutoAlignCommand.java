@@ -50,8 +50,8 @@ public class AutoAlignCommand extends Command{
       Pose2d currentPose = currentPoseOpt.get();
       distFromTag = currentPose;
 
-      double xPower = MathUtil.clamp(xController.calculate(currentPose.getX(), left ? Constants.VisionConstants.leftAlignmentX : Constants.VisionConstants.rightAlignmentX), -1, 1);
-      double yPower = MathUtil.clamp(yController.calculate(currentPose.getY(), left ? Constants.VisionConstants.leftAlignmentY : Constants.VisionConstants.rightAlignmentY), -1, 1);
+      double xPower = MathUtil.clamp(xController.calculate(currentPose.getX(), left ? Constants.VisionConstants.leftAlignmentX : Constants.VisionConstants.rightAlignmentX), -1.5, 1.5);
+      double yPower = MathUtil.clamp(yController.calculate(currentPose.getY(), left ? Constants.VisionConstants.leftAlignmentY : Constants.VisionConstants.rightAlignmentY), -1.5, 1.5);
       double thetaPower = thetaController.calculate(currentPose.getRotation().getRadians(), Constants.VisionConstants.thetaAlignment);
       SmartDashboard.putNumber("Subsystem/Vision/actualAlignmentX",currentPose.getX());
       SmartDashboard.putNumber("Subsystem/Vision/actualAlignmentY",currentPose.getY());

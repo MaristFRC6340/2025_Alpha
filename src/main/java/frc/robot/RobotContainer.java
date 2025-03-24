@@ -252,7 +252,7 @@ public class RobotContainer {
       NamedCommands.registerCommand("L3", new InstantCommand(() -> m_elevator.setCoralState(3)));
       NamedCommands.registerCommand("L4", new InstantCommand(() -> m_elevator.setCoralState(4)));
       NamedCommands.registerCommand("AutoAlign", new AutoAlignCommand(() -> m_SwerveSubsystem.vision.getRobotInTagSpace(), () -> m_SwerveSubsystem.vision.getLatestID(), true, m_SwerveSubsystem));
-
+      NamedCommands.registerCommand("AutoAlignRight", new AutoAlignCommand(() -> m_SwerveSubsystem.vision.getRobotInTagSpace(), () -> m_SwerveSubsystem.vision.getLatestID(), false, m_SwerveSubsystem));
 
 
 
@@ -261,6 +261,9 @@ public class RobotContainer {
       }));
       NamedCommands.registerCommand("ResetOdomL21", new InstantCommand(() -> {
         m_SwerveSubsystem.resetOdometry(Constants.FieldPositions.L21);
+      }));
+      NamedCommands.registerCommand("ResetOdomR21", new InstantCommand(() -> {
+        m_SwerveSubsystem.resetOdometry(Constants.FieldPositions.R21);
       }));
       NamedCommands.registerCommand("ResetOdomL20", new InstantCommand(() -> {
         m_SwerveSubsystem.resetOdometry(Constants.FieldPositions.L20);

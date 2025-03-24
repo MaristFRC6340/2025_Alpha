@@ -232,7 +232,7 @@ public final class Constants {
 
   public static class SwerveConstants {
     public static final double kPX = 1.5;
-    public static final double kPY = 1.25;
+    public static final double kPY = 1.75;
     public static final double kPTheta = 1.5;
     public static final double kXTolerance = 0.00; //Meters
     public static final double kYTolerance = 0.00; //Meters
@@ -254,7 +254,7 @@ public final class Constants {
     public static final Pose2d R18 = new Pose2d(3.304, 3.510, new Rotation2d(Math.toRadians(90)));
     public static final Pose2d R19 = new Pose2d(3.439, 4.923, new Rotation2d(Math.toRadians(30)));
     public static final Pose2d R20 = new Pose2d(4.657, 5.436, new Rotation2d(Math.toRadians(-30)));
-    public static final Pose2d R21 = new Pose2d(5.679, 4.479, new Rotation2d(Math.toRadians(-90)));
+    public static final Pose2d R21 = new Pose2d(5.779, 4.379, new Rotation2d(Math.toRadians(-90)));
     public static final Pose2d R22 = new Pose2d(5.483, 3.261, new Rotation2d(Math.toRadians(210)));
 
     //Red
