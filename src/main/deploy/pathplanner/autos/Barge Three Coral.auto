@@ -7,7 +7,13 @@
         {
           "type": "named",
           "data": {
-            "name": "AutoAlignRight"
+            "name": "ResetOdom"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start to R20"
           }
         },
         {
@@ -17,9 +23,9 @@
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 1.0
+            "name": "AutoAlignRight"
           }
         },
         {
@@ -37,38 +43,19 @@
         {
           "type": "named",
           "data": {
-            "name": "ResetOdomL21"
+            "name": "ResetOdomR20"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "R21 to CoralL"
+            "pathName": "R20 to CoralL"
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "ShadowTechnique"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "CoralL to L19"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AutoAlignRight"
+            "pathName": "CoralL to L19"
           }
         },
         {
@@ -78,9 +65,51 @@
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 1.0
+            "name": "AutoAlign"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Outtake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "CoralIntake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ResetOdomL19"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "L19 to CoralL"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CoralL to R19"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoAlignRight"
           }
         },
         {

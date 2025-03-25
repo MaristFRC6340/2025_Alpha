@@ -242,7 +242,7 @@ public class RobotContainer {
    * For cleanliness, register all named commands here
    */
   private void registerNamedCommands(){
-      NamedCommands.registerCommand("Outtake", m_CoralSubsystem.getSetSpeedCommand(.7).withTimeout(.7));//used to be 1,1,
+      NamedCommands.registerCommand("Outtake", m_CoralSubsystem.getSetSpeedCommand(.7).withTimeout(.6));//used to be 1,1,
       NamedCommands.registerCommand("ShadowTechnique", m_CoralSubsystem.getShadowTechniqueCommand(.5).withTimeout(1));
       NamedCommands.registerCommand("RickyTechnique", /**m_CoralSubsystem.getSetSpeedCommand(1).withTimeout(.7).andThen(m_CoralSubsystem.getShadowTechniqueCommand(.5).withTimeout(.7))**/new InstantCommand());
      
@@ -267,6 +267,9 @@ public class RobotContainer {
       }));
       NamedCommands.registerCommand("ResetOdomL20", new InstantCommand(() -> {
         m_SwerveSubsystem.resetOdometry(Constants.FieldPositions.L20);
+      }));
+      NamedCommands.registerCommand("ResetOdomR20", new InstantCommand(() -> {
+        m_SwerveSubsystem.resetOdometry(Constants.FieldPositions.R20);
       }));
   }
   public void periodic(){

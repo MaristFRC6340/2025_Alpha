@@ -75,6 +75,26 @@ public class VisionSubsystem extends SubsystemBase
  
   private             Field2d             field2d;
 
+  //new camera stuff
+
+  private PhotonCamera leftReefCamera;
+  private PhotonPoseEstimator leftPoseEstimator;
+  private int leftLatestID;
+  private Pose2d leftCameraEstimatedRobotToCam;
+
+
+
+
+  private PhotonCamera rightReefCamera;
+  private PhotonPoseEstimator rightPoseEstimator;
+  private int rightLatestID;
+  private Pose2d rightCameraEstimatedRobotToCam;
+
+
+
+
+
+
   private PhotonCamera reefCamera;
   private Optional<Pose2d> lastCalculatedDist;
   private PhotonPoseEstimator poseEstimator;
@@ -99,16 +119,7 @@ public class VisionSubsystem extends SubsystemBase
     // Constants.VisionConstants.ReefCamera.stdDevsMap.put();
     poseEstimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.LOWEST_AMBIGUITY, new Transform3d(Constants.VisionConstants.ReefCamera.robotToCamTranslation, Constants.VisionConstants.ReefCamera.robotToCamTransform));
     lastCalculatedDist = Optional.empty();
-    // try{
-    //   Thread.sleep(1000);
-
-    //   reefCamera.setDriverMode(true);
-    //   Thread.sleep(1000);
-    //   reefCamera.setDriverMode(false);
-    // }
-    // catch(InterruptedException e){
-
-    // }
+    
    
     
   }
@@ -150,6 +161,58 @@ public class VisionSubsystem extends SubsystemBase
     
   }
 
+  public int getBestTag(Pose2d pose, List<PhotonTrackedTarget> targetsSeen){
+
+    int bestId=0;
+    double bestDistance = Double.MAX_VALUE;
+    for(PhotonTrackedTarget t : targetsSeen) {
+      if(!Constants.FieldPositions.isReefID(t.getFiducialId())) continue;
+        double distance = Math.abs(t.getBestCameraToTarget().getY());
+      if(distance<bestDistance) {
+        bestId=t.getFiducialId();
+        bestDistance=distance;
+      }
+    }
+    return bestId;
+  }
+
+  //Both Cameras
+  public void updateRobotToTagTransformForBothCameras() {
+    // Get the latest result from the camera
+    PhotonPipelineResult leftResult = leftReefCamera.getLatestResult();
+    PhotonPipelineResult rightResult = rightReefCamera.getLatestResult();
+
+    if(rightResult!=null && rightResult.hasTargets()){
+      Optional<EstimatedRobotPose> rightEstimatedPose = poseEstimator.update(rightResult);
+      if(rightEstimatedPose.isPresent()){
+          EstimatedRobotPose estimatedPose = rightEstimatedPose.get(); 
+          estimatedCaemraPose.set(estimatedPose.estimatedPose.toPose2d());
+         int bestId  = getBestTag(estimatedPose.estimatedPose.toPose2d(), rightResult.getTargets());
+
+          SmartDashboard.putNumber("Subsystem/Vision/BestReefId", bestId);
+
+          // Retrieve the pose of the detected tag from the field layout
+          Optional<Pose3d> tagPoseOptional = fieldLayout.getTagPose(bestId);
+
+          // Ensure the tag pose is available
+          if (tagPoseOptional.isPresent()) {
+              Pose3d tagPose = tagPoseOptional.get();
+              // Compute the robot's pose relative to the tag
+              Pose2d robotPose = estimatedPose.estimatedPose.toPose2d();
+              Pose2d tagPose2d = tagPose.toPose2d();
+              Pose2d robotInTagSpace = robotPose.relativeTo(tagPose2d);
+              rightCameraEstimatedRobotToCam = robotInTagSpace;
+          }
+    }
+    else{
+      rightCameraEstimatedRobotToCam = null;
+    }
+   
+  } else{
+    rightCameraEstimatedRobotToCam = null;
+  }
+}
+//do the same for left
 
  
 

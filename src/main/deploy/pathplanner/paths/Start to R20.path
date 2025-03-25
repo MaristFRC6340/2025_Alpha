@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.029971590909091,
-        "y": 6.104076704545455
+        "x": 7.269289772727273,
+        "y": 5.416036931818183
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.943069718999175,
-        "y": 5.814894790563339
+        "x": 6.321988636363637,
+        "y": 5.4260085227272725
       },
       "isLocked": false,
       "linkedName": null
@@ -17,11 +17,11 @@
     {
       "anchor": {
         "x": 5.195198863636364,
-        "y": 5.675298295454545
+        "y": 5.416036931818183
       },
       "prevControl": {
-        "x": 6.04469696969697,
-        "y": 6.025909819347318
+        "x": 6.172414772727272,
+        "y": 5.435980113636362
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,22 +33,22 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.5,
-    "maxAcceleration": 1.5,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 180.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 1.0,
     "rotation": -29.999999999999996
   },
   "reversed": false,
   "folder": "Start to Deposit",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -29.999999999999996
+    "rotation": -88.97696981133227
   },
   "useDefaultConstraints": true
 }
