@@ -161,8 +161,69 @@ public class VisionSubsystem extends SubsystemBase
     
   }
 
+  /**START OF NEW VISION METHODS 
+   * 
+   * Plan is to call bestId at begginign of auto align command, then constantly get getRobottoTagTransform passing in the static id
+  */
+  public int getBestTag(boolean left){
+
+    Pose2d estimatedPose = getEstimatedPose(left);
+    List<PhotonTrackedTarget> targetsSeen = getTargetsSeen(left);
+    if(targetsSeen != null){
+      int bestId=0;
+      double bestDistance = Double.MAX_VALUE;
+      for(PhotonTrackedTarget t : targetsSeen) {
+          if(!Constants.FieldPositions.isReefID(t.getFiducialId())) continue;
+          double distance = Math.abs(t.getBestCameraToTarget().getY());
+          if(distance<bestDistance) {
+            bestId=t.getFiducialId();
+            bestDistance=distance;
+          }
+      }
+      return bestId;
+    }
+    //if some error with getting targets return -1
+    return -1;
+  }
+  public List<PhotonTrackedTarget> getTargetsSeen(boolean left){
+    PhotonPoseEstimator selectedPoseEstimator = left?leftPoseEstimator:rightPoseEstimator;
+    PhotonPipelineResult result = left?leftReefCamera.getLatestResult():rightReefCamera.getLatestResult();
+    if(result!=null &&result.hasTargets()){
+     return result.getTargets();
+
+    }
+    //if we have nay arror with the tag notbeing there return null
+    return null;
+  }
+
+  public Pose2d getEstimatedPose(boolean left){
+    PhotonPoseEstimator selectedPoseEstimator = left?leftPoseEstimator:rightPoseEstimator;
+    PhotonPipelineResult result = left?leftReefCamera.getLatestResult():rightReefCamera.getLatestResult();
+    if(result!=null &&result.hasTargets()){
+      Optional<EstimatedRobotPose> estimatedPose = selectedPoseEstimator.update(result);
+      if(estimatedPose.isPresent()){
+        return estimatedPose.get().estimatedPose.toPose2d();
+      }
+
+    }
+    //if we have nay arror with the tag notbeing there return null
+    return null;
+  }
+  
+  //best id is passed in 
+  public Pose2d getRobotToTagTransform(boolean left, int bestId){
+    //if no tage seen
+    if(bestId==-1)return null;
+    Pose2d tagPose = fieldLayout.getTagPose(bestId).get().toPose2d();
+    Pose2d robotPose = getEstimatedPose(left);
+    return robotPose.relativeTo(tagPose);
+  }
+/**END OF NEW VISION METHODS */
+
+
   public int getBestTag(Pose2d pose, List<PhotonTrackedTarget> targetsSeen){
 
+    
     int bestId=0;
     double bestDistance = Double.MAX_VALUE;
     for(PhotonTrackedTarget t : targetsSeen) {
@@ -183,7 +244,7 @@ public class VisionSubsystem extends SubsystemBase
     PhotonPipelineResult rightResult = rightReefCamera.getLatestResult();
 
     if(rightResult!=null && rightResult.hasTargets()){
-      Optional<EstimatedRobotPose> rightEstimatedPose = poseEstimator.update(rightResult);
+      Optional<EstimatedRobotPose> rightEstimatedPose = rightPoseEstimator.update(rightResult);
       if(rightEstimatedPose.isPresent()){
           EstimatedRobotPose estimatedPose = rightEstimatedPose.get(); 
           estimatedCaemraPose.set(estimatedPose.estimatedPose.toPose2d());
