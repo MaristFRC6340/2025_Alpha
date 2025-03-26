@@ -55,7 +55,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CoralL to L19"
+            "pathName": "CoralL to R19"
           }
         },
         {
@@ -67,7 +67,7 @@
         {
           "type": "named",
           "data": {
-            "name": "AutoAlign"
+            "name": "AutoAlignRight"
           }
         },
         {
@@ -85,19 +85,19 @@
         {
           "type": "named",
           "data": {
-            "name": "ResetOdomL19"
+            "name": "ResetOdomR19"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "L19 to CoralL"
+            "pathName": "R19 to CoralL"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "CoralL to R19"
+            "pathName": "CoralL to L19"
           }
         },
         {
@@ -109,7 +109,7 @@
         {
           "type": "named",
           "data": {
-            "name": "AutoAlignRight"
+            "name": "AutoAlign"
           }
         },
         {

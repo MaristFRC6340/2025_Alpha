@@ -48,7 +48,7 @@
   "folder": "Start to Deposit",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -88.97696981133227
+    "rotation": -90.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

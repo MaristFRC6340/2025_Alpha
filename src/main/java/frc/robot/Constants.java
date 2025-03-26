@@ -81,6 +81,22 @@ public final class Constants {
       public static InterpolatingDoubleTreeMap stdDevsMap = new InterpolatingDoubleTreeMap();
     }
 
+    public static final class LeftReefCamera{
+      public static final String name = "Left_Reef_Camera";
+      public static  Rotation3d robotToCamTransform = new Rotation3d(0, 0, Units.degreesToRadians(-15));
+      public static  Translation3d robotToCamTranslation=new Translation3d(Units.inchesToMeters(11.775),
+      Units.inchesToMeters(7.75),
+      Units.inchesToMeters(0));
+
+    }
+    public static final class RightReefCamera{
+      public static final String name = "Right_Reef_Camera";
+      public static  Rotation3d robotToCamTransform = new Rotation3d(0, 0, Units.degreesToRadians(-45));
+      public static  Translation3d robotToCamTranslation=new Translation3d(Units.inchesToMeters(-11.775),
+      Units.inchesToMeters(7.75),
+      Units.inchesToMeters(0));
+
+    }
     public static final class ChuteCamera{//used only for streaming
       public static final String name = "Arducam_B0495_(USB3_2.3MP)";
       
@@ -89,7 +105,7 @@ public final class Constants {
     public static final double leftAlignmentX = .2435737274077523; //meters
     public static final double leftAlignmentY = 0.26;
     public static final double rightAlignmentX = .2435737274077523;
-    public static final double rightAlignmentY = 0.6354460866293814;
+    public static final double rightAlignmentY = 0.623;
     public static final double thetaAlignment = -Math.PI/2; //degrees
     public static double maxAlignmentDistance = 1.5;
 
@@ -232,7 +248,7 @@ public final class Constants {
 
   public static class SwerveConstants {
     public static final double kPX = 1.5;
-    public static final double kPY = 1.75;
+    public static final double kPY = 2.25;
     public static final double kPTheta = 1.5;
     public static final double kXTolerance = 0.00; //Meters
     public static final double kYTolerance = 0.00; //Meters

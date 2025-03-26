@@ -36,7 +36,9 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.VisionConstants.CameraTemplate;
+import frc.robot.Constants.VisionConstants.LeftReefCamera;
 import frc.robot.Constants.VisionConstants.ReefCamera;
+import frc.robot.Constants.VisionConstants.RightReefCamera;
 
 import java.awt.Desktop;
 import java.text.FieldPosition;
@@ -81,6 +83,7 @@ public class VisionSubsystem extends SubsystemBase
   private PhotonPoseEstimator leftPoseEstimator;
   private int leftLatestID;
   private Pose2d leftCameraEstimatedRobotToCam;
+  StructPublisher<Pose2d> rightEstimatedPose = NetworkTableInstance.getDefault().getStructTopic("SmartDashboard/Subsystem/Vision/righEstimatedPose", Pose2d.struct).publish();
 
 
 
@@ -89,6 +92,7 @@ public class VisionSubsystem extends SubsystemBase
   private PhotonPoseEstimator rightPoseEstimator;
   private int rightLatestID;
   private Pose2d rightCameraEstimatedRobotToCam;
+  StructPublisher<Pose2d> leftEstimatedPose = NetworkTableInstance.getDefault().getStructTopic("SmartDashboard/Subsystem/Vision/leftEstimatedPose", Pose2d.struct).publish();
 
 
 
@@ -107,25 +111,33 @@ public class VisionSubsystem extends SubsystemBase
   public VisionSubsystem( Field2d field)
   {
     this.field2d = field;
-    try{
-      //= new AprilTagFieldLayout(Filesystem.getDeployDirectory()+"2025-reefscape-welded.json"); // k2025Reefscape
-    }
-    catch(Exception e){
-      System.out.println("Failed");
-
-    }
+    
     fieldLayout= AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
     reefCamera = new PhotonCamera(Constants.VisionConstants.ReefCamera.name);
-    // Constants.VisionConstants.ReefCamera.stdDevsMap.put();
     poseEstimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.LOWEST_AMBIGUITY, new Transform3d(Constants.VisionConstants.ReefCamera.robotToCamTranslation, Constants.VisionConstants.ReefCamera.robotToCamTransform));
     lastCalculatedDist = Optional.empty();
+
+    leftReefCamera = new PhotonCamera(Constants.VisionConstants.LeftReefCamera.name);
+    rightReefCamera =new PhotonCamera(Constants.VisionConstants.RightReefCamera.name);
     
+    rightPoseEstimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.LOWEST_AMBIGUITY, new Transform3d(RightReefCamera.robotToCamTranslation, RightReefCamera.robotToCamTransform));
+    leftPoseEstimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.LOWEST_AMBIGUITY, new Transform3d(LeftReefCamera.robotToCamTranslation, LeftReefCamera.robotToCamTransform));
+
+    //leftP = new PhotonPoseEstimator(fieldLayout, PoseStrategy.LOWEST_AMBIGUITY, new Transform3d(RightReefCamera.robotToCamTranslation, RightReefCamera.robotToCamTransform));
+
    
     
   }
 
   @Override
   public void periodic(){
+
+
+    // leftEstimatedPose.set(getEstimatedPose(true));
+    // rightEstimatedPose.set(getEstimatedPose(false));
+
+
+
     var pose = getRobotInTagSpace();
     SmartDashboard.putBoolean("Subsystem/posePresent", pose.isPresent());
 
@@ -167,7 +179,6 @@ public class VisionSubsystem extends SubsystemBase
   */
   public int getBestTag(boolean left){
 
-    Pose2d estimatedPose = getEstimatedPose(left);
     List<PhotonTrackedTarget> targetsSeen = getTargetsSeen(left);
     if(targetsSeen != null){
       int bestId=0;
@@ -186,8 +197,8 @@ public class VisionSubsystem extends SubsystemBase
     return -1;
   }
   public List<PhotonTrackedTarget> getTargetsSeen(boolean left){
-    PhotonPoseEstimator selectedPoseEstimator = left?leftPoseEstimator:rightPoseEstimator;
-    PhotonPipelineResult result = left?leftReefCamera.getLatestResult():rightReefCamera.getLatestResult();
+    // PhotonPipelineResult result = left?leftReefCamera.getLatestResult():rightReefCamera.getLatestResult();
+    PhotonPipelineResult result = reefCamera.getLatestResult();
     if(result!=null &&result.hasTargets()){
      return result.getTargets();
 
@@ -197,8 +208,10 @@ public class VisionSubsystem extends SubsystemBase
   }
 
   public Pose2d getEstimatedPose(boolean left){
-    PhotonPoseEstimator selectedPoseEstimator = left?leftPoseEstimator:rightPoseEstimator;
-    PhotonPipelineResult result = left?leftReefCamera.getLatestResult():rightReefCamera.getLatestResult();
+    // PhotonPoseEstimator selectedPoseEstimator = left?leftPoseEstimator:rightPoseEstimator;
+    // PhotonPipelineResult result = left?leftReefCamera.getLatestResult():rightReefCamera.getLatestResult();
+    PhotonPoseEstimator selectedPoseEstimator = poseEstimator;
+    PhotonPipelineResult result = reefCamera.getLatestResult();
     if(result!=null &&result.hasTargets()){
       Optional<EstimatedRobotPose> estimatedPose = selectedPoseEstimator.update(result);
       if(estimatedPose.isPresent()){

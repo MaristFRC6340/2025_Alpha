@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.4392948717948713,
+        "x": 3.439,
         "y": 4.922884615384615
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6549358974358968,
-        "y": 5.96525641025641
+        "x": 2.2133983100233108,
+        "y": 5.864758522727272
       },
       "isLocked": false,
       "linkedName": "R19"
@@ -20,8 +20,8 @@
         "y": 7.1112073863636365
       },
       "prevControl": {
-        "x": 1.3702403846153848,
-        "y": 6.2030022581585085
+        "x": 1.735056818181818,
+        "y": 6.2536505681818175
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 126.0
   },
   "reversed": false,
   "folder": "Deposit to CoralL",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 29.999999999999996
   },
   "useDefaultConstraints": true
 }
