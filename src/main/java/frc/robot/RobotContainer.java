@@ -242,10 +242,11 @@ public class RobotContainer {
    * For cleanliness, register all named commands here
    */
   private void registerNamedCommands(){
-      NamedCommands.registerCommand("Outtake", m_CoralSubsystem.getSetSpeedCommand(.7).withTimeout(.6));//used to be 1,1,
-      NamedCommands.registerCommand("ShadowTechnique", m_CoralSubsystem.getShadowTechniqueCommand(.5).withTimeout(1));
+      NamedCommands.registerCommand("Outtake", Commands.waitUntil(()->m_elevator.isUp()).andThen(m_CoralSubsystem.getSetSpeedCommand(.7).withTimeout(.6)));//used to be 1,1,
+      NamedCommands.registerCommand("ShadowTechnique", m_CoralSubsystem.getShadowTechniqueCommand(.5).withTimeout(1).andThen(m_CoralSubsystem.getOuttakeCommand().withTimeout(.1)));
       NamedCommands.registerCommand("RickyTechnique", /**m_CoralSubsystem.getSetSpeedCommand(1).withTimeout(.7).andThen(m_CoralSubsystem.getShadowTechniqueCommand(.5).withTimeout(.7))**/new InstantCommand());
-     
+      NamedCommands.registerCommand("SpeedyOuttake", m_CoralSubsystem.getSetSpeedCommand(1).withTimeout(.3));//used to be 1,1,
+      NamedCommands.registerCommand("LongOuttake", Commands.waitUntil(()->m_elevator.isUp()).andThen(m_CoralSubsystem.getOuttakeCommand().withTimeout(1.5)));
       NamedCommands.registerCommand("CoralIntake", new InstantCommand(() -> m_elevator.setCoralIntake()));
       NamedCommands.registerCommand("L1", new InstantCommand(() -> m_elevator.setCoralState(1)));
       NamedCommands.registerCommand("L2", new InstantCommand(() -> m_elevator.setCoralState(2)));

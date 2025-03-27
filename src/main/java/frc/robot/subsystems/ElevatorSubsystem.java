@@ -98,6 +98,10 @@ public class ElevatorSubsystem extends SubsystemBase{
         .until(()->getLimitSwitch()));
     }
 
+    public boolean isUp() {
+        return Math.abs(getPosition()-Constants.ElevatorConstants.coralL4)<.5;
+    }
+
     public void toggleL1Intake(){
         switch(state){
             case CORALINTAKE:
