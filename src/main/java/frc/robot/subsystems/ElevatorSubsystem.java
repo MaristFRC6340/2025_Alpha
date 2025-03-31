@@ -39,7 +39,7 @@ import static edu.wpi.first.units.Units.Volts;
 
 import java.util.function.DoubleSupplier;
 
-enum ElevatorStates{
+ enum ElevatorStates{
     CORALINTAKE,
     CORALL1,
     CORALL2,
@@ -53,7 +53,7 @@ public class ElevatorSubsystem extends SubsystemBase{
 
     TalonFX leftMotor;
     TalonFX rightMotor;
-    ElevatorStates state = ElevatorStates.CORALINTAKE;
+    public ElevatorStates state = ElevatorStates.CORALINTAKE;
     DigitalInput limitSwitch = new DigitalInput(0);
 
     MutVoltage appliedVoltage = Volts.mutable(0);
@@ -89,6 +89,9 @@ public class ElevatorSubsystem extends SubsystemBase{
         
     }
 
+    public boolean atTrough(){
+        return state==ElevatorStates.CORALL1;
+    }
     public Command resetElevatortoRest(){
 
         return (new InstantCommand(()->setCoralIntake())

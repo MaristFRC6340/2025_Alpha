@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -160,6 +161,7 @@ public class RobotContainer {
     
     SmartDashboard.putData("OPMODE/autochooser",autoChooser);
     configureBindings();
+    
   }
 
   // private void addAutos() {
@@ -174,6 +176,9 @@ public class RobotContainer {
   private void configureBindings() {
   
 
+    driverStart.whileTrue(new SequentialCommandGroup(new InstantCommand(this::onAutoInit),AutoBuilder.buildAuto("Processor Two Coral"),new InstantCommand(this::onTeleopInit)).handleInterrupt(this::onTeleopInit));
+
+    driverBack.whileTrue(new SequentialCommandGroup(new InstantCommand(this::onAutoInit),AutoBuilder.buildAuto("Barge Three Coral"),new InstantCommand(this::onTeleopInit)).handleInterrupt(this::onTeleopInit));
     //FOR TESTING:
     
     driverB.whileTrue(new LittletonWheelRadiusCommand(m_SwerveSubsystem, 1));
@@ -215,15 +220,15 @@ public class RobotContainer {
       
      actuatorRStick.whileTrue(m_HuggerSubsystem.getSetPivotPower(() -> -1*m_actuatorCommandPS5Controller.getRightY()*.1));
 
-     actuatorL.whileTrue(m_CoralSubsystem.getSetSpeedCommand(.7));
+     actuatorL.whileTrue(Commands.either(m_CoralSubsystem.getSetSpeedCommand(.7), m_CoralSubsystem.getSetSpeedCommand(1),()->!m_elevator.atTrough()));
       actuatorR.whileTrue(m_CoralSubsystem.getShadowTechniqueCommand(.5));
       
       actuatorRTrigger.whileTrue(m_HuggerSubsystem.getSetSpeedCommand(()->.8));
       actuatorLTrigger.whileTrue(m_HuggerSubsystem.getSetSpeedCommand(()->-.8));
 
-      actuatorX.whileTrue(m_ClimberSubsystem.setPower(()->-.6));
+      actuatorX.whileTrue(m_ClimberSubsystem.setPower(()->-.9));
 
-      actuatorB.whileTrue(m_ClimberSubsystem.setPower(()->.7));
+      actuatorB.whileTrue(m_ClimberSubsystem.setPower(()->.9));
       actuatorStart.onTrue(new InstantCommand(()->m_HuggerSubsystem.setPosition(HuggerConstants.straightUp)));
 
 
@@ -275,6 +280,9 @@ public class RobotContainer {
       NamedCommands.registerCommand("ResetOdomR19", new InstantCommand(() -> {
         m_SwerveSubsystem.resetOdometry(Constants.FieldPositions.R19);
       }));
+      NamedCommands.registerCommand("ResetOdomL22", new InstantCommand(() -> {
+        m_SwerveSubsystem.resetOdometry(Constants.FieldPositions.L22);
+      }));
   }
   public void periodic(){
     ///SmartDashboard.putNumber("gyroraw", m_gyro.getYaw());
@@ -295,6 +303,7 @@ public class RobotContainer {
       m_SwerveSubsystem.setDefaultCommand(m_SwerveSubsystem.driveFieldOriented(driveAngularVelocity));
 
   }
+
   public void onAutoInit(){
     m_SwerveSubsystem.removeDefaultCommand();
   }

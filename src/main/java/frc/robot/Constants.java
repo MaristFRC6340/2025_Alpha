@@ -103,7 +103,7 @@ public final class Constants {
     }
 
     public static final double leftAlignmentX = .2435737274077523; //meters
-    public static final double leftAlignmentY = 0.26;
+    public static final double leftAlignmentY = 0.275;
     public static final double rightAlignmentX = .2435737274077523;
     public static final double rightAlignmentY = 0.623;
     public static final double thetaAlignment = -Math.PI/2; //degrees
@@ -171,7 +171,7 @@ public final class Constants {
     public static final double coralL3 = 2.55; // Original 2.729: Reset by Michaud 15 mar
     public static final double coralL4 = 4.736;//original 4.8
 
-    public static final double coralL1 = 1;
+    public static final double coralL1 = .221;
     public static final double coralIntake = .1;
 
 
@@ -247,9 +247,9 @@ public final class Constants {
   }
 
   public static class SwerveConstants {
-    public static final double kPX = 1.5;
+    public static final double kPX = 2;
     public static final double kPY = 2.25;
-    public static final double kPTheta = 1.5;
+    public static final double kPTheta = 2;
     public static final double kXTolerance = 0.00; //Meters
     public static final double kYTolerance = 0.00; //Meters
     public static final double kThetaTolerance = 0;
@@ -264,7 +264,7 @@ public final class Constants {
     public static final Pose2d L19 = new Pose2d(3.75, 5.100, new Rotation2d(Math.toRadians(30)));
     public static final Pose2d L20 = new Pose2d(5.142, 5.263, new Rotation2d(Math.toRadians(-30)));
     public static final Pose2d L21 = new Pose2d(5.669, 3.664, new Rotation2d(Math.toRadians(-90)));
-    public static final Pose2d L22 = new Pose2d(5.142, 3.148, new Rotation2d(Math.toRadians(210)));
+    public static final Pose2d L22 = new Pose2d(5.235, 2.941, new Rotation2d(Math.toRadians(210)));
 
     public static final Pose2d R17 = new Pose2d(4.328, 2.764, new Rotation2d(Math.toRadians(150)));
     public static final Pose2d R18 = new Pose2d(3.304, 3.510, new Rotation2d(Math.toRadians(90)));
