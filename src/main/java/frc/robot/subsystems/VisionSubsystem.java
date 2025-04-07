@@ -84,7 +84,7 @@ public class VisionSubsystem extends SubsystemBase
   private int leftLatestID;
   private Pose2d leftCameraEstimatedRobotToCam;
   StructPublisher<Pose2d> rightEstimatedPose = NetworkTableInstance.getDefault().getStructTopic("SmartDashboard/Subsystem/Vision/righEstimatedPose", Pose2d.struct).publish();
-
+  
 
 
 
@@ -104,6 +104,8 @@ public class VisionSubsystem extends SubsystemBase
   private PhotonPoseEstimator poseEstimator;
   private int latestID;
   private Pose2d reefDstPose;
+  private Pose2d lastSeenPose = new Pose2d();
+
 
   StructPublisher<Pose2d> reefTagDisp = NetworkTableInstance.getDefault().getStructTopic("SmartDashboard/Subsystem/Vision/RobotToTag", Pose2d.struct).publish();
   StructPublisher<Pose2d> estimatedCaemraPose = NetworkTableInstance.getDefault().getStructTopic("SmartDashboard/Subsystem/Vision/estimatedCameraPose", Pose2d.struct).publish();
@@ -210,10 +212,9 @@ public class VisionSubsystem extends SubsystemBase
   public Pose2d getEstimatedPose(boolean left){
     // PhotonPoseEstimator selectedPoseEstimator = left?leftPoseEstimator:rightPoseEstimator;
     // PhotonPipelineResult result = left?leftReefCamera.getLatestResult():rightReefCamera.getLatestResult();
-    PhotonPoseEstimator selectedPoseEstimator = poseEstimator;
     PhotonPipelineResult result = reefCamera.getLatestResult();
     if(result!=null &&result.hasTargets()){
-      Optional<EstimatedRobotPose> estimatedPose = selectedPoseEstimator.update(result);
+      Optional<EstimatedRobotPose> estimatedPose = poseEstimator.update(result);
       if(estimatedPose.isPresent()){
         return estimatedPose.get().estimatedPose.toPose2d();
       }
@@ -229,6 +230,8 @@ public class VisionSubsystem extends SubsystemBase
     if(bestId==-1)return null;
     Pose2d tagPose = fieldLayout.getTagPose(bestId).get().toPose2d();
     Pose2d robotPose = getEstimatedPose(left);
+    if(robotPose==null ||tagPose==null)return lastSeenPose;
+    lastSeenPose = robotPose.relativeTo(tagPose);
     return robotPose.relativeTo(tagPose);
   }
 /**END OF NEW VISION METHODS */
@@ -313,18 +316,18 @@ public class VisionSubsystem extends SubsystemBase
             //int bestId = getClosestReefSide(estimatedPose.estimatedPose.toPose2d());
             
             estimatedCaemraPose.set(estimatedPose.estimatedPose.toPose2d());
-            int bestId=0;
-            double bestDistance = Double.MAX_VALUE;
-            for(PhotonTrackedTarget t : result.getTargets()) {
-              if(!Constants.FieldPositions.isReefID(t.getFiducialId())) continue;
-              // double distance = Math.abs(t.getYaw()-rotation);
-                double distance = Math.abs(t.getBestCameraToTarget().getY());
+            int bestId=Constants.FieldPositions.getBestID(estimatedPose.estimatedPose.toPose2d());
+            // double bestDistance = Double.MAX_VALUE;
+            // for(PhotonTrackedTarget t : result.getTargets()) {
+            //   if(!Constants.FieldPositions.isReefID(t.getFiducialId())) continue;
+            //   // double distance = Math.abs(t.getYaw()-rotation);
+            //     double distance = Math.abs(t.getBestCameraToTarget().getY());
 
-              if(distance<bestDistance) {
-                bestId=t.getFiducialId();
-                bestDistance=distance;
-              }
-            }
+            //   if(distance<bestDistance) {
+            //     bestId=t.getFiducialId();
+            //     bestDistance=distance;
+            //   }
+            // }
             //int tagID = result.getBestTarget().getFiducialId();
             SmartDashboard.putNumber("Subsystem/Vision/BestReefId", bestId);
             // Retrieve the pose of the detected tag from the field layout
@@ -350,6 +353,63 @@ public class VisionSubsystem extends SubsystemBase
     return lastCalculatedDist;
   }
 
+  public Optional<Pose2d> getTroughTagSpace() {
+    // Get the latest result from the camera
+    PhotonPipelineResult result = reefCamera.getLatestResult();
+    
+    // Check if any targets are detected
+    if (result!=null && result.hasTargets()) {
+        // Get the current timestamp
+
+        // Update the pose estimator with the latest result
+        Optional<EstimatedRobotPose> estimatedPoseOptional = poseEstimator.update(result);
+
+        // Check if a pose was estimated
+        if (estimatedPoseOptional.isPresent()) {
+            EstimatedRobotPose estimatedPose = estimatedPoseOptional.get();
+            // double rotation = estimatedPose.estimatedPose.toPose2d().getRotation().getRadians();
+            double y = estimatedPose.estimatedPose.toPose2d().getRotation().getRadians();
+
+            // Get the ID of the first detected tag
+            //int bestId = getClosestReefSide(estimatedPose.estimatedPose.toPose2d());
+            
+            estimatedCaemraPose.set(estimatedPose.estimatedPose.toPose2d());
+            int bestId=Constants.FieldPositions.getBestTroughID(estimatedPose.estimatedPose.toPose2d());
+            // double bestDistance = Double.MAX_VALUE;
+            // for(PhotonTrackedTarget t : result.getTargets()) {
+            //   if(!Constants.FieldPositions.isReefID(t.getFiducialId())) continue;
+            //   // double distance = Math.abs(t.getYaw()-rotation);
+            //     double distance = Math.abs(t.getBestCameraToTarget().getY());
+
+            //   if(distance<bestDistance) {
+            //     bestId=t.getFiducialId();
+            //     bestDistance=distance;
+            //   }
+            // }
+            //int tagID = result.getBestTarget().getFiducialId();
+            SmartDashboard.putNumber("Subsystem/Vision/BestReefId", bestId);
+            // Retrieve the pose of the detected tag from the field layout
+            Optional<Pose3d> tagPoseOptional = fieldLayout.getTagPose(bestId);
+
+            // Ensure the tag pose is available
+            if (tagPoseOptional.isPresent()) {
+                Pose3d tagPose = tagPoseOptional.get();
+
+                // Compute the robot's pose relative to the tag
+                Pose2d robotPose = estimatedPose.estimatedPose.toPose2d();
+                Pose2d tagPose2d = tagPose.toPose2d();
+                Pose2d robotInTagSpace = robotPose.relativeTo(tagPose2d);
+                lastCalculatedDist = Optional.of(robotInTagSpace);
+
+                // Return the robot's pose in tag space
+                return Optional.of(robotInTagSpace);
+            }
+        }
+    }
+
+    // Return empty if no valid pose could be estimated
+    return lastCalculatedDist;
+  }
   public int getLatestID() { 
     return latestID;
   }

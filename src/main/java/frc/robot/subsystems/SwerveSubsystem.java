@@ -619,6 +619,34 @@ public Command alignWithReef(Supplier<Optional<Pose2d>> poseSupplier, DoubleSupp
 
 }
 
+public Command alignWithTrough(Supplier<Optional<Pose2d>> poseSupplier, DoubleSupplier driverInput) {
+
+  
+  return Commands.either(runEnd(() -> {
+    Optional<Pose2d> currentPoseOpt = poseSupplier.get();
+    if(currentPoseOpt.isPresent()) {
+      Pose2d currentPose = currentPoseOpt.get();
+      double xPower = xController.calculate(currentPose.getX(), Constants.VisionConstants.troughAlignmentX);
+      double yPower = yController.calculate(currentPose.getY(), Constants.VisionConstants.troughAlignmentY);
+      double thetaPower = thetaController.calculate(currentPose.getRotation().getRadians(), Constants.VisionConstants.troughAlignmentTheta);
+      SmartDashboard.putNumber("Subsystem/Vision/troughAlignmentX",currentPose.getX());
+      SmartDashboard.putNumber("Subsystem/Vision/troughAlignmentY",currentPose.getY());
+      SmartDashboard.putNumber("Subsystem/Vision/troughAlignmentTheta",currentPose.getRotation().getRadians());
+      SmartDashboard.putNumber("Subsystem/Vision/troughxPOut",xPower);
+      SmartDashboard.putNumber("Subsystem/Vision/troughyPOut",yPower);
+      SmartDashboard.putNumber("Subsystem/Vision/troughthetaOut",thetaPower);
+      this.drive(new ChassisSpeeds(-yPower, xPower, thetaPower));
+    }
+  }, () -> {
+    swerveDrive.drive(new ChassisSpeeds(0,0,0));
+  }),
+  Commands.none(),
+  () -> {
+    return true;//(Constants.FieldPositions.isReefID(idSupplier.getAsInt()) && poseSupplier.get().isPresent());
+  });
+
+}
+
 
 
 }

@@ -30,6 +30,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoAlignCommand;
 import frc.robot.commands.Autos;
 import frc.robot.commands.LittletonWheelRadiusCommand;
+import frc.robot.commands.TeleopAutoAlignCommand;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -176,13 +177,13 @@ public class RobotContainer {
   private void configureBindings() {
   
 
-    driverStart.whileTrue(new SequentialCommandGroup(new InstantCommand(this::onAutoInit),AutoBuilder.buildAuto("Processor Two Coral"),new InstantCommand(this::onTeleopInit)).handleInterrupt(this::onTeleopInit));
+    //driverStart.whileTrue(new SequentialCommandGroup(new InstantCommand(this::onAutoInit),AutoBuilder.buildAuto("Processor Two Coral"),new InstantCommand(this::onTeleopInit)).handleInterrupt(this::onTeleopInit));
 
-    driverBack.whileTrue(new SequentialCommandGroup(new InstantCommand(this::onAutoInit),AutoBuilder.buildAuto("Barge Three Coral"),new InstantCommand(this::onTeleopInit)).handleInterrupt(this::onTeleopInit));
+    //driverBack.whileTrue(new SequentialCommandGroup(new InstantCommand(this::onAutoInit),AutoBuilder.buildAuto("Barge Three Coral"),new InstantCommand(this::onTeleopInit)).handleInterrupt(this::onTeleopInit));
     //FOR TESTING:
     
-    driverB.whileTrue(new LittletonWheelRadiusCommand(m_SwerveSubsystem, 1));
-      
+    
+    
       //DRIVER CONTROLS
         driverRTrigger.whileTrue(m_SwerveSubsystem.driveFieldOriented(driveAngularSlow));
         driverLTrigger.whileTrue(m_SwerveSubsystem.driveRobotCentric(driveAngularAdjustment));
@@ -194,10 +195,13 @@ public class RobotContainer {
 
         driverL.whileTrue(m_SwerveSubsystem.alignWithReef(() -> m_SwerveSubsystem.vision.getRobotInTagSpace(), () -> m_driverController.getLeftY(), () -> m_SwerveSubsystem.vision.getLatestID(), true));
         driverR.whileTrue(m_SwerveSubsystem.alignWithReef(() -> m_SwerveSubsystem.vision.getRobotInTagSpace(), () -> m_driverController.getLeftY(), () -> m_SwerveSubsystem.vision.getLatestID(), false));
+        driverB.whileTrue(m_SwerveSubsystem.alignWithTrough(() -> m_SwerveSubsystem.vision.getTroughTagSpace(), () -> m_driverController.getLeftY()));
+        //driverR.whileTrue(new TeleopAutoAlignCommand(false, m_SwerveSubsystem, m_SwerveSubsystem.vision));
 
         //DPAD Drive To Commands
         // driverDpadUp.whileTrue(m_SwerveSubsystem.driveToPose(Constants.FieldPositions.BLUE_CLIMB_AREA));
         // driverDpadRight.whileTrue(m_SwerveSubsystem.driveToPose(Constants.FieldPositions.BLUE_PROCESSOR));
+      
         // driverDpadLeft.whileTrue(m_SwerveSubsystem.driveToPose(Constants.FieldPositions.BLUE_LEFT_CORAL_STATION_PICKUP));
 
         driverA.onTrue(new InstantCommand(()->m_SwerveSubsystem.zeroGyro()/**m_gyro.zeroYaw()**/));
@@ -257,8 +261,8 @@ public class RobotContainer {
       NamedCommands.registerCommand("L2", new InstantCommand(() -> m_elevator.setCoralState(2)));
       NamedCommands.registerCommand("L3", new InstantCommand(() -> m_elevator.setCoralState(3)));
       NamedCommands.registerCommand("L4", new InstantCommand(() -> m_elevator.setCoralState(4)));
-      NamedCommands.registerCommand("AutoAlign", new AutoAlignCommand(() -> m_SwerveSubsystem.vision.getRobotInTagSpace(), () -> m_SwerveSubsystem.vision.getLatestID(), true, m_SwerveSubsystem));
-      NamedCommands.registerCommand("AutoAlignRight", new AutoAlignCommand(() -> m_SwerveSubsystem.vision.getRobotInTagSpace(), () -> m_SwerveSubsystem.vision.getLatestID(), false, m_SwerveSubsystem));
+      NamedCommands.registerCommand("AutoAlign", new AutoAlignCommand(() -> m_SwerveSubsystem.vision.getRobotInTagSpace(), () -> m_SwerveSubsystem.vision.getLatestID(), true, m_SwerveSubsystem).withTimeout(3));
+      NamedCommands.registerCommand("AutoAlignRight", new AutoAlignCommand(() -> m_SwerveSubsystem.vision.getRobotInTagSpace(), () -> m_SwerveSubsystem.vision.getLatestID(), false, m_SwerveSubsystem).withTimeout(3));
 
 
 

@@ -106,6 +106,9 @@ public final class Constants {
     public static final double leftAlignmentY = 0.275;
     public static final double rightAlignmentX = .2435737274077523;
     public static final double rightAlignmentY = 0.623;
+    public static final double troughAlignmentTheta = -1.860;
+    public static final double troughAlignmentX = .379;
+    public static final double troughAlignmentY = .748;
     public static final double thetaAlignment = -Math.PI/2; //degrees
     public static double maxAlignmentDistance = 1.5;
 
@@ -247,7 +250,7 @@ public final class Constants {
   }
 
   public static class SwerveConstants {
-    public static final double kPX = 2;
+    public static final double kPX = 2.25;
     public static final double kPY = 2.25;
     public static final double kPTheta = 2;
     public static final double kXTolerance = 0.00; //Meters
@@ -296,6 +299,12 @@ public final class Constants {
       R17, R18, R19, R20, R21, R22, R6, R7, R8, R9, R10, R11
     );
 
+
+
+    public static final List<Pose2d> kReefPoses = Arrays.asList(
+      L17, L18, L19, L20, L21, L22, L6, L7, L8, L9, L10, L11, R17, R18, R19, R20, R21, R22, R6, R7, R8, R9, R10, R11
+    );
+
     public static final Translation2d BLUE_REEF_CENTER = new Translation2d(4.5, 4);
     public static final Translation2d RED_REEF_CENTER = new Translation2d(13, 4);
 
@@ -314,7 +323,148 @@ public final class Constants {
     public static class StartPositions {
       public static final Pose2d ODO_TEST = new PathPlannerAuto("Odom Testing").getStartingPose();
     }
+    
+    public static final Pose2d T19 = new Pose2d(4.54, 5.49, new Rotation2d(Math.toRadians(-30)));
+    public static final Pose2d T20 = new Pose2d(5.81, 4.64, new Rotation2d(Math.toRadians(-90)));
+    public static final Pose2d T21 = new Pose2d(5.749, 3.344, new Rotation2d(Math.toRadians(-150)));
+    public static final Pose2d T22 = new Pose2d(4.409, 2.609, new Rotation2d(Math.toRadians(150)));
+    public static final Pose2d T17 = new Pose2d(3.177, 3.36, new Rotation2d(Math.toRadians(90)));
+    public static final Pose2d T18 = new Pose2d(3.264, 4.77, new Rotation2d(Math.toRadians(30)));
+
+    public static final Pose2d T8 = new Pose2d(12.47, 5.20, new Rotation2d(Math.toRadians(30)));
+    public static final Pose2d T7 = new Pose2d(14.04, 5, new Rotation2d(Math.toRadians(-30)));
+    public static final Pose2d T6 = new Pose2d(14.39, 3.95, new Rotation2d(Math.toRadians(-90)));
+    public static final Pose2d T11 = new Pose2d(13.76, 2.91, new Rotation2d(Math.toRadians(-150)));
+    public static final Pose2d T10 = new Pose2d(12.34, 2.97, new Rotation2d(Math.toRadians(150)));
+    public static final Pose2d T9 = new Pose2d(11.76, 4.187, new Rotation2d(Math.toRadians(90)));
+    public static final List<Pose2d> kTroughPoses = Arrays.asList(T17, T18, T19, T20, T21, T22, T6, T7, T8, T9, T10, T11);
+    public static final int getBestTroughID(Pose2d pose) {
+        Pose2d closest = pose.nearest(kTroughPoses);
+        if(closest==T17) {
+          return 17;
+        }
+        if(closest==T18) {
+          return 18;
+        }
+        if(closest==T19) {
+          return 19;
+        }
+        if(closest==T20) {
+          return 20;
+        }
+        if(closest==T21) {
+          return 21;
+        }
+        if(closest==T22) {
+          return 22;
+        }
+        if(closest==T6) {
+          return 6;
+        }
+        if(closest==T7) {
+          return 7;
+        }
+        if(closest==T8) {
+          return 8;
+        }
+        if(closest==T9) {
+          return 9;
+        }
+        if(closest==T10) {
+          return 10;
+        }
+        if(closest==T11) {
+          return 11;
+        }
+        return -1;
+    }
+
+    public static int getBestID(Pose2d robotPose) {
+      Pose2d closestPose = robotPose.nearest(kReefPoses);
+      if(closestPose==R6 || closestPose==L6) {
+        return 6;
+      }
+      if(closestPose==R7 || closestPose==L7) {
+        return 7;
+      }
+      if(closestPose==R8 || closestPose==L8) {
+        return 8;
+      }
+      if(closestPose==R9 || closestPose==L9) {
+        return 9;
+      }
+      if(closestPose==R10 || closestPose==L10) {
+        return 10;
+      }
+      if(closestPose==R11 || closestPose==L11) {
+        return 11;
+      }
+      if(closestPose==R17 || closestPose==L17) {
+        return 17;
+      }
+      if(closestPose==R18 || closestPose==L18) {
+        return 18;
+      }
+      if(closestPose==R19 || closestPose==L19) {
+        return 19;
+      }
+      if(closestPose==R20 || closestPose==R20) {
+        return 20;
+      }
+      if(closestPose==R21 || closestPose==L21) {
+        return 21;
+      }
+      if(closestPose==R22 || closestPose==L22) {
+        return 22;
+      }
+      return -1;
+
+    }
+
+    public static int getBestIDDotEquals(Pose2d robotPose) {
+      Pose2d closestPose = robotPose.nearest(kReefPoses);
+      if(closestPose.equals(R6) || closestPose.equals(L6)) {
+          return 6;
+      }
+      if(closestPose.equals(R7) || closestPose.equals(L7)) {
+          return 7;
+      }
+      if(closestPose.equals(R8) || closestPose.equals(L8)) {
+          return 8;
+      }
+      if(closestPose.equals(R9) || closestPose.equals(L9)) {
+          return 9;
+      }
+      if(closestPose.equals(R10) || closestPose.equals(L10)) {
+          return 10;
+      }
+      if(closestPose.equals(R11) || closestPose.equals(L11)) {
+          return 11;
+      }
+      if(closestPose.equals(R17) || closestPose.equals(L17)) {
+          return 17;
+      }
+      if(closestPose.equals(R18) || closestPose.equals(L18)) {
+          return 18;
+      }
+      if(closestPose.equals(R19) || closestPose.equals(L19)) {
+          return 19;
+      }
+      if(closestPose.equals(R20) || closestPose.equals(R20)) {
+          return 20;
+      }
+      if(closestPose.equals(R21) || closestPose.equals(L21)) {
+          return 21;
+      }
+      if(closestPose.equals(R22) || closestPose.equals(L22)) {
+          return 22;
+      }
+      return -1;
   }
+  
+  }
+
+  
 
 
 }

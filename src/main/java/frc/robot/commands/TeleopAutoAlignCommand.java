@@ -31,20 +31,25 @@ public class TeleopAutoAlignCommand extends Command{
 
 
     public TeleopAutoAlignCommand(boolean left, SwerveSubsystem swerve, VisionSubsystem vision){
-        this.targetId = vision.getBestTag(left);
+        addRequirements(swerve);
         this.left = left;
         this.swerve = swerve;
+        this.vision = vision;
 
     }
 
     @Override
     public void initialize() {
-        
+        this.targetId = vision.getBestTag(left);
+        System.out.println(targetId);
+
     }
 
     @Override
     public void execute(){
+        if(targetId ==-1){targetId=vision.getBestTag(left);return;}
         distFromTag = vision.getRobotToTagTransform(left, targetId);
+        if(distFromTag==null)return;
       double xPower = MathUtil.clamp(xController.calculate(distFromTag.getX(), left ? Constants.VisionConstants.leftAlignmentX : Constants.VisionConstants.rightAlignmentX), -1.5, 1.5);
       double yPower = MathUtil.clamp(yController.calculate(distFromTag.getY(), left ? Constants.VisionConstants.leftAlignmentY : Constants.VisionConstants.rightAlignmentY), -1.5, 1.5);
       double thetaPower = thetaController.calculate(distFromTag.getRotation().getRadians(), Constants.VisionConstants.thetaAlignment);

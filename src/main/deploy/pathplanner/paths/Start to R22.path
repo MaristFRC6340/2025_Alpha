@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.6638636363636365,
-        "y": 2.8433664772727276
+        "x": 7.24934659090909,
+        "y": 3.0328267045454544
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.033453379953379,
-        "y": 4.469366477272727
+        "x": 6.511448863636364,
+        "y": 3.042798295454545
       },
       "isLocked": false,
-      "linkedName": "R22"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.6217948717948713,
-        "y": 7.451410256410257
+        "x": 5.6638636363636365,
+        "y": 2.8433664772727276
       },
       "prevControl": {
-        "x": 3.129679487179487,
-        "y": 6.574166666666667
+        "x": 6.202329545454545,
+        "y": 2.933110795454546
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "CoralL"
+      "linkedName": "R22"
     }
   ],
   "rotationTargets": [],
@@ -41,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 126.0
+    "velocity": 0.5,
+    "rotation": -150.0
   },
   "reversed": false,
-  "folder": "Deposit to CoralL",
+  "folder": "Start to Deposit",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -150.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

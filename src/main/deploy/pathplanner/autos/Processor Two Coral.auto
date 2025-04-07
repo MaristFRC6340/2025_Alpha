@@ -7,6 +7,18 @@
         {
           "type": "named",
           "data": {
+            "name": "ResetOdom"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start to R22"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "AutoAlign"
           }
         },
