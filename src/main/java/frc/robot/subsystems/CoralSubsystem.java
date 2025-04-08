@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import frc.robot.Constants;
@@ -32,6 +34,13 @@ public class CoralSubsystem extends SubsystemBase{
     public Command getSetSpeedCommand(double speed) {
         return this.startEnd(() -> {
             setSpeed(speed);
+        }, () -> {
+            stop();
+        });
+    }
+    public Command getSetSpeedCommand(DoubleSupplier state){
+        return this.startEnd(() -> {
+            setSpeed(state.getAsDouble()==4?.7:1);
         }, () -> {
             stop();
         });

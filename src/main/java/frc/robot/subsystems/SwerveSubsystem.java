@@ -24,6 +24,7 @@ import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -607,7 +608,7 @@ public Command alignWithReef(Supplier<Optional<Pose2d>> poseSupplier, DoubleSupp
       SmartDashboard.putNumber("Subsystem/Vision/xPOut",xPower);
       SmartDashboard.putNumber("Subsystem/Vision/yPOut",yPower);
       SmartDashboard.putNumber("Subsystem/Vision/thetaOut",thetaPower);
-      this.drive(new ChassisSpeeds(-yPower, xPower, thetaPower));
+      this.drive(new ChassisSpeeds(MathUtil.clamp(-yPower, -2, 2), MathUtil.clamp(xPower, -2, 2), thetaPower));
     }
   }, () -> {
     swerveDrive.drive(new ChassisSpeeds(0,0,0));

@@ -224,8 +224,10 @@ public class RobotContainer {
       
      actuatorRStick.whileTrue(m_HuggerSubsystem.getSetPivotPower(() -> -1*m_actuatorCommandPS5Controller.getRightY()*.1));
 
-     actuatorL.whileTrue(Commands.either(m_CoralSubsystem.getSetSpeedCommand(.7), m_CoralSubsystem.getSetSpeedCommand(1),()->!m_elevator.atTrough()));
-      actuatorR.whileTrue(m_CoralSubsystem.getShadowTechniqueCommand(.5));
+     //actuatorL.whileTrue(Commands.either(m_CoralSubsystem.getSetSpeedCommand(.7), m_CoralSubsystem.getSetSpeedCommand(1),()->!m_elevator.atTrough()));
+     actuatorL.whileTrue(m_CoralSubsystem.getSetSpeedCommand(()->m_elevator.getLevel()));
+ 
+     actuatorR.whileTrue(m_CoralSubsystem.getShadowTechniqueCommand(.5));
       
       actuatorRTrigger.whileTrue(m_HuggerSubsystem.getSetSpeedCommand(()->.8));
       actuatorLTrigger.whileTrue(m_HuggerSubsystem.getSetSpeedCommand(()->-.8));
@@ -252,7 +254,7 @@ public class RobotContainer {
    */
   private void registerNamedCommands(){
       NamedCommands.registerCommand("Outtake", Commands.waitUntil(()->m_elevator.isUp()).andThen(m_CoralSubsystem.getSetSpeedCommand(.7).withTimeout(.6)));//used to be 1,1,
-      NamedCommands.registerCommand("ShadowTechnique", m_CoralSubsystem.getShadowTechniqueCommand(.5).withTimeout(1).andThen(m_CoralSubsystem.getOuttakeCommand().withTimeout(.1)));
+      NamedCommands.registerCommand("ShadowTechnique", m_CoralSubsystem.getShadowTechniqueCommand(.5).withTimeout(1.2).andThen(m_CoralSubsystem.getOuttakeCommand().withTimeout(.15)));
       NamedCommands.registerCommand("RickyTechnique", /**m_CoralSubsystem.getSetSpeedCommand(1).withTimeout(.7).andThen(m_CoralSubsystem.getShadowTechniqueCommand(.5).withTimeout(.7))**/new InstantCommand());
       NamedCommands.registerCommand("SpeedyOuttake", m_CoralSubsystem.getSetSpeedCommand(1).withTimeout(.3));//used to be 1,1,
       NamedCommands.registerCommand("LongOuttake", Commands.waitUntil(()->m_elevator.isUp()).andThen(m_CoralSubsystem.getOuttakeCommand().withTimeout(1.5)));
@@ -286,6 +288,9 @@ public class RobotContainer {
       }));
       NamedCommands.registerCommand("ResetOdomL22", new InstantCommand(() -> {
         m_SwerveSubsystem.resetOdometry(Constants.FieldPositions.L22);
+      }));
+      NamedCommands.registerCommand("ResetOdomL19", new InstantCommand(() -> {
+        m_SwerveSubsystem.resetOdometry(Constants.FieldPositions.L19);
       }));
   }
   public void periodic(){

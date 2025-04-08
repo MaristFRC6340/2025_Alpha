@@ -104,6 +104,16 @@ public class ElevatorSubsystem extends SubsystemBase{
     public boolean isUp() {
         return Math.abs(getPosition()-Constants.ElevatorConstants.coralL4)<.5;
     }
+    public double getLevel(){
+        if(state==ElevatorStates.CORALL1)return 1;
+        else if(state==ElevatorStates.CORALL2)return 2;
+        else if(state==ElevatorStates.CORALL3)return 3;
+        if(state==ElevatorStates.CORALL4)return 4;
+        else return 1;
+
+
+
+    }
 
     public void toggleL1Intake(){
         switch(state){

@@ -19,12 +19,6 @@
         {
           "type": "named",
           "data": {
-            "name": "L4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "AutoAlignRight"
           }
         },
@@ -53,28 +47,22 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "ShadowTechnique"
-                }
-              },
               {
                 "type": "path",
                 "data": {
                   "pathName": "CoralL to R19"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShadowTechnique"
+                }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L4"
           }
         },
         {
@@ -108,7 +96,7 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
@@ -124,12 +112,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L4"
           }
         },
         {
@@ -160,6 +142,37 @@
           "type": "path",
           "data": {
             "pathName": "L19 to CoralL"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CoralL to L18"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShadowTechnique"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoAlign"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Outtake"
           }
         }
       ]
