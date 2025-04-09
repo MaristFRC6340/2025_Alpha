@@ -35,6 +35,7 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.HuggerSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.OrchestraSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import swervelib.SwerveInputStream;
@@ -53,6 +54,7 @@ public class RobotContainer {
   private final ClimberSubsystem m_ClimberSubsystem = new ClimberSubsystem();
   private final   HuggerSubsystem m_HuggerSubsystem = new HuggerSubsystem();
   private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
+  private final LEDSubsystem m_leds = new LEDSubsystem();
   //private final SingleTalonTesterSubsystem motor = new SingleTalonTesterSubsystem();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
