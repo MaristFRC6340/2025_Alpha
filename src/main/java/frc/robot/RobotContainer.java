@@ -262,9 +262,9 @@ public class RobotContainer {
       }));
 
       //LED Triggers
-      new Trigger(()->SmartDashboard.getNumber("TimeLeft",0)>28&&SmartDashboard.getNumber("TimeLeft",0)<=30).whileTrue(m_leds.setPattern(LEDPattern.solid(Color.kRed).blink(Seconds.of(.5))));
+     // new Trigger(()->SmartDashboard.getNumber("TimeLeft",0)>28&&SmartDashboard.getNumber("TimeLeft",0)<=30).whileTrue(m_leds.setPattern(LEDPattern.solid(Color.kRed).blink(Seconds.of(.5))));
       new Trigger(()->SmartDashboard.getBoolean("Subsystem/ALIGNED", false)).whileTrue(m_leds.setPattern(LEDPattern.solid(Color.kGreen).blink(Seconds.of(.5))));
-      new Trigger(()->SmartDashboard.getBoolean("Subsystem/Vision_CAN_ALIGN", false) && !SmartDashboard.getBoolean("ALIGNED", false)).whileTrue(m_leds.setPattern(LEDPattern.solid(Color.kGreen)));
+      //new Trigger(()->SmartDashboard.getBoolean("Subsystem/Vision_CAN_ALIGN", false) && !SmartDashboard.getBoolean("ALIGNED", false)).whileTrue(m_leds.setPattern(LEDPattern.solid(Color.kGreen)));
       
   }
   /**

@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.util.Color;
 
+import static edu.wpi.first.units.Units.Seconds;
+
 import com.ctre.phoenix.led.FireAnimation;
 
 import edu.wpi.first.wpilibj.AddressableLED;
@@ -34,8 +36,19 @@ public class LEDSubsystem extends SubsystemBase{
     @Override
     public void periodic(){
         strip.setData(buff);
-        if(this.getCurrentCommand() != null){
-            SmartDashboard.putData("LEDCOmmand",this.getCurrentCommand());
+        // if(this.getCurrentCommand() != null){
+        //     SmartDashboard.putData("LEDCOmmand",this.getCurrentCommand());
+        // }
+        if(SmartDashboard.getBoolean("Subsystem/ALIGNED", false)){
+            setPattern(LEDPattern.solid(Color.kGreen).blink(Seconds.of(.1))).schedule();
+        }
+        else if(SmartDashboard.getBoolean("Subsystem/Vision_CAN_ALIGN", false)){
+            setPattern(LEDPattern.solid(Color.kGreen)).schedule();
+
+        }
+        else{
+            // this.getCurrentCommand().cancel();
+            setPattern(LEDPattern.solid(Color.kBlue)).schedule();
         }
     }
 
