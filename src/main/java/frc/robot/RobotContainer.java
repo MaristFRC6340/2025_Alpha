@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.util.Color;
+
+import static edu.wpi.first.units.Units.Seconds;
+
 import java.io.File;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -13,6 +17,7 @@ import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -115,6 +120,7 @@ public class RobotContainer {
   private Trigger driverDpadRight = m_driverController.povRight();
   private Trigger driverDpadDown = m_driverController.povDown();
   private Trigger driverDpadLeft = m_driverController.povLeft();
+  private Trigger sideB = driverY.and(() -> Math.abs(m_driverController.getLeftX())>.3 && Math.abs(m_driverController.getLeftY()) > .3);
 
   private Trigger limitSwitch = new Trigger(() -> m_elevator.getLimitSwitch());
   
@@ -164,6 +170,7 @@ public class RobotContainer {
     
     SmartDashboard.putData("OPMODE/autochooser",autoChooser);
     configureBindings();
+
     
   }
 
@@ -177,7 +184,7 @@ public class RobotContainer {
    * 
    */
   private void configureBindings() {
-  
+    //buffer?
 
     //driverStart.whileTrue(new SequentialCommandGroup(new InstantCommand(this::onAutoInit),AutoBuilder.buildAuto("Processor Two Coral"),new InstantCommand(this::onTeleopInit)).handleInterrupt(this::onTeleopInit));
 
@@ -198,6 +205,8 @@ public class RobotContainer {
         driverL.whileTrue(m_SwerveSubsystem.alignWithReef(() -> m_SwerveSubsystem.vision.getRobotInTagSpace(), () -> m_driverController.getLeftY(), () -> m_SwerveSubsystem.vision.getLatestID(), true));
         driverR.whileTrue(m_SwerveSubsystem.alignWithReef(() -> m_SwerveSubsystem.vision.getRobotInTagSpace(), () -> m_driverController.getLeftY(), () -> m_SwerveSubsystem.vision.getLatestID(), false));
         driverB.whileTrue(m_SwerveSubsystem.alignWithTrough(() -> m_SwerveSubsystem.vision.getTroughTagSpace(), () -> m_driverController.getLeftY()));
+        //sideB.onTrue(m_SwerveSubsystem.getSideB(() -> m_driverController.getLeftX(), () -> m_driverController.getLeftY()));
+        
         //driverR.whileTrue(new TeleopAutoAlignCommand(false, m_SwerveSubsystem, m_SwerveSubsystem.vision));
 
         //DPAD Drive To Commands
@@ -237,6 +246,8 @@ public class RobotContainer {
       actuatorX.whileTrue(m_ClimberSubsystem.setPower(()->-.9));
 
       actuatorB.whileTrue(m_ClimberSubsystem.setPower(()->.9));
+      //actuatorB.whileTrue(m_leds.setPattern(LEDPattern.solid(Color.kRed).blink(Seconds.of(.5))));
+
       actuatorStart.onTrue(new InstantCommand(()->m_HuggerSubsystem.setPosition(HuggerConstants.straightUp)));
 
 
@@ -249,6 +260,11 @@ public class RobotContainer {
         m_elevator.resetEncoder();
         m_elevator.setPosition(0);
       }));
+
+      //LED Triggers
+      new Trigger(()->SmartDashboard.getNumber("TimeLeft",0)>28&&SmartDashboard.getNumber("TimeLeft",0)<=30).whileTrue(m_leds.setPattern(LEDPattern.solid(Color.kRed).blink(Seconds.of(.5))));
+      new Trigger(()->SmartDashboard.getBoolean("Subsystem/ALIGNED", false)).whileTrue(m_leds.setPattern(LEDPattern.solid(Color.kGreen).blink(Seconds.of(.5))));
+      new Trigger(()->SmartDashboard.getBoolean("Subsystem/Vision_CAN_ALIGN", false) && !SmartDashboard.getBoolean("ALIGNED", false)).whileTrue(m_leds.setPattern(LEDPattern.solid(Color.kGreen)));
       
   }
   /**

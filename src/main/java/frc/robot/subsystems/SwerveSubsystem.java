@@ -13,8 +13,10 @@ import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
 import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
@@ -31,6 +33,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -646,6 +649,22 @@ public Command alignWithTrough(Supplier<Optional<Pose2d>> poseSupplier, DoubleSu
     return true;//(Constants.FieldPositions.isReefID(idSupplier.getAsInt()) && poseSupplier.get().isPresent());
   });
 
+}
+
+public Command getSideB(DoubleSupplier x, DoubleSupplier y) {
+  return new DeferredCommand(() -> {
+    double angle = Math.atan(y.getAsDouble()/x.getAsDouble());
+    double xDist = Math.cos(angle);
+    double yDist = Math.sin(angle);
+    List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+      this.getPose(),
+      this.getPose().plus(new Transform2d(xDist, yDist, new Rotation2d())),
+      this.getPose()
+    );
+    PathPlannerPath path = new PathPlannerPath(waypoints, Constants.SwerveConstants.constrants, null, 
+    new GoalEndState(0, this.getPose().getRotation()));
+    return AutoBuilder.followPath(path);
+  }, (new HashSet<Subsystem>(Arrays.asList(this))));
 }
 
 

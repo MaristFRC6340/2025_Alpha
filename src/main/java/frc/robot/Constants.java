@@ -13,6 +13,7 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathConstraints;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -258,6 +259,8 @@ public final class Constants {
     public static final double kThetaTolerance = 0;
     public static double kStoredRadius = 3.9527559/2; // to be configured later
     public static double kDrivebaseRadius = .409;
+
+    public static final PathConstraints constrants = new PathConstraints(4, 4, 0, 0);
   }
 
   public static class FieldPositions {
